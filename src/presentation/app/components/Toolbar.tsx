@@ -1,15 +1,64 @@
+import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { AGENDA_DAYS } from "@/domain/calendarGrid";
 import { addDays, isoWeekNumber, parseDateKey, startOfWeek } from "@/domain/datetime";
 import type { CalendarView, DateKey } from "@/domain/types";
 import { formatDate, formatDayLong, formatMonthYear } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
+import type { Transition } from "../useCalendarApp";
 import { Icon } from "./Icons";
 
 const VIEWS: CalendarView[] = ["day", "week", "month", "year", "agenda"];
 
+/**
+ * Selettore delle viste con un indicatore che scivola sotto il pulsante scelto:
+ * fa capire a colpo d'occhio da dove si arriva e dove si è.
+ */
+function ViewSwitcher({
+  view,
+  onView,
+}: {
+  view: CalendarView;
+  onView: (view: CalendarView) => void;
+}) {
+  const { t, language } = useI18n();
+  const group = useRef<HTMLDivElement>(null);
+  const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
+
+  // Misura il pulsante attivo (anche quando cambiano lingua o larghezza della finestra).
+  useLayoutEffect(() => {
+    const container = group.current;
+    if (!container) return;
+    const measure = () => {
+      const active = container.querySelector<HTMLElement>('button[aria-pressed="true"]');
+      if (active) setPill({ left: active.offsetLeft, width: active.offsetWidth });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [view, language]);
+
+  const pillStyle: CSSProperties | undefined = pill
+    ? { transform: `translateX(${pill.left}px)`, width: pill.width }
+    : undefined;
+
+  return (
+    <div ref={group} className="segmented" role="group" aria-label={t("toolbar.views")}>
+      {pill && <span className="segmented-pill" style={pillStyle} aria-hidden="true" />}
+      {VIEWS.map((v) => (
+        <button key={v} type="button" aria-pressed={v === view} onClick={() => onView(v)}>
+          {t(`view.${v}`)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 interface ToolbarProps {
   view: CalendarView;
   anchor: DateKey;
+  /** Come si è arrivati al periodo mostrato: il titolo entra nella stessa direzione. */
+  transition: Transition["kind"];
   onPrevious: () => void;
   onNext: () => void;
   onToday: () => void;
@@ -38,7 +87,7 @@ export function Toolbar(props: ToolbarProps) {
   return (
     <div className="toolbar">
       <div className="toolbar-title">
-        <h1>
+        <h1 key={title} className={`enter-${props.transition}`}>
           {match ? (
             <>
               {match[1]}
@@ -71,13 +120,7 @@ export function Toolbar(props: ToolbarProps) {
           {t("toolbar.today")}
         </button>
       </div>
-      <div className="segmented" role="group" aria-label={t("toolbar.views")}>
-        {VIEWS.map((v) => (
-          <button key={v} type="button" aria-pressed={v === view} onClick={() => props.onView(v)}>
-            {t(`view.${v}`)}
-          </button>
-        ))}
-      </div>
+      <ViewSwitcher view={view} onView={props.onView} />
       <button type="button" className="primary-btn" onClick={props.onNewEvent}>
         <Icon name="plus" size={18} />
         {t("toolbar.newEvent")}

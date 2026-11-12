@@ -45,7 +45,7 @@ export function NextEventBar({ now, upcoming, onOpen, onDone }: NextEventBarProp
 
   return (
     <footer className="next-bar">
-      <div className="next-main">
+      <div key={next.key} className="next-main">
         <Cover occurrence={next} size={58} />
         <div className="next-text">
           <div className="next-label">

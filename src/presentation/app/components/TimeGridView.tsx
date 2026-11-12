@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { weekDays } from "@/domain/calendarGrid";
 import { minutesBetween, parseDateKey, weekdayIndex } from "@/domain/datetime";
 import { layoutDay, occurrencesOnDay } from "@/domain/occurrences";
 import type { DateKey, Occurrence } from "@/domain/types";
 import { formatDayLong, formatTimeRange, weekdayNames } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { tint, useOccurrenceTitle } from "../occurrenceUtils";
+import { FreshEventContext, tint, useOccurrenceTitle } from "../occurrenceUtils";
 import { OccurrenceChip } from "./OccurrenceBits";
 
 /** Altezza di un'ora in pixel. */
@@ -38,6 +38,7 @@ export function TimeGridView({
 }: TimeGridProps) {
   const { t, language } = useI18n();
   const titleOf = useOccurrenceTitle();
+  const freshId = useContext(FreshEventContext);
   const days = mode === "week" ? weekDays(anchor) : [anchor];
   const names = weekdayNames(language, "short");
   const scroller = useRef<HTMLDivElement>(null);
@@ -121,7 +122,9 @@ export function TimeGridView({
                 <button
                   key={block.occurrence.key}
                   type="button"
-                  className={`block${block.occurrence.done ? " chip-done" : ""}${block.endMinute - block.startMinute < SHORT_MINUTES ? " is-short" : ""}`}
+                  className={`block${block.occurrence.done ? " chip-done" : ""}${
+                    block.occurrence.eventId === freshId ? " is-fresh" : ""
+                  }${block.endMinute - block.startMinute < SHORT_MINUTES ? " is-short" : ""}`}
                   style={{
                     ...tint(block.occurrence.color),
                     top: (block.startMinute / 60) * HOUR_PX,

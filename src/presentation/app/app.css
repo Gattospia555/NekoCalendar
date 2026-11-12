@@ -453,6 +453,7 @@
 }
 
 .segmented {
+  position: relative;
   display: inline-flex;
   gap: 2px;
   padding: 4px;
@@ -462,6 +463,7 @@
 }
 
 .segmented button {
+  position: relative; /* sopra l'indicatore che scivola */
   min-height: 38px;
   padding: 0 16px;
   border: 0;
@@ -474,8 +476,20 @@
 }
 
 .segmented button[aria-pressed="true"] {
-  background: var(--neko-accent);
   color: var(--neko-on-accent);
+}
+
+/* L'indicatore della vista scelta: scivola da un pulsante all'altro. */
+.segmented-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  border-radius: 19px;
+  background: var(--neko-accent);
+  transition:
+    transform var(--motion-slow) var(--ease-standard),
+    width var(--motion-slow) var(--ease-standard);
 }
 
 /* ---------- Etichette degli eventi ---------- */
@@ -1117,7 +1131,6 @@
 }
 
 .task-row.is-done .task-title {
-  text-decoration: line-through;
   color: var(--neko-ink-soft);
 }
 
@@ -1519,4 +1532,271 @@ textarea.input {
   border-radius: 14px;
   background: color-mix(in srgb, var(--neko-danger) 15%, var(--neko-surface));
   color: var(--neko-ink);
+}
+
+/* ---------- Movimento ----------
+ * Regole: ogni animazione risponde a un gesto (o accompagna l'apertura dell'app),
+ * dura meno di 400 ms, non blocca i clic e non gira all'infinito (zero consumo a riposo).
+ * Con "Riduci animazioni" di Windows si spengono tutte (base.css).
+ */
+
+/* Risposta al clic: i pulsanti "cedono" un attimo, i colori cambiano morbidi. */
+.round-btn,
+.icon-btn,
+.pill-btn,
+.primary-btn,
+.ghost-btn,
+.danger-btn,
+.segmented button,
+.day-number,
+.nav-item,
+.chip,
+.block,
+.agenda-item,
+.upcoming-item,
+.task-row,
+.calendar-row,
+.year-day,
+.mini-btn {
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-normal) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard),
+    filter var(--motion-fast) var(--ease-standard);
+}
+
+.round-btn:active,
+.icon-btn:active,
+.pill-btn:active,
+.primary-btn:active:not(:disabled),
+.ghost-btn:active,
+.danger-btn:active,
+.segmented button:active,
+.day-number:active,
+.chip:active,
+.block:active,
+.mini-btn:active {
+  transform: scale(var(--press-scale));
+}
+
+.primary-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--neko-accent) 35%, transparent);
+}
+
+.chip:hover,
+.block:hover {
+  filter: brightness(0.97);
+}
+
+/* Casella del mese: al passaggio compare un "+" discreto, cliccando si crea un evento lì. */
+.month-cell::after {
+  content: "+";
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 18px;
+  line-height: 26px;
+  color: var(--neko-accent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--motion-fast) var(--ease-standard),
+    transform var(--motion-normal) var(--ease-standard);
+  pointer-events: none;
+}
+
+.month-cell:hover::after {
+  opacity: 0.8;
+  transform: scale(1);
+}
+
+.month-cell {
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+
+.month-cell:not(.is-today):hover {
+  background: color-mix(in srgb, var(--neko-peach) 30%, var(--neko-surface));
+}
+
+/* Cambio di periodo o di vista: avanti entra da destra, indietro da sinistra. */
+@keyframes enter-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes enter-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.enter-next {
+  animation: enter-from-right var(--motion-slow) var(--ease-enter);
+}
+
+.enter-previous {
+  animation: enter-from-left var(--motion-slow) var(--ease-enter);
+}
+
+.enter-view,
+.enter-today {
+  animation: enter-fade var(--motion-slow) var(--ease-enter);
+}
+
+/* Il titolo segue con un movimento più piccolo, così non distrae. */
+.toolbar h1.enter-next {
+  animation-name: enter-from-right;
+  animation-duration: var(--motion-normal);
+}
+
+/* "Oggi": la casella o la colonna di oggi si accende un momento per farsi trovare. */
+@keyframes today-glow {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  35% {
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--neko-accent) 55%, transparent);
+  }
+}
+
+.enter-today .month-cell.is-today,
+.enter-today .year-day.is-today {
+  animation: today-glow 900ms var(--ease-standard) 120ms;
+}
+
+.enter-today .timegrid-day.is-today .timegrid-date,
+.enter-today .is-today .day-number {
+  animation: pop 420ms var(--ease-standard) 150ms;
+}
+
+/* Evento appena salvato: un piccolo "pop" dice dove è finito. */
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fresh-glow {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--event-color) 60%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+.chip.is-fresh,
+.block.is-fresh {
+  animation:
+    pop 420ms var(--ease-standard),
+    fresh-glow 900ms var(--ease-enter);
+}
+
+.agenda-item.is-fresh {
+  --event-color: var(--neko-accent);
+  animation: fresh-glow 900ms var(--ease-enter);
+}
+
+/* Attività completata: la casella "salta" e il titolo viene barrato da sinistra a destra. */
+.task-row input:checked {
+  animation: pop 320ms var(--ease-standard);
+}
+
+.task-title {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 55%;
+  background-size: 0 1px;
+  transition:
+    background-size var(--motion-slow) var(--ease-standard),
+    color var(--motion-slow) var(--ease-standard);
+}
+
+.task-row.is-done .task-title {
+  background-size: 100% 1px; /* la riga che barra il titolo */
+}
+
+/* Finestre di dialogo: compaiono con una leggera crescita, lo sfondo si scurisce piano. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.dialog[open] {
+  animation: dialog-in var(--motion-slow) var(--ease-enter);
+}
+
+.dialog[open]::backdrop {
+  animation: backdrop-in var(--motion-normal) linear;
+}
+
+/* Prossimo evento: quando cambia, il nuovo testo entra dal basso. */
+.next-main {
+  animation: enter-rise var(--motion-slow) var(--ease-enter);
+}
+
+/* Apertura dell'app: un'unica entrata ordinata, da sinistra a destra. */
+.shell .sidebar,
+.shell .toolbar,
+.shell .calendar-area > .view-stage.enter-none,
+.shell .side-panel > * {
+  animation: enter-rise 420ms var(--ease-enter) backwards;
+}
+
+.shell .toolbar {
+  animation-delay: 60ms;
+}
+
+.shell .calendar-area > .view-stage.enter-none {
+  animation-delay: 120ms;
+}
+
+.shell .side-panel > :nth-child(1) {
+  animation-delay: 180ms;
+}
+
+.shell .side-panel > :nth-child(2) {
+  animation-delay: 230ms;
+}
+
+.shell .side-panel > :nth-child(3) {
+  animation-delay: 280ms;
+}
+
+/* L'ora corrente nella griglia: un alone fermo (niente pulsazioni continue). */
+.now-line::before {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--neko-accent) 22%, transparent);
 }

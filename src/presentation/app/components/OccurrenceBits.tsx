@@ -1,6 +1,6 @@
 import type { EventKind, Occurrence } from "@/domain/types";
 import { formatTime } from "@/presentation/i18n/i18n";
-import { tint, useOccurrenceTitle } from "../occurrenceUtils";
+import { tint, useFreshClass, useOccurrenceTitle } from "../occurrenceUtils";
 import { Icon, type IconName } from "./Icons";
 
 const KIND_ICONS: Record<EventKind, IconName> = {
@@ -41,10 +41,11 @@ export function OccurrenceChip({
   const titleOf = useOccurrenceTitle();
   const time = occurrence.allDay ? "" : formatTime(occurrence.start);
   const title = titleOf(occurrence);
+  const fresh = useFreshClass(occurrence.eventId);
   return (
     <button
       type="button"
-      className={`chip${occurrence.done ? " chip-done" : ""}`}
+      className={`chip${occurrence.done ? " chip-done" : ""}${fresh}`}
       style={tint(occurrence.color)}
       title={time ? `${time} ${title}` : title}
       onClick={(event) => {

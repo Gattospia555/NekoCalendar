@@ -16,6 +16,7 @@ import { TimeGridView } from "./components/TimeGridView";
 import { Toolbar } from "./components/Toolbar";
 import { YearView } from "./components/YearView";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { FreshEventContext } from "./occurrenceUtils";
 import { useCalendarApp, type CalendarApp as AppState } from "./useCalendarApp";
 import "./app.css";
 
@@ -160,13 +161,22 @@ function CalendarScreen({ app }: { app: AppState }) {
               <Toolbar
                 view={app.view}
                 anchor={app.anchor}
+                transition={app.transition.kind}
                 onPrevious={app.navigation.previous}
                 onNext={app.navigation.next}
                 onToday={app.navigation.goToday}
                 onView={app.navigation.setView}
                 onNewEvent={() => newEvent()}
               />
-              <div className="view-stage">{view}</div>
+              {/* Nuova chiave a ogni spostamento: la vista entra con la sua animazione. */}
+              <FreshEventContext.Provider value={app.freshEventId}>
+                <div
+                  key={`${app.view}:${app.transition.tick}`}
+                  className={`view-stage enter-${app.transition.kind}`}
+                >
+                  {view}
+                </div>
+              </FreshEventContext.Provider>
             </section>
             <SidePanel
               now={app.now}
