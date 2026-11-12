@@ -25,9 +25,11 @@ Il proprietario del progetto **non è uno sviluppatore**: spiega sempre in modo 
 
 ## Struttura e convenzioni di codice
 
-- `src/domain/`: logica **pura** in TypeScript (niente Tauri, niente DOM: lo impone ESLint). Ogni funzione ha test Vitest; copertura minima 70 %.
-- `src/platform/`: unico punto che parla con Tauri (`invoke`, finestre).
-- `src/app/`, `src/widget/`: componenti React. Testi visibili in italiano (dalla M1 tramite i18n IT/EN).
+- Frontend a livelli, con dipendenze **solo verso il dominio**: `presentation` → `infrastructure` → `domain` (lo impone ESLint; dettagli in [ADR-0005](docs/adr/0005-architettura-a-livelli.md)). Si importa con l'alias `@/` (= `src/`).
+- `src/domain/`: logica **pura** in TypeScript (niente Tauri, niente React, niente DOM). Ogni funzione ha test Vitest accanto al file; copertura minima 70 %.
+- `src/infrastructure/tauri/`: unico punto che parla con Tauri (`invoke`, finestre). Niente codice grafico.
+- `src/presentation/app/`, `src/presentation/widget/`: componenti React; `src/presentation/theme/`: token e stile base. Testi visibili in italiano (dalla M1 tramite i18n IT/EN). Mai importare `@tauri-apps/*` qui: si passa da `infrastructure`.
+- Un livello `src/application/` (casi d'uso che coordinano dominio e infrastruttura) nasce solo quando serve davvero (previsto dalla M1), non prima.
 - `src-tauri/`: Rust ridotto al minimo, codice specifico di Windows dietro `#[cfg(windows)]`.
 - Accessibilità: elementi interattivi veri (`<button>`, `<label>`), contrasto ≥ 4,5:1, aree cliccabili ≥ 44 px, rispetto di "riduci animazioni".
 - Risorse: i widget si ridisegnano solo quando cambia qualcosa di visibile; niente polling.
