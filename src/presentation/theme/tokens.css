@@ -4,7 +4,7 @@
  * In M4 questi valori arriveranno dal file style.json dello Style Pack.
  */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   --neko-bg: #fbf6f1;
   --neko-bg-top: #f9e5d6;
@@ -34,8 +34,10 @@
   --font-body: "Poppins", system-ui, sans-serif;
 }
 
+/* Tema scuro: segue Windows ("auto") oppure la scelta fatta nelle impostazioni. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --neko-bg: #1f1814;
     --neko-bg-top: #2b1f18;
     --neko-surface: #2a211c;
@@ -56,4 +58,27 @@
     --neko-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     --neko-shadow-strong: 0 10px 30px rgba(0, 0, 0, 0.45);
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --neko-bg: #1f1814;
+  --neko-bg-top: #2b1f18;
+  --neko-surface: #2a211c;
+  --neko-surface-soft: #33281f;
+  --neko-peach: #4a3426;
+  --neko-line: #3a2e26;
+  --neko-ink: #f6ede6;
+  --neko-ink-soft: #cbb9ac;
+  --neko-accent: #e0a07d;
+  --neko-accent-soft: #c58463;
+  --neko-accent-ink: #f4c9ae;
+  --neko-on-accent: #1f1814;
+  --neko-good: #9ad8b1;
+  --neko-good-bg: #1f3a2a;
+  --neko-warn: #f1d27a;
+  --neko-warn-bg: #3d3216;
+  --neko-danger: #f2a497;
+  --neko-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --neko-shadow-strong: 0 10px 30px rgba(0, 0, 0, 0.45);
 }

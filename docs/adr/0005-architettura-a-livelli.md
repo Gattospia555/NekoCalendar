@@ -27,6 +27,8 @@ presentation  ──►  infrastructure  ──►  domain
 - Il livello **`application/`** (casi d'uso che coordinano dominio e infrastruttura, per esempio "crea evento e programma il promemoria") **non esiste ancora**: lo creeremo dalla M1, quando ci sarà almeno un caso d'uso reale. Crearlo vuoto adesso sarebbe burocrazia.
 - Il Rust (`src-tauri/`) resta com'è: è già piccolo e con un file per argomento (`memory.rs`, `notifications.rs`).
 
+> **Aggiornamento M1:** `src/application/` ora esiste, come previsto: contiene `CalendarService` e l'interfaccia `CalendarStore`. Le implementazioni stanno in `src/infrastructure/` (`storage/MemoryStore`, `tauri/SqliteStore`), i testi IT/EN in `src/presentation/i18n/`. ESLint impedisce ai casi d'uso di importare Tauri, React o le implementazioni concrete.
+
 ## Opzioni considerate
 
 | Opzione                                                             | Esito                                                                                |

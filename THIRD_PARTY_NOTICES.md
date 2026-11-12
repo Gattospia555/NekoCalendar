@@ -11,15 +11,23 @@ NekoCalendar include o usa questi componenti di terze parti. L'elenco completo d
 
 ## Librerie principali
 
-| Componente                        | Licenza          |
-| --------------------------------- | ---------------- |
-| Tauri e @tauri-apps/api           | MIT o Apache-2.0 |
-| React, React DOM                  | MIT              |
-| windows (crate Rust di Microsoft) | MIT o Apache-2.0 |
-| serde, serde_json                 | MIT o Apache-2.0 |
+| Componente                                | Licenza                    |
+| ----------------------------------------- | -------------------------- |
+| Tauri e @tauri-apps/api                   | MIT o Apache-2.0           |
+| React, React DOM                          | MIT                        |
+| windows (crate Rust di Microsoft)         | MIT o Apache-2.0           |
+| serde, serde_json                         | MIT o Apache-2.0           |
+| tauri-plugin-sql e @tauri-apps/plugin-sql | MIT o Apache-2.0           |
+| sqlx (usato dal plugin SQL)               | MIT o Apache-2.0           |
+| SQLite                                    | Pubblico dominio           |
+| ical.js (Mozilla)                         | Mozilla Public License 2.0 |
+| webview2-com                              | MIT                        |
+
+Usate solo per lo sviluppo e i test (non distribuite): Vitest, ESLint, Prettier, TypeScript, sql.js (MIT), secretlint, husky.
 
 ## Asset
 
-| Asset                                | Licenza                                       | Note                                                              |
-| ------------------------------------ | --------------------------------------------- | ----------------------------------------------------------------- |
-| Icone dell'app in `src-tauri/icons/` | MIT o Apache-2.0 (icone predefinite di Tauri) | Segnaposto: verranno sostituite dall'icona NekoCalendar originale |
+| Asset                                                                | Licenza                                | Note                                                       |
+| -------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------- |
+| Icone dell'app in `src-tauri/icons/`                                 | MIT, come il progetto (© CatDevStudio) | Disegno originale; sorgente in `assets/brand/app-icon.svg` |
+| Icone dell'interfaccia (`src/presentation/app/components/Icons.tsx`) | MIT, come il progetto (© CatDevStudio) | Disegnate per NekoCalendar, nessun set esterno             |
