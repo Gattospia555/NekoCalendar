@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MINUTE_MS, SECOND_MS, countdownParts, msUntilNextTick, pad2 } from "../domain/countdown";
 import { nextAnnualDate } from "../domain/dates";
+import { enableLowMemoryForThisWindow } from "../platform/memory";
 import "./widget.css";
 
 interface TileProps {
@@ -30,6 +31,11 @@ export function CountdownWidget() {
   const [now, setNow] = useState(() => Date.now());
   const [ecoMode, setEcoMode] = useState(false);
   const [hidden, setHidden] = useState(() => document.visibilityState === "hidden");
+
+  useEffect(() => {
+    // Il widget è quasi sempre fermo: WebView2 può tenere solo la memoria indispensabile.
+    void enableLowMemoryForThisWindow();
+  }, []);
 
   useEffect(() => {
     const onVisibility = () => {

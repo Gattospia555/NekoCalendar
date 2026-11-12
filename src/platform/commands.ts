@@ -8,6 +8,14 @@ export function scheduleTestNotification(seconds: number, mode: AppIdMode): Prom
   return invoke<string>("schedule_test_notification", { seconds, mode });
 }
 
+/**
+ * Chiede a WebView2 di usare meno memoria per la finestra `label` (`low = true`)
+ * o di tornare al consumo normale. Utile per widget fermi e finestre ridotte a icona.
+ */
+export function setLowMemory(label: string, low: boolean): Promise<void> {
+  return invoke<void>("set_low_memory", { label, low });
+}
+
 /** Chiude NekoCalendar del tutto, widget compresi. */
 export function quitApp(): Promise<void> {
   return invoke<void>("quit_app");
