@@ -1,0 +1,128 @@
+.widget {
+  height: 100vh;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--neko-surface) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--neko-line) 80%, transparent);
+  cursor: grab;
+}
+
+.widget-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.widget-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--neko-ink-soft);
+}
+
+.widget-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.widget-eco-btn {
+  margin-left: auto;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid var(--neko-line);
+  background: var(--neko-surface);
+  color: var(--neko-ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.widget:hover .widget-eco-btn,
+.widget-eco-btn:focus-visible,
+.widget-eco-btn[aria-pressed="true"] {
+  opacity: 1;
+}
+
+.widget-eco-btn[aria-pressed="true"] {
+  background: var(--neko-peach);
+  color: var(--neko-accent-ink);
+}
+
+.tiles {
+  display: flex;
+  gap: 12px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.tile-digits {
+  position: relative;
+  min-width: 84px;
+  height: 92px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #3a2a22;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 50px;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 18px rgba(197, 132, 99, 0.5);
+  animation: tile-pulse 600ms ease-out;
+}
+
+/* La riga orizzontale delle cifre "flip". */
+.tile-digits::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 45px;
+  height: 2px;
+  background: var(--neko-bg);
+}
+
+.tile-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--neko-ink-soft);
+}
+
+.widget-done {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+}
+
+/* Risparmio energia: niente effetti. */
+.widget-eco .tile-digits {
+  animation: none;
+  box-shadow: none;
+}
+
+@keyframes tile-pulse {
+  from {
+    box-shadow: 0 0 34px rgba(197, 132, 99, 0.95);
+  }
+  to {
+    box-shadow: 0 0 18px rgba(197, 132, 99, 0.5);
+  }
+}
