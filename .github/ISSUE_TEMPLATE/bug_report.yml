@@ -1,0 +1,29 @@
+name: Segnala un problema
+description: Qualcosa non funziona come dovrebbe
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Cosa è successo
+      description: Descrivi il problema. Non inserire dati personali o del tuo calendario.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Come riprodurlo
+      placeholder: "1. Apri…\n2. Premi…\n3. Vedi…"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Cosa ti aspettavi
+  - type: input
+    id: version
+    attributes:
+      label: Versione di NekoCalendar e di Windows
+      placeholder: "0.1.0 su Windows 11 23H2"
+    validations:
+      required: true
