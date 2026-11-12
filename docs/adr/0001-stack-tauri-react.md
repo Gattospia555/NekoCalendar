@@ -36,5 +36,5 @@ Usare **Tauri 2** come contenitore dell'app, con interfaccia in **React + TypeSc
 ## Azioni
 
 1. [x] Scheletro Tauri 2 + React + TypeScript (M0)
-2. [ ] Misurare RAM, CPU e avvio del widget sul PC di riferimento (M0)
+2. [x] Misurare RAM, CPU e avvio del widget sul PC di riferimento (M0): CPU 0,27 % e avvio sotto 1 s ok; RAM 230 MB oltre l'obiettivo, ottimizzazioni in corso (vedi `docs/m0-prototype.md`)
 3. [ ] Valutare i plugin per incollare i widget al desktop (WorkerW) in M3

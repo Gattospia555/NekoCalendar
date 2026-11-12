@@ -43,23 +43,36 @@ Con l'**app installata**:
 3. Se compare la notifica "NekoCalendar · prova promemoria", il test è superato.
 4. Se non compare, ripeti con **Modalità sviluppo** (usa l'identità di PowerShell). Se così compare, il meccanismo funziona e va solo registrata l'identità dell'app: in quel caso passiamo al pacchetto MSIX per lo Store.
 
-## Risultati (da compilare)
+## Risultati
 
-PC di riferimento: _modello, CPU, RAM, Windows 10/11_
+PC di riferimento: **AMD Ryzen 7 7700X, 32 GB DDR5, Windows 11 (build 26300)**.
 
-| Test                                       | Obiettivo  | Risultato | Esito |
-| ------------------------------------------ | ---------- | --------- | ----- |
-| RAM con solo widget                        | < 150 MB   |           |       |
-| CPU con solo widget                        | < 1 %      |           |       |
-| RAM con widget in risparmio                | < 150 MB   |           |       |
-| CPU con widget in risparmio                | < 1 %      |           |       |
-| Avvio a freddo                             | < 2 s      |           |       |
-| Notifica ad app chiusa (app installata)    | compare    |           |       |
-| Notifica ad app chiusa (modalità sviluppo) | compare    |           |       |
-| Widget sopra / sotto / click-through       | funzionano |           |       |
+### Giro 1 — 12/11/2026, prima delle ottimizzazioni
+
+| Test                                       | Obiettivo  | Risultato                                         | Esito         |
+| ------------------------------------------ | ---------- | ------------------------------------------------- | ------------- |
+| Widget sopra / sotto / click-through       | funzionano | tutti e tre funzionano                            | ✅            |
+| Risparmio energia sul widget               | funziona   | secondi ed effetti spariscono                     | ✅            |
+| CPU con solo widget (app installata)       | < 1 %      | 0,27 %                                            | ✅            |
+| RAM con solo widget (app installata)       | < 150 MB   | 230,2 MB privati (473 MB working set), 8 processi | ❌            |
+| Avvio a freddo                             | < 2 s      | sotto 1 s (stima a occhio, profilo già creato)    | ✅            |
+| Notifica ad app chiusa (app installata)    | compare    | non compare                                       | ❌ → ADR-0004 |
+| Notifica ad app chiusa (modalità sviluppo) | compare    | compare solo con l'app aperta                     | ⚠️ → ADR-0004 |
+
+Dettaglio RAM: il grosso è il costo fisso di WebView2 (processo principale 98 MB, GPU 39 MB, un renderer da circa 32 MB per finestra). Il Laboratorio era ridotto a icona ma non chiuso, quindi le finestre attive erano due.
+
+### Giro 2 — dopo le ottimizzazioni della memoria (da compilare)
+
+Modifiche: GPU nel processo principale (`--in-process-gpu`), un solo renderer per tutte le finestre (`--renderer-process-limit=1`), livello di memoria "basso" per il widget e per la finestra principale ridotta a icona.
+
+| Test                                         | Obiettivo  | Risultato | Esito |
+| -------------------------------------------- | ---------- | --------- | ----- |
+| Widget trasparente e click-through ancora ok | funzionano |           |       |
+| RAM con solo widget                          | < 150 MB   |           |       |
+| CPU con solo widget                          | < 1 %      |           |       |
 
 ## Decisioni che dipendono dai risultati
 
 - RAM sopra 150 MB → in M3 i widget usano un'unica finestra contenitore (ADR-0001).
-- Notifica solo in modalità sviluppo → l'installer principale diventa MSIX (Store), che dà all'app un'identità registrata.
+- Notifica che non sopravvive alla chiusura dell'app → **deciso in [ADR-0004](adr/0004-promemoria-tray-e-msix.md)**: l'app nella tray è il livello principale, le notifiche programmate solo con identità di pacchetto (MSIX/Store), da verificare in M2.
 - Avvio sopra 2 s → si misura di nuovo con il profilo WebView2 già creato e si ottimizza il caricamento iniziale in M6.

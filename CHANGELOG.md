@@ -18,6 +18,11 @@ Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) · Versioni: [
 - CI su Windows (lint, test, clippy, build, scansione segreti con gitleaks) e Dependabot.
 - Documentazione: README, AGENTS.md, visione, ADR 0001–0003, guida ai test della M0, CONTRIBUTING, SECURITY.
 
+- Comando `set_low_memory`: il widget e la finestra principale ridotta a icona usano il livello di memoria "basso" di WebView2.
+- Risultati delle misure M0 e ADR-0004 sui promemoria (app nella tray come livello principale).
+
 ### Changed
+
+- Tutte le finestre condividono la GPU nel processo principale e un solo renderer WebView2, per ridurre la RAM.
 
 - `.gitignore` di Visual Studio sostituito con regole per Node, Rust e Tauri che bloccano segreti e database locali.
