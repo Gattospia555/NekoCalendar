@@ -46,7 +46,7 @@ export function NextEventBar({ now, upcoming, onOpen, onDone }: NextEventBarProp
   return (
     <footer className="next-bar">
       <div key={next.key} className="next-main">
-        <Cover occurrence={next} size={58} />
+        <Cover occurrence={next} size={48} />
         <div className="next-text">
           <div className="next-label">
             <span>{t("footer.label").toUpperCase()}</span>

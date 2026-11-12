@@ -570,7 +570,7 @@
 
 .month-row {
   flex: 1 1 0;
-  min-height: 92px;
+  min-height: 76px;
 }
 
 .month-head,
@@ -1142,15 +1142,19 @@
 
 /* ---------- Barra del prossimo evento ---------- */
 
+/* Un "dock" che galleggia sul fondo, come la barra del player di NekoTune. */
 .next-bar {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 16px 24px;
-  padding: 14px 24px;
+  margin: 0 16px 12px;
+  padding: 8px 16px 8px 10px;
+  border: 1px solid var(--neko-line);
+  border-radius: var(--neko-radius-lg);
   background: var(--neko-surface);
-  border-top: 1px solid var(--neko-line);
-  box-shadow: 0 -4px 16px rgba(110, 70, 40, 0.05);
+  box-shadow: var(--neko-shadow-strong);
 }
 
 .next-main {
