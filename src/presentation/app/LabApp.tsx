@@ -4,14 +4,14 @@ import {
   errorMessage,
   quitApp,
   scheduleTestNotification,
-} from "../platform/commands";
+} from "@/infrastructure/tauri/commands";
 import {
   type WidgetLayer,
   setWidgetLayer,
   setWidgetVisible,
   tryClickThrough,
-} from "../platform/widgetWindow";
-import { lightenWhenMinimized } from "../platform/memory";
+} from "@/infrastructure/tauri/widgetWindow";
+import { lightenWhenMinimized } from "@/infrastructure/tauri/memory";
 import "./lab.css";
 
 const LAYERS: { value: WidgetLayer; label: string }[] = [

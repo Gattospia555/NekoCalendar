@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { MINUTE_MS, SECOND_MS, countdownParts, msUntilNextTick, pad2 } from "../domain/countdown";
-import { nextAnnualDate } from "../domain/dates";
-import { enableLowMemoryForThisWindow } from "../platform/memory";
+import { MINUTE_MS, SECOND_MS, countdownParts, msUntilNextTick, pad2 } from "@/domain/countdown";
+import { nextAnnualDate } from "@/domain/dates";
+import { enableLowMemoryForThisWindow } from "@/infrastructure/tauri/memory";
 import "./widget.css";
 
 interface TileProps {
