@@ -46,7 +46,7 @@
     "lint-staged": "^17.6.0",
     "prettier": "^3.10.1",
     "secretlint": "^13.1.0",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "typescript-eslint": "^8.72.2",
     "vite": "^8.0.16",
     "vitest": "^5.1.0"
