@@ -44,3 +44,6 @@ desktop.ini
 *.suo
 *.user
 *.swp
+
+# --- Cache di TypeScript ---
+*.tsbuildinfo

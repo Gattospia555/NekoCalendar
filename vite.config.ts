@@ -1,18 +1,17 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
-// @ts-expect-error type error without @types/node package
 import process from "node:process";
+
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
   plugins: [react()],
 
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-  //
-  // 1. prevent Vite from obscuring rust errors
+  // Opzioni per `tauri dev` e `tauri build`:
+  // 1. non nascondere gli errori di Rust
   clearScreen: false,
-  // 2. tauri expects a fixed port, fail if that port is not available
+  // 2. Tauri si aspetta una porta fissa: se è occupata, fallisci
   server: {
     port: 1420,
     strictPort: true,
@@ -25,8 +24,21 @@ export default defineConfig(() => ({
         }
       : undefined,
     watch: {
-      // 3. tell Vite to ignore watching `src-tauri`
+      // 3. non ricaricare il frontend quando cambia il codice Rust
       ignored: ["**/src-tauri/**"],
+    },
+  },
+
+  test: {
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+    environment: "node",
+    coverage: {
+      provider: "v8" as const,
+      include: ["src/domain/**/*.ts"],
+      exclude: ["src/domain/**/*.test.ts"],
+      reporter: ["text", "html"],
+      // Obiettivo del progetto: almeno il 70 % sulla logica di dominio.
+      thresholds: { lines: 70, functions: 70, branches: 70, statements: 70 },
     },
   },
 }));
