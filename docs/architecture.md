@@ -84,5 +84,9 @@ flowchart TB
 
 - Durate e curve sono token del tema (`--motion-fast`, `--motion-normal`, `--motion-slow`, `--ease-*` in `tokens.css`): uno Style Pack potrà cambiarli.
 - Ogni animazione risponde a un gesto (o all'apertura dell'app), dura meno di 400 ms, non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
-- La direzione del cambio di periodo viene da `useCalendarApp` (`transition`: avanti, indietro, vista, oggi); la vista entra con una nuova chiave React e una classe `enter-*`.
-- Tutto in CSS, senza librerie. Con "Riduci animazioni" di Windows (`prefers-reduced-motion`) `base.css` le spegne tutte.
+- La direzione del cambio di periodo viene da `useCalendarApp` (`transition`: avanti, indietro, vista, oggi); la vista entra con una nuova chiave React.
+- **View Transitions** (`motion/viewTransition.ts`): il browser fotografa la schermata prima e dopo un cambio di stato (applicato con `flushSync`) e anima il passaggio. La vista corrente si chiama `page` (pagine 3D, dissolvenze); l'elemento che si trasforma si chiama `vt-morph` e il nome passa dall'elemento piccolo (giorno, evento, pulsante) a quello grande (vista Giorno, finestra) tra le due foto. `<html data-vt>` dice al CSS quale effetto usare.
+- Viste e finestre decidono **una volta sola, quando nascono**, se entrare con la loro animazione CSS o lasciare fare alla View Transition (`isInsideTransition`), così le due non si sommano e nulla riparte a fine transizione.
+- **Molle**: curve elastiche scritte con `linear()` nei token (`--ease-spring`, `--ease-spring-soft`).
+- **Festeggiamenti** (`motion/celebrate.ts`): zampette animate con le Web Animations, rimosse dopo circa un secondo.
+- Niente librerie. Senza supporto alle View Transitions il cambio avviene subito con le animazioni CSS; con "Riduci animazioni" di Windows (`prefers-reduced-motion`) non parte nulla.
