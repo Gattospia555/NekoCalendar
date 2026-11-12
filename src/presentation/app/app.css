@@ -552,7 +552,7 @@
 
 .month-row {
   flex: 1 1 0;
-  min-height: 76px;
+  min-height: 80px;
 }
 
 .month-head,
@@ -1118,19 +1118,71 @@
 
 /* ---------- Barra del prossimo evento ---------- */
 
-/* Un "dock" che galleggia sul fondo, come la barra del player di NekoTune. */
+/* Come nel mockup: una barra intera sul fondo, con il prossimo evento, le azioni e il countdown. */
 .next-bar {
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px 24px;
-  margin: 0 16px 12px;
-  padding: 8px 16px 8px 10px;
-  border: 1px solid var(--neko-line);
-  border-radius: var(--neko-radius-lg);
+  gap: 12px 24px;
+  padding: 12px 24px 12px 16px;
   background: var(--neko-surface);
-  box-shadow: var(--neko-shadow-strong);
+  border-top: 1px solid var(--neko-line);
+  box-shadow: 0 -4px 16px rgba(110, 70, 40, 0.05);
+}
+
+.next-divider {
+  flex: none;
+  width: 1px;
+  height: 48px;
+  background: var(--neko-line);
+}
+
+/* Countdown: anello che si riempie e tempo che manca, in Fraunces come i titoli. */
+.countdown {
+  flex: none;
+  display: grid;
+  grid-template-columns: 46px auto;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  align-items: center;
+  padding: 6px 18px 6px 6px;
+  border-radius: 20px;
+  background: var(--neko-surface-soft);
+}
+
+.countdown svg {
+  grid-row: 1 / 3;
+}
+
+.countdown-track,
+.countdown-ring {
+  fill: none;
+  stroke-width: 5;
+}
+
+.countdown-track {
+  stroke: color-mix(in srgb, var(--neko-accent-soft) 30%, var(--neko-surface-soft));
+}
+
+.countdown-ring {
+  stroke: var(--neko-accent-soft);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--motion-slow) var(--ease-standard);
+}
+
+.countdown-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--neko-ink-soft);
+}
+
+.countdown-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--neko-accent);
 }
 
 .next-main {

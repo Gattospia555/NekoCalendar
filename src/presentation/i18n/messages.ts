@@ -78,6 +78,11 @@ export const it = {
   "footer.onDay": "{date}",
   "footer.open": "Apri",
   "footer.done": "Fatto",
+  "footer.countdown": "Mancano",
+  "footer.countdownMinutes": "{n} min",
+  "footer.countdownHours": "{n} h",
+  "footer.countdownDays": "{n} g",
+  "footer.countdownLabel": "Mancano {value} a {title}",
 
   "event.newTitle": "Nuovo evento",
   "event.editTitle": "Modifica evento",
@@ -247,6 +252,11 @@ export const en: Record<MessageKey, string> = {
   "footer.onDay": "{date}",
   "footer.open": "Open",
   "footer.done": "Done",
+  "footer.countdown": "Starts in",
+  "footer.countdownMinutes": "{n} min",
+  "footer.countdownHours": "{n} h",
+  "footer.countdownDays": "{n} d",
+  "footer.countdownLabel": "{value} until {title}",
 
   "event.newTitle": "New event",
   "event.editTitle": "Edit event",
