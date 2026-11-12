@@ -1,0 +1,88 @@
+.lab {
+  min-height: 100vh;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: linear-gradient(180deg, var(--neko-bg-top) 0, var(--neko-bg) 280px);
+}
+
+.lab-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.lab-header h1 {
+  font-size: 40px;
+  color: var(--neko-ink);
+}
+
+.lab-chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--neko-peach);
+  color: var(--neko-accent-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lab-intro {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--neko-ink-soft);
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border-radius: var(--neko-radius-lg);
+  background: var(--neko-surface);
+  box-shadow: var(--neko-shadow);
+}
+
+.card h2 {
+  font-size: 22px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--neko-ink-soft);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+}
+
+.card .status-ok {
+  background: var(--neko-good-bg);
+  color: var(--neko-good);
+}
+
+.card .status-error {
+  background: var(--neko-warn-bg);
+  color: var(--neko-warn);
+}
+
+.lab-footer {
+  display: flex;
+  justify-content: flex-end;
+}
