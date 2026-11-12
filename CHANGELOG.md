@@ -5,6 +5,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) · Versioni: [
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-12
+
+Milestone M0: setup del progetto e prototipo dei rischi.
+
 ### Added
 
 - Scheletro dell'app con Tauri 2, React e TypeScript (identificativo `com.catdevstudio.nekocalendar`).
@@ -26,3 +30,6 @@ Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) · Versioni: [
 - Tutte le finestre condividono la GPU nel processo principale e un solo renderer WebView2, per ridurre la RAM.
 
 - `.gitignore` di Visual Studio sostituito con regole per Node, Rust e Tauri che bloccano segreti e database locali.
+
+[Unreleased]: https://github.com/Gattospia555/NekoCalendar/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Gattospia555/NekoCalendar/releases/tag/v0.1.0
