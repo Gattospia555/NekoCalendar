@@ -32,6 +32,16 @@
 
   --font-display: "Fraunces Variable", Georgia, serif;
   --font-body: "Poppins", system-ui, sans-serif;
+
+  /* Movimento: durate brevi (sotto i 400 ms) e curve morbide, uguali in tutta l'app. */
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --press-scale: 0.97;
+  /* Con "Riduci animazioni" di Windows le animazioni si spengono del tutto (base.css). */
 }
 
 /* Tema scuro: segue Windows ("auto") oppure la scelta fatta nelle impostazioni. */
