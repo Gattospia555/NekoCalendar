@@ -18,7 +18,8 @@
         "height": 760,
         "minWidth": 800,
         "minHeight": 560,
-        "center": true
+        "center": true,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --in-process-gpu --renderer-process-limit=1"
       },
       {
         "label": "widget-countdown",
@@ -34,7 +35,8 @@
         "resizable": true,
         "skipTaskbar": true,
         "alwaysOnBottom": true,
-        "focus": false
+        "focus": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --in-process-gpu --renderer-process-limit=1"
       }
     ],
     "security": {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   type AppIdMode,
   errorMessage,
@@ -11,6 +11,7 @@ import {
   setWidgetVisible,
   tryClickThrough,
 } from "../platform/widgetWindow";
+import { lightenWhenMinimized } from "../platform/memory";
 import "./lab.css";
 
 const LAYERS: { value: WidgetLayer; label: string }[] = [
@@ -43,6 +44,20 @@ export function LabApp() {
   const [clickThroughActive, setClickThroughActive] = useState(false);
   const [widgetStatus, setWidgetStatus] = useState<Status>(null);
   const [notifyStatus, setNotifyStatus] = useState<Status>(null);
+
+  useEffect(() => {
+    // Ridotta a icona, la finestra principale libera memoria (misura M0 con il solo widget).
+    let stop: (() => void) | undefined;
+    let cancelled = false;
+    void lightenWhenMinimized().then((unlisten) => {
+      if (cancelled) unlisten();
+      else stop = unlisten;
+    });
+    return () => {
+      cancelled = true;
+      stop?.();
+    };
+  }, []);
 
   async function changeLayer(next: WidgetLayer) {
     try {
