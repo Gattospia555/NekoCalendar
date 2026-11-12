@@ -33,14 +33,79 @@
   --font-display: "Fraunces Variable", Georgia, serif;
   --font-body: "Poppins", system-ui, sans-serif;
 
-  /* Movimento: durate brevi (sotto i 400 ms) e curve morbide, uguali in tutta l'app. */
+  /* Movimento: durate brevi e curve morbide, uguali in tutta l'app. */
   --motion-fast: 120ms;
   --motion-normal: 200ms;
   --motion-slow: 320ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-enter: cubic-bezier(0, 0, 0.2, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  --press-scale: 0.97;
+  /*
+   * Molle (curve elastiche): arrivano un po' oltre e tornano indietro.
+   * Generate da una molla smorzata (smorzamento 0,55 e 0,7), scritte con linear().
+   */
+  --motion-spring: 560ms;
+  --ease-spring: linear(
+    0,
+    0.055,
+    0.19,
+    0.365,
+    0.55,
+    0.721,
+    0.866,
+    0.977,
+    1.055,
+    1.102,
+    1.123,
+    1.125,
+    1.113,
+    1.093,
+    1.07,
+    1.047,
+    1.027,
+    1.011,
+    0.998,
+    0.99,
+    0.986,
+    0.984,
+    0.985,
+    0.987,
+    0.989,
+    0.992,
+    0.995,
+    1
+  );
+  --ease-spring-soft: linear(
+    0,
+    0.032,
+    0.113,
+    0.223,
+    0.345,
+    0.468,
+    0.585,
+    0.69,
+    0.78,
+    0.856,
+    0.916,
+    0.963,
+    0.997,
+    1.02,
+    1.035,
+    1.043,
+    1.046,
+    1.045,
+    1.042,
+    1.037,
+    1.031,
+    1.026,
+    1.02,
+    1.015,
+    1.011,
+    1.007,
+    1.004,
+    1
+  );
+  --press-scale: 0.95;
   /* Con "Riduci animazioni" di Windows le animazioni si spengono del tutto (base.css). */
 }
 
