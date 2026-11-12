@@ -5,6 +5,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) · Versioni: [
 
 ## [Unreleased]
 
+### Changed
+
+- Disattivata l'attribuzione automatica di Claude nei commit e nelle pull request (`.claude/settings.json`).
+
 ## [0.1.0] - 2026-11-12
 
 Milestone M0: setup del progetto e prototipo dei rischi.
