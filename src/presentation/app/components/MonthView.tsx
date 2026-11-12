@@ -3,7 +3,7 @@ import { isSameMonth, monthGrid } from "@/domain/calendarGrid";
 import { parseDateKey } from "@/domain/datetime";
 import { occurrencesOnDay } from "@/domain/occurrences";
 import type { DateKey, Occurrence } from "@/domain/types";
-import { formatDayLong, weekdayNames } from "@/presentation/i18n/i18n";
+import { formatDayLong, formatDayMonth, weekdayNames } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import { OccurrenceChip } from "./OccurrenceBits";
 
@@ -81,7 +81,7 @@ export function MonthView({
       </div>
       {weeks.map((week) => (
         <div key={week[0]} className="month-row" role="row">
-          {week.map((day, index) => {
+          {week.map((day) => {
             const list = occurrencesOnDay(occurrences, day);
             const shown = list.length > capacity.all ? list.slice(0, capacity.withMore) : list;
             const hidden = list.length - shown.length;
@@ -89,7 +89,6 @@ export function MonthView({
               "month-cell",
               isSameMonth(day, anchor) ? "" : "is-other",
               day === today ? "is-today" : "",
-              index >= 5 ? "is-weekend" : "",
             ].join(" ");
             return (
               <div
@@ -108,7 +107,10 @@ export function MonthView({
                     onOpenDay(day, event.currentTarget.closest(".month-cell") ?? undefined);
                   }}
                 >
-                  {parseDateKey(day).day}
+                  {/* il primo giorno di un altro mese dice anche quale ("1 dic") */}
+                  {parseDateKey(day).day === 1 && !isSameMonth(day, anchor)
+                    ? formatDayMonth(language, day)
+                    : parseDateKey(day).day}
                 </button>
                 {day === today && (
                   <span className="today-label">{t("agenda.today").toUpperCase()}</span>

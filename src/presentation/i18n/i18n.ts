@@ -68,6 +68,16 @@ export function formatDayShort(language: Language, key: DateKey): string {
   return format(language, key, { weekday: "short", day: "numeric", month: "short" });
 }
 
+/** "Ven 13": giorno della settimana e numero, per le liste brevi come nel mockup. */
+export function formatWeekdayDay(language: Language, key: DateKey): string {
+  return capitalize(format(language, key, { weekday: "short", day: "numeric" }));
+}
+
+/** "1 dic": giorno e mese brevi, per il primo giorno di un altro mese nella griglia. */
+export function formatDayMonth(language: Language, key: DateKey): string {
+  return format(language, key, { day: "numeric", month: "short" });
+}
+
 /** "12 nov 2026" */
 export function formatDate(language: Language, key: DateKey): string {
   return format(language, key, { day: "numeric", month: "short", year: "numeric" });

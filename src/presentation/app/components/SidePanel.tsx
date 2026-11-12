@@ -1,6 +1,11 @@
 import { dateOf } from "@/domain/datetime";
 import type { CalendarEvent, Occurrence } from "@/domain/types";
-import { formatDayShort, formatTime, formatTimeRange, greetingKey } from "@/presentation/i18n/i18n";
+import {
+  formatDayShort,
+  formatTime,
+  formatWeekdayDay,
+  greetingKey,
+} from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import { useOccurrenceTitle } from "../occurrenceUtils";
 import { Paw } from "./Icons";
@@ -32,13 +37,12 @@ export function SidePanel({
   const eventsToday = todayList.filter((o) => o.kind !== "task" && o.kind !== "holiday").length;
   const tasksToday = todayList.filter((o) => o.kind === "task" && !o.done).length;
 
-  const whenLabel = (o: Occurrence) =>
-    `${dateOf(o.start) === today ? t("agenda.today") : formatDayShort(language, dateOf(o.start))} · ${formatTimeRange(
-      language,
-      o.start,
-      o.end,
-      o.allDay,
-    )}`;
+  // Breve come nel mockup: "Oggi · 17:00", "Ven 13 · 20:00", "Sab 14" (tutto il giorno).
+  const whenLabel = (o: Occurrence) => {
+    const day = dateOf(o.start);
+    const dayLabel = day === today ? t("agenda.today") : formatWeekdayDay(language, day);
+    return o.allDay ? dayLabel : `${dayLabel} · ${formatTime(o.start)}`;
+  };
 
   return (
     <aside className="side-panel">

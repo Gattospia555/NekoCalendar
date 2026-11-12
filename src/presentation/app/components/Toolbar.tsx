@@ -84,9 +84,10 @@ export function Toolbar(props: ToolbarProps) {
   // L'anno in terracotta, come nel mockup ("Novembre 2026").
   const match = /^(.*?)(\s\d{4})$/.exec(title);
 
+  // Come nel mockup: sopra il titolo con le frecce accanto, sotto le viste e "Nuovo evento".
   return (
     <div className="toolbar">
-      <div className="toolbar-title">
+      <div className="toolbar-row">
         <h1 key={title} className={`enter-${props.transition}`}>
           {match ? (
             <>
@@ -97,38 +98,40 @@ export function Toolbar(props: ToolbarProps) {
             title
           )}
         </h1>
-        <span className="toolbar-sub">{subtitle}</span>
+        <div className="toolbar-nav">
+          <button
+            type="button"
+            className="round-btn"
+            aria-label={t("toolbar.previous")}
+            onClick={props.onPrevious}
+          >
+            <Icon name="left" />
+          </button>
+          <button
+            type="button"
+            className="round-btn"
+            aria-label={t("toolbar.next")}
+            onClick={props.onNext}
+          >
+            <Icon name="right" />
+          </button>
+          <button type="button" className="pill-btn" onClick={props.onToday}>
+            {t("toolbar.today")}
+          </button>
+        </div>
+        {subtitle && <span className="toolbar-sub">{subtitle}</span>}
       </div>
-      <div className="toolbar-nav">
+      <div className="toolbar-row">
+        <ViewSwitcher view={view} onView={props.onView} />
         <button
           type="button"
-          className="round-btn"
-          aria-label={t("toolbar.previous")}
-          onClick={props.onPrevious}
+          className="primary-btn"
+          onClick={(event) => props.onNewEvent(event.currentTarget)}
         >
-          <Icon name="left" />
-        </button>
-        <button
-          type="button"
-          className="round-btn"
-          aria-label={t("toolbar.next")}
-          onClick={props.onNext}
-        >
-          <Icon name="right" />
-        </button>
-        <button type="button" className="pill-btn" onClick={props.onToday}>
-          {t("toolbar.today")}
+          <Icon name="plus" size={18} />
+          {t("toolbar.newEvent")}
         </button>
       </div>
-      <ViewSwitcher view={view} onView={props.onView} />
-      <button
-        type="button"
-        className="primary-btn"
-        onClick={(event) => props.onNewEvent(event.currentTarget)}
-      >
-        <Icon name="plus" size={18} />
-        {t("toolbar.newEvent")}
-      </button>
     </div>
   );
 }

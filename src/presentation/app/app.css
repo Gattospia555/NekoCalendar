@@ -50,7 +50,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  container: calendar / inline-size;
 }
 
 @container main (min-width: 1000px) {
@@ -386,38 +385,25 @@
 /* ---------- Barra degli strumenti ---------- */
 
 /*
- * Posizioni fisse: titolo a sinistra, frecce e "Oggi" subito prima delle viste.
- * Cambiando vista o periodo cambia solo il testo del titolo, nessun pulsante si sposta.
+ * Come nel mockup approvato: in alto il titolo con frecce e "Oggi" subito accanto,
+ * sotto il selettore delle viste e "Nuovo evento". Sempre due righe, così l'altezza
+ * non cambia tra una vista e l'altra; un titolo troppo lungo si accorcia con i puntini.
  */
 .toolbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
-  grid-template-areas: "title nav views new";
-  align-items: center;
-  gap: 10px 12px;
-}
-
-@container calendar (max-width: 960px) {
-  .toolbar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "title nav"
-      "views new";
-  }
-
-  .toolbar .segmented {
-    justify-self: start;
-  }
-}
-
-.toolbar-title {
-  grid-area: title;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   min-width: 0;
 }
 
 .toolbar h1 {
+  min-width: 0;
   overflow: hidden;
   font-size: 40px;
   line-height: 48px;
@@ -426,27 +412,18 @@
   color: var(--neko-ink);
 }
 
-.toolbar .segmented {
-  grid-area: views;
-}
-
-.toolbar .primary-btn {
-  grid-area: new;
-}
-
 .toolbar .accent {
   color: var(--neko-accent-soft);
 }
 
 .toolbar-sub {
-  min-height: 18px; /* riservata anche quando è vuota: l'intestazione non cambia altezza */
+  flex: none;
   font-size: 13px;
-  line-height: 18px;
   color: var(--neko-ink-soft);
 }
 
 .toolbar-nav {
-  grid-area: nav;
+  flex: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -530,8 +507,13 @@
   background: var(--event-color);
 }
 
+.chip {
+  color: color-mix(in srgb, var(--event-color) 45%, var(--neko-ink));
+}
+
 .chip-time {
   font-weight: 700;
+  color: color-mix(in srgb, var(--event-color) 70%, var(--neko-ink));
 }
 
 .chip-title {
@@ -606,8 +588,8 @@
   container-type: inline-size;
 }
 
-/* Caselle strette: via l'ora, così resta spazio per il titolo. */
-@container (max-width: 120px) {
+/* Caselle molto strette: via l'ora, così resta spazio per il titolo. */
+@container (max-width: 96px) {
   .chip-time {
     display: none;
   }
@@ -617,16 +599,10 @@
   border-left: 0;
 }
 
-.month-cell.is-weekend {
-  background: color-mix(in srgb, var(--neko-peach) 18%, var(--neko-surface));
-}
-
-.month-cell.is-other {
-  background: var(--neko-surface-soft);
-}
-
+/* Come nel mockup: caselle bianche; i giorni degli altri mesi hanno solo il numero più chiaro. */
 .month-cell.is-other .day-number {
   color: var(--neko-ink-soft);
+  font-weight: 500;
 }
 
 .month-cell.is-today {
@@ -1850,79 +1826,52 @@ textarea.input {
   }
 }
 
-/* Pagine 3D: come un calendario da muro, la pagina ruota sul bordo in alto. */
-::view-transition-image-pair(page) {
-  perspective: 1600px;
-}
-
-::view-transition-old(page),
-::view-transition-new(page) {
-  transform-origin: 50% 0;
-  backface-visibility: hidden;
-}
-
-@keyframes page-lift {
-  0% {
-    transform: rotateX(0deg);
-    filter: brightness(1);
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotateX(96deg) translateY(-12px);
-    filter: brightness(1.12);
-    opacity: 0;
-  }
-}
-
-@keyframes page-drop {
-  0% {
-    transform: rotateX(96deg) translateY(-12px);
-    filter: brightness(1.12);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotateX(0deg);
-    filter: brightness(1);
-  }
-}
-
-@keyframes page-under-in {
-  from {
-    transform: scale(0.96);
-    filter: brightness(0.86);
-  }
-}
-
-@keyframes page-under-out {
+/*
+ * Avanti e indietro: le pagine scorrono di lato, con un po' di profondità.
+ * La vecchia arretra e sfuma, la nuova arriva dal lato giusto con la molla morbida.
+ */
+@keyframes page-out-left {
   to {
-    transform: scale(0.96);
-    filter: brightness(0.86);
+    opacity: 0;
+    transform: translateX(-6%) scale(0.97);
   }
 }
 
-/* Avanti: la pagina vecchia si solleva verso di te e scopre quella nuova, sotto. */
+@keyframes page-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(6%) scale(0.97);
+  }
+}
+
+@keyframes page-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(9%);
+  }
+}
+
+@keyframes page-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-9%);
+  }
+}
+
 :root[data-vt="next"]::view-transition-old(page) {
-  z-index: 2;
-  animation: page-lift 560ms cubic-bezier(0.45, 0, 0.55, 1) both;
+  animation: page-out-left 190ms var(--ease-exit) both;
 }
 
 :root[data-vt="next"]::view-transition-new(page) {
-  animation: page-under-in 560ms var(--ease-enter) both;
-}
-
-/* Indietro: la pagina precedente ricade dall'alto sopra quella attuale. */
-:root[data-vt="previous"]::view-transition-new(page) {
-  z-index: 2;
-  animation: page-drop var(--motion-spring) var(--ease-spring-soft) both;
+  animation: page-in-right 480ms var(--ease-spring-soft) 110ms both;
 }
 
 :root[data-vt="previous"]::view-transition-old(page) {
-  animation: page-under-out 560ms var(--ease-standard) both;
+  animation: page-out-right 190ms var(--ease-exit) both;
+}
+
+:root[data-vt="previous"]::view-transition-new(page) {
+  animation: page-in-left 480ms var(--ease-spring-soft) 110ms both;
 }
 
 /* Cambio vista e "Oggi": dissolvenza con un leggero zoom. */
