@@ -48,7 +48,7 @@ export function Toolbar(props: ToolbarProps) {
             title
           )}
         </h1>
-        {subtitle && <span className="toolbar-sub">{subtitle}</span>}
+        <span className="toolbar-sub">{subtitle}</span>
       </div>
       <div className="toolbar-nav">
         <button
@@ -71,7 +71,6 @@ export function Toolbar(props: ToolbarProps) {
           {t("toolbar.today")}
         </button>
       </div>
-      <span className="spacer" />
       <div className="segmented" role="group" aria-label={t("toolbar.views")}>
         {VIEWS.map((v) => (
           <button key={v} type="button" aria-pressed={v === view} onClick={() => props.onView(v)}>

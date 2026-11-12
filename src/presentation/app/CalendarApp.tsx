@@ -166,7 +166,7 @@ function CalendarScreen({ app }: { app: AppState }) {
                 onView={app.navigation.setView}
                 onNewEvent={() => newEvent()}
               />
-              {view}
+              <div className="view-stage">{view}</div>
             </section>
             <SidePanel
               now={app.now}

@@ -11,6 +11,8 @@ import { OccurrenceChip } from "./OccurrenceBits";
 /** Altezza di un'ora in pixel. */
 const HOUR_PX = 52;
 const HOURS = Array.from({ length: 24 }, (_, h) => h);
+/** Sotto questa durata il blocco è basso: titolo e ora stanno su una sola riga. */
+const SHORT_MINUTES = 40;
 
 interface TimeGridProps {
   mode: "day" | "week";
@@ -40,11 +42,17 @@ export function TimeGridView({
   const names = weekdayNames(language, "short");
   const scroller = useRef<HTMLDivElement>(null);
 
-  // All'apertura mostra la mattina (o l'ora corrente, se è più tardi).
+  // All'apertura parte un'ora prima del primo evento visibile (o dell'ora corrente,
+  // se oggi è nella vista e non ci sono eventi); senza nulla da mostrare, dalle 8.
   useEffect(() => {
-    const hour = Math.max(7, Number(now.slice(11, 13)) - 1);
-    scroller.current?.scrollTo({ top: Math.min(hour, 16) * HOUR_PX });
-    // Solo al cambio di vista o di periodo, non a ogni minuto.
+    const starts = days.flatMap((day) => layoutDay(occurrences, day).map((b) => b.startMinute));
+    if (starts.length === 0 && days.includes(today))
+      starts.push(minutesBetween(`${today}T00:00`, now));
+    const first = starts.length > 0 ? Math.min(...starts) : 9 * 60;
+    const hour = Math.min(Math.max(Math.floor(first / 60) - 1, 0), 15);
+    // 10 px in meno: l'etichetta dell'ora non resta tagliata a metà sotto l'intestazione.
+    scroller.current?.scrollTo({ top: Math.max(hour * HOUR_PX - 10, 0) });
+    // Solo al cambio di vista o di periodo, non a ogni minuto né a ogni salvataggio.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, anchor]);
 
@@ -52,7 +60,7 @@ export function TimeGridView({
   const nowMinute = minutesBetween(`${today}T00:00`, now);
 
   return (
-    <div className={`timegrid card timegrid-${mode}`}>
+    <div className={`timegrid card timegrid--${mode}`}>
       <div
         className="timegrid-head"
         style={{ gridTemplateColumns: `64px repeat(${days.length}, minmax(0, 1fr))` }}
@@ -113,13 +121,13 @@ export function TimeGridView({
                 <button
                   key={block.occurrence.key}
                   type="button"
-                  className={`block${block.occurrence.done ? " chip-done" : ""}`}
+                  className={`block${block.occurrence.done ? " chip-done" : ""}${block.endMinute - block.startMinute < SHORT_MINUTES ? " is-short" : ""}`}
                   style={{
                     ...tint(block.occurrence.color),
                     top: (block.startMinute / 60) * HOUR_PX,
                     height: Math.max(
                       ((block.endMinute - block.startMinute) / 60) * HOUR_PX - 2,
-                      18,
+                      20,
                     ),
                     left: `calc(${(block.column / block.columns) * 100}% + 2px)`,
                     width: `calc(${100 / block.columns}% - 4px)`,
