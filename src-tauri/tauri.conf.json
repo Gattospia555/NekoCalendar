@@ -19,6 +19,22 @@
         "minWidth": 800,
         "minHeight": 560,
         "center": true
+      },
+      {
+        "label": "widget-countdown",
+        "title": "NekoCalendar · Countdown",
+        "url": "index.html",
+        "width": 440,
+        "height": 210,
+        "x": 60,
+        "y": 60,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "resizable": true,
+        "skipTaskbar": true,
+        "alwaysOnBottom": true,
+        "focus": false
       }
     ],
     "security": {
