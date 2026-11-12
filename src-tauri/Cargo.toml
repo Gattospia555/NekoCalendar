@@ -1,0 +1,36 @@
+[package]
+name = "nekocalendar"
+version = "0.1.0"
+description = "NekoCalendar: calendario con widget desktop"
+authors = ["CatDevStudio"]
+license = "MIT"
+repository = "https://github.com/Gattospia555/NekoCalendar"
+edition = "2024"
+
+[lib]
+# Il suffisso `_lib` evita un conflitto di nomi tra libreria ed eseguibile su Windows
+# (https://github.com/rust-lang/cargo/issues/8519).
+name = "nekocalendar_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Ottimizzazioni per un eseguibile piccolo e veloce: https://tauri.app/concept/size/
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true
+
+# API di Windows per le notifiche programmate (ScheduledToastNotification).
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = ["Data_Xml_Dom", "Foundation", "UI_Notifications"] }
+# Accesso diretto a WebView2 (livello di memoria). Stessa versione usata da Tauri/wry.
+webview2-com = "0.39"
