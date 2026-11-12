@@ -1,0 +1,95 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--neko-ink);
+  background: var(--neko-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* I widget hanno la finestra trasparente: nessuno sfondo sulla pagina. */
+html[data-view="widget"],
+html[data-view="widget"] body {
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 0;
+}
+
+code {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--neko-surface-soft);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+button {
+  font: inherit;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 22px;
+  border: 1px solid var(--neko-line);
+  background: var(--neko-surface);
+  color: var(--neko-ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--neko-accent-soft);
+}
+
+.btn[aria-pressed="true"],
+.btn-primary {
+  background: var(--neko-accent);
+  border-color: var(--neko-accent);
+  color: var(--neko-on-accent);
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--neko-accent-soft);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
