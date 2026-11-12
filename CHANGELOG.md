@@ -22,7 +22,7 @@ Milestone M1: dati e calendario.
 - Documentazione: architettura, modello dei dati, ADR-0006 (database locale), guida ai test della M1.
 - Animazioni leggere che rispondono ai gesti: cambio periodo con la direzione giusta, indicatore che scivola tra le viste, "Oggi" che si accende, "pop" sull'evento appena salvato, dialoghi e attività completate animati. Si spengono con "Riduci animazioni" di Windows.
 - Token di movimento del tema (durate e curve) e "+" sulla casella del mese sotto il mouse.
-- Animazioni "wow": pagine che girano in 3D come un calendario da muro, giorno del mese che si allarga nella vista Giorno, evento che si trasforma nella finestra di modifica, curve a molla, zampette che festeggiano attività completate ed eventi nuovi.
+- Animazioni "wow": pagine che scorrono di lato con profondità, giorno del mese che si allarga nella vista Giorno, evento che si trasforma nella finestra di modifica, curve a molla, zampette che festeggiano attività completate ed eventi nuovi.
 
 ### Changed
 
@@ -31,7 +31,8 @@ Milestone M1: dati e calendario.
 - TypeScript compila per ES2022.
 - `.gitignore` ampliato: installer, cache degli strumenti, file temporanei e impostazioni locali degli assistenti AI.
 - Disattivata l'attribuzione automatica degli assistenti AI nei commit e nelle pull request (`.claude/settings.json`).
-- La barra del prossimo evento è ora un dock flottante con angoli arrotondati, come il player di NekoTune.
+- Countdown nella barra del prossimo evento: anello che si riempie e tempo che manca, come nel mockup.
+- Grafica più vicina al mockup approvato: caselle del mese pulite (con "1 dic" per il primo giorno di un altro mese), etichette con l'ora in grassetto nel colore dell'evento, intestazione con le frecce accanto al titolo, date brevi nei prossimi eventi.
 
 ### Fixed
 
