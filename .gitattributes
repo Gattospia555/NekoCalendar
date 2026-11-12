@@ -1,0 +1,14 @@
+# Fine riga coerenti tra Windows e CI: nel repository sempre LF
+* text=auto eol=lf
+
+# Script di Windows con fine riga CRLF
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# File binari
+*.png binary
+*.ico binary
+*.icns binary
+*.woff2 binary
+*.ttf binary
