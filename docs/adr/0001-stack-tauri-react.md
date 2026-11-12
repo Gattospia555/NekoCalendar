@@ -39,3 +39,5 @@ Usare **Tauri 2** come contenitore dell'app, con interfaccia in **React + TypeSc
 2. [x] Misurare RAM, CPU e avvio del widget sul PC di riferimento (M0): CPU 0,27 % e avvio sotto 1 s ok; RAM scesa da 230 a 151 MB con processi WebView2 condivisi e livello di memoria basso (vedi `docs/m0-prototype.md`)
 3. [ ] Valutare i plugin per incollare i widget al desktop (WorkerW) in M3
 4. [ ] M3: quando la finestra principale si chiude, distruggerla (l'app resta nella tray) e rimisurare la RAM con i widget veri
+
+> Aggiornamento: l'organizzazione delle cartelle del frontend è stata ridefinita in [ADR-0005](0005-architettura-a-livelli.md).

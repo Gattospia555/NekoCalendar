@@ -5,11 +5,11 @@ import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
-import "./theme/tokens.css";
-import "./theme/base.css";
-import { LabApp } from "./app/LabApp";
-import { CountdownWidget } from "./widget/CountdownWidget";
-import { currentWindowLabel } from "./platform/widgetWindow";
+import "@/presentation/theme/tokens.css";
+import "@/presentation/theme/base.css";
+import { LabApp } from "@/presentation/app/LabApp";
+import { CountdownWidget } from "@/presentation/widget/CountdownWidget";
+import { currentWindowLabel } from "@/infrastructure/tauri/widgetWindow";
 
 // Ogni finestra Tauri carica la stessa pagina: l'etichetta decide cosa mostrare.
 // Fuori da Tauri (anteprima nel browser) si può forzare il widget con ?view=widget.

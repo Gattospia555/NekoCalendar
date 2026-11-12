@@ -1,12 +1,18 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
   plugins: [react()],
+
+  // Scorciatoia: "@/domain/dates" invece di "../../domain/dates".
+  resolve: {
+    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+  },
 
   // Opzioni per `tauri dev` e `tauri build`:
   // 1. non nascondere gli errori di Rust

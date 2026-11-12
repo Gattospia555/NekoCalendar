@@ -21,15 +21,30 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      // La logica di dominio deve restare pura: niente accesso diretto a Tauri o al DOM.
+    },
+  },
+  // --- Regola delle dipendenze: le frecce vanno sempre verso il dominio ---
+  //   presentation -> infrastructure -> domain      (mai al contrario)
+  {
+    // Dominio: logica pura. Niente Tauri, React, DOM, né gli altri livelli.
+    files: ["src/domain/**/*.{ts,tsx}"],
+    rules: {
       "no-restricted-imports": [
         "error",
         {
           patterns: [
             {
-              group: ["@tauri-apps/*"],
-              message:
-                "Usa Tauri solo fuori da src/domain (la logica di dominio resta pura e testabile).",
+              group: ["@tauri-apps/*", "react", "react-dom", "react-dom/*"],
+              message: "Il dominio resta puro: niente Tauri né React (vedi docs/adr/0005).",
+            },
+            {
+              group: [
+                "@/infrastructure",
+                "@/infrastructure/*",
+                "@/presentation",
+                "@/presentation/*",
+              ],
+              message: "Il dominio non dipende dagli altri livelli: sono loro a dipendere da lui.",
             },
           ],
         },
@@ -37,10 +52,38 @@ export default tseslint.config(
     },
   },
   {
-    // Fuori dal dominio Tauri è consentito.
-    files: ["src/**/*.{ts,tsx}"],
-    ignores: ["src/domain/**"],
-    rules: { "no-restricted-imports": "off" },
+    // Infrastruttura: parla con Tauri/Windows. Non conosce l'interfaccia.
+    files: ["src/infrastructure/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/presentation", "@/presentation/*"],
+              message: "L'infrastruttura non conosce l'interfaccia grafica.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Interfaccia: per parlare con Tauri passa sempre da src/infrastructure.
+    files: ["src/presentation/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@tauri-apps/*"],
+              message: "Usa Tauri solo tramite src/infrastructure/tauri.",
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     files: ["*.config.{js,ts}", "scripts/**/*.{js,ts}"],

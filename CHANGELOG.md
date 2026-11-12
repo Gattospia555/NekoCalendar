@@ -5,6 +5,11 @@ Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) · Versioni: [
 
 ## [Unreleased]
 
+### Changed
+
+- Frontend riorganizzato a livelli (`domain`, `infrastructure/tauri`, `presentation`) con import tramite alias `@/`; ESLint ora impedisce le dipendenze nel verso sbagliato ([ADR-0005](docs/adr/0005-architettura-a-livelli.md)).
+- `.gitignore` ampliato: installer, cache degli strumenti, file temporanei e impostazioni locali degli assistenti AI.
+
 ## [0.1.0] - 2026-11-12
 
 Milestone M0: setup del progetto e prototipo dei rischi.

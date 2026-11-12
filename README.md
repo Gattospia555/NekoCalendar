@@ -60,16 +60,25 @@ Prima di ogni commit gli stessi controlli partono da soli (hook pre-commit). Il 
 ## Struttura
 
 ```text
-src/                Interfaccia (React + TypeScript)
-  domain/           Logica pura e testata (countdown, date…): niente Tauri qui
-  platform/         Ponte verso Tauri e Windows
-  app/              Finestra principale
-  widget/           Widget desktop
-  theme/            Tema "Base Neko" (colori, font)
-src-tauri/          Core Rust di Tauri (finestre, notifiche, sistema)
-scripts/            Script di supporto (es. misura di RAM e CPU)
-docs/               Visione, decisioni (ADR) e guide
+src/                      Interfaccia (React + TypeScript), a livelli
+  main.tsx                Punto d'ingresso: sceglie se mostrare app o widget
+  domain/                 1. Logica pura e testata (countdown, date…): niente Tauri né React
+  infrastructure/
+    tauri/                2. Unico ponte verso Tauri e Windows (comandi, finestre, memoria)
+  presentation/           3. Tutto ciò che si vede
+    app/                  Finestra principale
+    widget/               Widget desktop
+    theme/                Tema "Base Neko" (colori, font)
+src-tauri/                Core Rust di Tauri (finestre, notifiche, sistema)
+scripts/                  Script di supporto (es. misura di RAM e CPU)
+docs/                     Visione, decisioni (ADR) e guide
 ```
+
+**Regola dei livelli:** le dipendenze vanno sempre verso il dominio
+(`presentation` → `infrastructure` → `domain`), mai al contrario. ESLint la controlla da solo:
+se la violi, `npm run lint` (e quindi `npm run check`) fallisce con un messaggio che spiega perché.
+Nei file si importa con `@/`, per esempio `@/domain/dates` (la `@` indica la cartella `src`).
+Il perché della scelta è in [ADR-0005](docs/adr/0005-architettura-a-livelli.md).
 
 ## Documentazione
 

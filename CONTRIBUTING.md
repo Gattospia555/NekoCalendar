@@ -16,6 +16,6 @@ Segui la sezione "Cosa serve" del [README](README.md), poi `npm install`. Gli ho
 ## Regole importanti
 
 - Mai committare segreti, chiavi API, token, file `.env`, database locali o immagini senza licenza.
-- La logica del calendario va in `src/domain` con i suoi test; niente Tauri lì dentro.
+- La logica del calendario va in `src/domain` con i suoi test; niente Tauri né React lì dentro. Per parlare con Tauri si usa `src/infrastructure/tauri`, e i componenti stanno in `src/presentation` (regola dei livelli in [ADR-0005](docs/adr/0005-architettura-a-livelli.md)).
 - Testi semplici, interfaccia accessibile (tastiera, contrasto, "riduci animazioni").
 - Asset e font solo originali o con licenza che consente l'uso commerciale, annotati in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
