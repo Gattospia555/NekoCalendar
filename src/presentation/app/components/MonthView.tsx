@@ -52,9 +52,9 @@ interface MonthViewProps {
   anchor: DateKey;
   today: DateKey;
   occurrences: Occurrence[];
-  onOpen: (occurrence: Occurrence) => void;
-  onNewOnDay: (day: DateKey) => void;
-  onOpenDay: (day: DateKey) => void;
+  onOpen: (occurrence: Occurrence, source?: Element) => void;
+  onNewOnDay: (day: DateKey, source?: Element) => void;
+  onOpenDay: (day: DateKey, source?: Element) => void;
 }
 
 export function MonthView({
@@ -92,7 +92,12 @@ export function MonthView({
               index >= 5 ? "is-weekend" : "",
             ].join(" ");
             return (
-              <div key={day} role="gridcell" className={classes} onClick={() => onNewOnDay(day)}>
+              <div
+                key={day}
+                role="gridcell"
+                className={classes}
+                onClick={(event) => onNewOnDay(day, event.currentTarget)}
+              >
                 <button
                   type="button"
                   className="day-number"
@@ -100,7 +105,7 @@ export function MonthView({
                   aria-current={day === today ? "date" : undefined}
                   onClick={(event) => {
                     event.stopPropagation();
-                    onOpenDay(day);
+                    onOpenDay(day, event.currentTarget.closest(".month-cell") ?? undefined);
                   }}
                 >
                   {parseDateKey(day).day}
@@ -118,7 +123,7 @@ export function MonthView({
                       className="more-btn"
                       onClick={(event) => {
                         event.stopPropagation();
-                        onOpenDay(day);
+                        onOpenDay(day, event.currentTarget.closest(".month-cell") ?? undefined);
                       }}
                     >
                       {t("month.more", { count: hidden })}

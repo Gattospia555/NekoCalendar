@@ -13,7 +13,7 @@ interface AgendaViewProps {
   anchor: DateKey;
   today: DateKey;
   occurrences: Occurrence[];
-  onOpen: (occurrence: Occurrence) => void;
+  onOpen: (occurrence: Occurrence, source?: Element) => void;
 }
 
 /** Vista "agenda": i prossimi 30 giorni come elenco, raggruppati per giorno. */
@@ -47,7 +47,7 @@ export function AgendaView({ anchor, today, occurrences, onOpen }: AgendaViewPro
                 <button
                   type="button"
                   className={`agenda-item${o.done ? " chip-done" : ""}${o.eventId === freshId ? " is-fresh" : ""}`}
-                  onClick={() => onOpen(o)}
+                  onClick={(event) => onOpen(o, event.currentTarget)}
                 >
                   <Cover occurrence={o} size={44} />
                   <span className="agenda-time">

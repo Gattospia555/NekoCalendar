@@ -63,7 +63,7 @@ interface ToolbarProps {
   onNext: () => void;
   onToday: () => void;
   onView: (view: CalendarView) => void;
-  onNewEvent: () => void;
+  onNewEvent: (source?: Element) => void;
 }
 
 export function Toolbar(props: ToolbarProps) {
@@ -121,7 +121,11 @@ export function Toolbar(props: ToolbarProps) {
         </button>
       </div>
       <ViewSwitcher view={view} onView={props.onView} />
-      <button type="button" className="primary-btn" onClick={props.onNewEvent}>
+      <button
+        type="button"
+        className="primary-btn"
+        onClick={(event) => props.onNewEvent(event.currentTarget)}
+      >
         <Icon name="plus" size={18} />
         {t("toolbar.newEvent")}
       </button>

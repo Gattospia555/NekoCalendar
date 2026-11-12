@@ -36,7 +36,7 @@ export function OccurrenceChip({
   onOpen,
 }: {
   occurrence: Occurrence;
-  onOpen: (o: Occurrence) => void;
+  onOpen: (o: Occurrence, source?: Element) => void;
 }) {
   const titleOf = useOccurrenceTitle();
   const time = occurrence.allDay ? "" : formatTime(occurrence.start);
@@ -50,7 +50,7 @@ export function OccurrenceChip({
       title={time ? `${time} ${title}` : title}
       onClick={(event) => {
         event.stopPropagation();
-        onOpen(occurrence);
+        onOpen(occurrence, event.currentTarget);
       }}
     >
       <span className="chip-dot" aria-hidden="true" />

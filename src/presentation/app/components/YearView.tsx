@@ -8,7 +8,7 @@ interface YearViewProps {
   anchor: DateKey;
   today: DateKey;
   occurrences: Occurrence[];
-  onOpenDay: (day: DateKey) => void;
+  onOpenDay: (day: DateKey, source?: Element) => void;
 }
 
 /** Vista "anno": 12 mini-mesi; un puntino segna i giorni con almeno un evento. */
@@ -38,7 +38,7 @@ export function YearView({ anchor, today, occurrences, onOpenDay }: YearViewProp
                     className={`year-day${day === today ? " is-today" : ""}${busy.has(day) ? " is-busy" : ""}`}
                     aria-label={formatDayLong(language, day)}
                     aria-current={day === today ? "date" : undefined}
-                    onClick={() => onOpenDay(day)}
+                    onClick={(event) => onOpenDay(day, event.currentTarget)}
                   >
                     {parseDateKey(day).day}
                   </button>

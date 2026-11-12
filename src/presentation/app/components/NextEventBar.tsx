@@ -11,8 +11,8 @@ interface NextEventBarProps {
   now: string;
   /** Prossime occorrenze già ordinate. */
   upcoming: Occurrence[];
-  onOpen: (occurrence: Occurrence) => void;
-  onDone: (occurrence: Occurrence) => void;
+  onOpen: (occurrence: Occurrence, source?: Element) => void;
+  onDone: (occurrence: Occurrence, source?: Element) => void;
 }
 
 /** Barra in basso come il player di NekoTune: il prossimo evento a orario e le azioni rapide. */
@@ -62,11 +62,19 @@ export function NextEventBar({ now, upcoming, onOpen, onDone }: NextEventBarProp
         </div>
       </div>
       <div className="next-actions">
-        <button type="button" className="pill-btn" onClick={() => onOpen(next)}>
+        <button
+          type="button"
+          className="pill-btn"
+          onClick={(event) => onOpen(next, event.currentTarget)}
+        >
           {t("footer.open")}
         </button>
         {next.kind === "task" && (
-          <button type="button" className="primary-btn" onClick={() => onDone(next)}>
+          <button
+            type="button"
+            className="primary-btn"
+            onClick={(event) => onDone(next, event.currentTarget)}
+          >
             <Icon name="check" size={18} />
             {t("footer.done")}
           </button>

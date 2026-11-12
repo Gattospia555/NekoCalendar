@@ -487,9 +487,10 @@
   left: 0;
   border-radius: 19px;
   background: var(--neko-accent);
+  /* molla: l'indicatore arriva un filo oltre il pulsante e torna indietro */
   transition:
-    transform var(--motion-slow) var(--ease-standard),
-    width var(--motion-slow) var(--ease-standard);
+    transform var(--motion-spring) var(--ease-spring),
+    width var(--motion-spring) var(--ease-spring);
 }
 
 /* ---------- Etichette degli eventi ---------- */
@@ -1562,7 +1563,7 @@ textarea.input {
     background-color var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard),
     box-shadow var(--motion-normal) var(--ease-standard),
-    transform var(--motion-fast) var(--ease-standard),
+    transform var(--motion-spring) var(--ease-spring),
     filter var(--motion-fast) var(--ease-standard);
 }
 
@@ -1577,7 +1578,9 @@ textarea.input {
 .chip:active,
 .block:active,
 .mini-btn:active {
+  /* si schiaccia subito, poi al rilascio torna su con un piccolo rimbalzo */
   transform: scale(var(--press-scale));
+  transition-duration: 80ms;
 }
 
 .primary-btn:hover:not(:disabled) {
@@ -1678,13 +1681,13 @@ textarea.input {
   }
 }
 
-.enter-today .month-cell.is-today,
-.enter-today .year-day.is-today {
+.via-today .month-cell.is-today,
+.via-today .year-day.is-today {
   animation: today-glow 900ms var(--ease-standard) 120ms;
 }
 
-.enter-today .timegrid-day.is-today .timegrid-date,
-.enter-today .is-today .day-number {
+.via-today .timegrid-day.is-today .timegrid-date,
+.via-today .is-today .day-number {
   animation: pop 420ms var(--ease-standard) 150ms;
 }
 
@@ -1710,11 +1713,18 @@ textarea.input {
   }
 }
 
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
 .chip.is-fresh,
 .block.is-fresh {
   animation:
-    pop 420ms var(--ease-standard),
-    fresh-glow 900ms var(--ease-enter);
+    arrive var(--motion-spring) var(--ease-spring),
+    fresh-glow 900ms var(--ease-enter) 200ms;
 }
 
 .agenda-item.is-fresh {
@@ -1745,7 +1755,7 @@ textarea.input {
 @keyframes dialog-in {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.97);
+    transform: translateY(18px) scale(0.92);
   }
 }
 
@@ -1755,8 +1765,8 @@ textarea.input {
   }
 }
 
-.dialog[open] {
-  animation: dialog-in var(--motion-slow) var(--ease-enter);
+.dialog[open]:not(.is-morphed) {
+  animation: dialog-in var(--motion-spring) var(--ease-spring-soft);
 }
 
 .dialog[open]::backdrop {
@@ -1799,4 +1809,167 @@ textarea.input {
 /* L'ora corrente nella griglia: un alone fermo (niente pulsazioni continue). */
 .now-line::before {
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--neko-accent) 22%, transparent);
+}
+
+/* ---------- Trasformazioni (View Transitions) ----------
+ * Il browser fotografa la schermata prima e dopo il cambio e anima tra le due
+ * (vedi motion/viewTransition.ts). Qui si decide come:
+ *   page     → la vista corrente: pagine 3D, dissolvenze;
+ *   vt-morph → l'elemento che si trasforma (giorno → vista Giorno, evento → finestra).
+ * Dura al massimo poco più di mezzo secondo; con "Riduci animazioni" non parte.
+ */
+
+.view-stage {
+  view-transition-name: page;
+}
+
+:root[data-vt-target="zoom"] .view-stage > .card,
+:root[data-vt-target="morph"] .dialog[open] {
+  view-transition-name: vt-morph;
+}
+
+/* Barra laterale e intestazione: dissolvenza rapida (di solito non cambiano). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion-normal);
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Pagine 3D: come un calendario da muro, la pagina ruota sul bordo in alto. */
+::view-transition-image-pair(page) {
+  perspective: 1600px;
+}
+
+::view-transition-old(page),
+::view-transition-new(page) {
+  transform-origin: 50% 0;
+  backface-visibility: hidden;
+}
+
+@keyframes page-lift {
+  0% {
+    transform: rotateX(0deg);
+    filter: brightness(1);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(96deg) translateY(-12px);
+    filter: brightness(1.12);
+    opacity: 0;
+  }
+}
+
+@keyframes page-drop {
+  0% {
+    transform: rotateX(96deg) translateY(-12px);
+    filter: brightness(1.12);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes page-under-in {
+  from {
+    transform: scale(0.96);
+    filter: brightness(0.86);
+  }
+}
+
+@keyframes page-under-out {
+  to {
+    transform: scale(0.96);
+    filter: brightness(0.86);
+  }
+}
+
+/* Avanti: la pagina vecchia si solleva verso di te e scopre quella nuova, sotto. */
+:root[data-vt="next"]::view-transition-old(page) {
+  z-index: 2;
+  animation: page-lift 560ms cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+
+:root[data-vt="next"]::view-transition-new(page) {
+  animation: page-under-in 560ms var(--ease-enter) both;
+}
+
+/* Indietro: la pagina precedente ricade dall'alto sopra quella attuale. */
+:root[data-vt="previous"]::view-transition-new(page) {
+  z-index: 2;
+  animation: page-drop var(--motion-spring) var(--ease-spring-soft) both;
+}
+
+:root[data-vt="previous"]::view-transition-old(page) {
+  animation: page-under-out 560ms var(--ease-standard) both;
+}
+
+/* Cambio vista e "Oggi": dissolvenza con un leggero zoom. */
+@keyframes vt-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+:root:is([data-vt="view"], [data-vt="today"])::view-transition-old(page) {
+  animation: vt-fade-out 160ms var(--ease-exit) both;
+}
+
+:root:is([data-vt="view"], [data-vt="today"])::view-transition-new(page) {
+  animation: vt-zoom-in var(--motion-spring) var(--ease-spring-soft) both;
+}
+
+/* Trasformazione: giorno → vista Giorno, evento o pulsante → finestra (e ritorno). */
+::view-transition-group(vt-morph) {
+  z-index: 10;
+  overflow: clip;
+  border-radius: var(--neko-radius-lg);
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-spring-soft);
+}
+
+/*
+ * La forma cresce (o si restringe) come una finestra che si apre: le due foto restano
+ * alla loro misura, nitide, ancorate in alto a sinistra, e la forma le ritaglia.
+ */
+::view-transition-old(vt-morph),
+::view-transition-new(vt-morph) {
+  height: 100%;
+  object-fit: none;
+  object-position: top left;
+}
+
+::view-transition-old(vt-morph) {
+  animation: vt-fade-out 120ms linear both;
+}
+
+::view-transition-new(vt-morph) {
+  animation: vt-fade-in 160ms linear both;
+}
+
+/* Allargando un giorno, il resto del mese sparisce in fretta. */
+:root[data-vt="zoom"]::view-transition-old(page) {
+  animation: vt-fade-out 200ms var(--ease-exit) both;
+}
+
+:root[data-vt="zoom"]::view-transition-new(page) {
+  animation: vt-fade-in 300ms var(--ease-enter) 120ms both;
 }

@@ -20,9 +20,9 @@ interface TimeGridProps {
   today: DateKey;
   now: string;
   occurrences: Occurrence[];
-  onOpen: (occurrence: Occurrence) => void;
-  onNewAt: (day: DateKey, time: string) => void;
-  onOpenDay: (day: DateKey) => void;
+  onOpen: (occurrence: Occurrence, source?: Element) => void;
+  onNewAt: (day: DateKey, time: string, source?: Element) => void;
+  onOpenDay: (day: DateKey, source?: Element) => void;
 }
 
 /** Viste "giorno" e "settimana": colonne di giorni con le ore in verticale. */
@@ -73,7 +73,7 @@ export function TimeGridView({
             type="button"
             className={`timegrid-day${day === today ? " is-today" : ""}`}
             aria-label={formatDayLong(language, day)}
-            onClick={() => onOpenDay(day)}
+            onClick={(event) => onOpenDay(day, event.currentTarget)}
           >
             <span className="timegrid-weekday">{names[weekdayIndex(day)].toUpperCase()}</span>
             <span className="timegrid-date">{parseDateKey(day).day}</span>
@@ -137,7 +137,7 @@ export function TimeGridView({
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
-                    onOpen(block.occurrence);
+                    onOpen(block.occurrence, event.currentTarget);
                   }}
                 >
                   <span className="block-title">{titleOf(block.occurrence)}</span>

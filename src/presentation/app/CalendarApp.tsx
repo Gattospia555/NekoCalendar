@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CalendarService } from "@/application/calendarService";
 import type { Snapshot } from "@/application/store";
 import { draftForNew } from "@/domain/eventDraft";
@@ -16,6 +16,8 @@ import { TimeGridView } from "./components/TimeGridView";
 import { Toolbar } from "./components/Toolbar";
 import { YearView } from "./components/YearView";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { useAnimatedNavigation } from "./motion/useAnimatedNavigation";
+import { isInsideTransition, runTransition } from "./motion/viewTransition";
 import { FreshEventContext } from "./occurrenceUtils";
 import { useCalendarApp, type CalendarApp as AppState } from "./useCalendarApp";
 import "./app.css";
@@ -29,8 +31,11 @@ const VIEW_KEYS: Record<string, CalendarView> = {
 };
 
 /** Tasti rapidi, attivi solo quando non si sta scrivendo e non c'è una finestra aperta. */
-function useShortcuts(app: AppState, busy: boolean, onNew: () => void) {
-  const { navigation } = app;
+function useShortcuts(
+  navigation: ReturnType<typeof useAnimatedNavigation>,
+  busy: boolean,
+  onNew: () => void,
+) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (busy || event.ctrlKey || event.metaKey || event.altKey) return;
@@ -50,6 +55,16 @@ function useShortcuts(app: AppState, busy: boolean, onNew: () => void) {
   }, [busy, navigation, onNew]);
 }
 
+/**
+ * Contenitore della vista corrente. Nasce di nuovo a ogni spostamento (chiave diversa)
+ * e sceglie una volta sola come entrare: con la View Transition già in corso
+ * (pagina che gira, giorno che si allarga) non serve altro; senza, entra con il CSS.
+ */
+function ViewStage({ kind, children }: { kind: string; children: ReactNode }) {
+  const [entry] = useState(() => (isInsideTransition() ? "vt" : kind));
+  return <div className={`view-stage enter-${entry} via-${kind}`}>{children}</div>;
+}
+
 function CalendarScreen({ app }: { app: AppState }) {
   const { t } = useI18n();
   const [editor, setEditor] = useState<EditorTarget | null>(null);
@@ -57,21 +72,46 @@ function CalendarScreen({ app }: { app: AppState }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const firstCalendar = app.calendars.find((c) => c.visible)?.id ?? app.calendars[0]?.id ?? "";
 
-  const newEvent = (
-    day: DateKey = app.view === "month" || app.view === "year" ? app.anchor : app.today,
-    time: string | null = null,
-  ) => setEditor({ mode: "new", draft: draftForNew(day, firstCalendar, "event", time) });
+  const nav = useAnimatedNavigation(app.navigation, app.view);
 
-  const open = (occurrence: Occurrence) => {
-    const event = app.eventOf(occurrence);
-    setEditor(
-      event && !occurrence.readOnly
-        ? { mode: "edit", event, occurrence }
-        : { mode: "readonly", occurrence },
+  // Da dove si è aperta la finestra dell'evento: chiudendo senza salvare ci torna dentro.
+  const editorSource = useRef<Element | null>(null);
+
+  /** Apre la finestra: se si sa da dove (evento, giorno, pulsante), si trasforma da lì. */
+  const openEditor = (target: EditorTarget, source?: Element) => {
+    editorSource.current = source ?? null;
+    if (source) runTransition("open", () => setEditor(target), { source, target: "morph" });
+    else setEditor(target);
+  };
+
+  /** Chiude la finestra: annullando torna nell'elemento di partenza, salvando sfuma. */
+  const closeEditor = (saved = false) => {
+    const source = saved ? null : editorSource.current;
+    editorSource.current = null;
+    runTransition(
+      "close",
+      () => setEditor(null),
+      source ? { source, target: "morph", reverse: true } : {},
     );
   };
 
-  useShortcuts(app, Boolean(editor) || settingsOpen || calendarOpen, () => newEvent());
+  const newEvent = (
+    day: DateKey = app.view === "month" || app.view === "year" ? app.anchor : app.today,
+    time: string | null = null,
+    source?: Element,
+  ) => openEditor({ mode: "new", draft: draftForNew(day, firstCalendar, "event", time) }, source);
+
+  const open = (occurrence: Occurrence, source?: Element) => {
+    const event = app.eventOf(occurrence);
+    openEditor(
+      event && !occurrence.readOnly
+        ? { mode: "edit", event, occurrence }
+        : { mode: "readonly", occurrence },
+      source,
+    );
+  };
+
+  useShortcuts(nav, Boolean(editor) || settingsOpen || calendarOpen, () => newEvent());
 
   const view = (() => {
     switch (app.view) {
@@ -82,8 +122,8 @@ function CalendarScreen({ app }: { app: AppState }) {
             today={app.today}
             occurrences={app.occurrences}
             onOpen={open}
-            onNewOnDay={(day) => newEvent(day)}
-            onOpenDay={app.navigation.openDay}
+            onNewOnDay={(day, source) => newEvent(day, null, source)}
+            onOpenDay={nav.openDay}
           />
         );
       case "week":
@@ -97,7 +137,7 @@ function CalendarScreen({ app }: { app: AppState }) {
             occurrences={app.occurrences}
             onOpen={open}
             onNewAt={(day, time) => newEvent(day, time)}
-            onOpenDay={app.navigation.openDay}
+            onOpenDay={nav.openDay}
           />
         );
       case "year":
@@ -106,7 +146,7 @@ function CalendarScreen({ app }: { app: AppState }) {
             anchor={app.anchor}
             today={app.today}
             occurrences={app.occurrences}
-            onOpenDay={app.navigation.openDay}
+            onOpenDay={nav.openDay}
           />
         );
       case "agenda":
@@ -130,14 +170,14 @@ function CalendarScreen({ app }: { app: AppState }) {
           showHolidays={app.settings.showHolidays}
           upcomingCount={app.upcomingList.length}
           onShowCalendar={() =>
-            app.navigation.setView(
-              app.settings.defaultView === "agenda" ? "month" : app.settings.defaultView,
-            )
+            nav.setView(app.settings.defaultView === "agenda" ? "month" : app.settings.defaultView)
           }
-          onShowAgenda={() => {
-            app.navigation.goToday();
-            app.navigation.setView("agenda");
-          }}
+          onShowAgenda={() =>
+            runTransition("view", () => {
+              app.navigation.goToday();
+              app.navigation.setView("agenda");
+            })
+          }
           onToggleCalendar={(calendar, visible) =>
             void app.actions.setCalendarVisible(calendar, visible)
           }
@@ -162,20 +202,17 @@ function CalendarScreen({ app }: { app: AppState }) {
                 view={app.view}
                 anchor={app.anchor}
                 transition={app.transition.kind}
-                onPrevious={app.navigation.previous}
-                onNext={app.navigation.next}
-                onToday={app.navigation.goToday}
-                onView={app.navigation.setView}
-                onNewEvent={() => newEvent()}
+                onPrevious={nav.previous}
+                onNext={nav.next}
+                onToday={nav.goToday}
+                onView={nav.setView}
+                onNewEvent={(source) => newEvent(undefined, null, source)}
               />
               {/* Nuova chiave a ogni spostamento: la vista entra con la sua animazione. */}
               <FreshEventContext.Provider value={app.freshEventId}>
-                <div
-                  key={`${app.view}:${app.transition.tick}`}
-                  className={`view-stage enter-${app.transition.kind}`}
-                >
+                <ViewStage key={`${app.view}:${app.transition.tick}`} kind={app.transition.kind}>
                   {view}
-                </div>
+                </ViewStage>
               </FreshEventContext.Provider>
             </section>
             <SidePanel
@@ -185,7 +222,9 @@ function CalendarScreen({ app }: { app: AppState }) {
               upcoming={app.upcomingList}
               tasks={app.tasks}
               onOpen={open}
-              onToggleTask={(task, done) => void app.actions.setTaskDone(task, done)}
+              onToggleTask={(task, done) => {
+                void app.actions.setTaskDone(task, done);
+              }}
             />
           </div>
         </main>
@@ -205,7 +244,7 @@ function CalendarScreen({ app }: { app: AppState }) {
           target={editor}
           calendars={app.calendars}
           timeZone={app.timeZone}
-          onClose={() => setEditor(null)}
+          onClose={() => closeEditor()}
           onSave={async (draft, scope) => {
             let ok: boolean;
             if (editor.mode === "edit" && scope === "one" && editor.occurrence) {
@@ -220,7 +259,8 @@ function CalendarScreen({ app }: { app: AppState }) {
                 editor.mode === "edit" ? editor.event : undefined,
               );
             }
-            if (ok) setEditor(null);
+            if (!ok) return;
+            closeEditor(true);
           }}
           onDelete={async (scope) => {
             if (editor.mode !== "edit") return;
@@ -231,7 +271,7 @@ function CalendarScreen({ app }: { app: AppState }) {
                     editor.occurrence.occurrenceStart,
                   )
                 : await app.actions.deleteEvent(editor.event);
-            if (ok) setEditor(null);
+            if (ok) closeEditor(true);
           }}
         />
       )}

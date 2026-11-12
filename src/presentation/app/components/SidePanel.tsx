@@ -12,8 +12,8 @@ interface SidePanelProps {
   todayList: Occurrence[];
   upcoming: Occurrence[];
   tasks: CalendarEvent[];
-  onOpen: (occurrence: Occurrence) => void;
-  onToggleTask: (task: CalendarEvent, done: boolean) => void;
+  onOpen: (occurrence: Occurrence, source?: Element) => void;
+  onToggleTask: (task: CalendarEvent, done: boolean, source?: Element) => void;
 }
 
 export function SidePanel({
@@ -68,7 +68,7 @@ export function SidePanel({
                 <button
                   type="button"
                   className={`upcoming-item${i === 0 ? " is-next" : ""}`}
-                  onClick={() => onOpen(o)}
+                  onClick={(event) => onOpen(o, event.currentTarget)}
                 >
                   <Cover occurrence={o} />
                   <span className="upcoming-text">
@@ -96,7 +96,9 @@ export function SidePanel({
                   <input
                     type="checkbox"
                     checked={task.done}
-                    onChange={(event) => onToggleTask(task, event.target.checked)}
+                    onChange={(event) =>
+                      onToggleTask(task, event.target.checked, event.currentTarget)
+                    }
                   />
                   <span className="task-title">{task.title}</span>
                   <span className="task-due">
