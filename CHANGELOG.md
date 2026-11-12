@@ -5,10 +5,34 @@ Formato: [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) · Versioni: [
 
 ## [Unreleased]
 
+Milestone M1: dati e calendario.
+
+### Added
+
+- Database locale SQLite con migrazioni numerate (calendari, eventi, eccezioni, impostazioni), vincoli e campi per la sincronizzazione futura.
+- Calendario completo: viste giorno, settimana, mese, anno e agenda; barra laterale con calendari mostrabili o nascondibili; pannello con saluto, prossimi eventi e attività; barra del prossimo evento.
+- Eventi con titolo, luogo, note, colore, tutto il giorno, promemoria multipli (le notifiche arrivano in M2) e ripetizioni (ogni giorno, settimana con giorni scelti, mese, anno; fine dopo N volte o in una data).
+- Modifica o eliminazione di una sola ripetizione oppure di tutta la serie.
+- Compleanni e anniversari con età, attività con scadenza da spuntare, festività nazionali italiane (incluso il 4 ottobre dal 2026).
+- Fusi orari e ora legale gestiti: gli eventi ripetuti restano alla stessa ora sull'orologio.
+- Italiano e inglese; tema chiaro, scuro o come Windows; nome per il saluto; vista all'avvio.
+- Scorciatoie da tastiera (N, T, frecce, 1–5) e finestre di dialogo accessibili.
+- Icona dell'app originale (il gatto del mockup) in tutte le dimensioni.
+- Anteprima nel browser con dati di esempio (`npm run dev`).
+- Documentazione: architettura, modello dei dati, ADR-0006 (database locale), guida ai test della M1.
+
 ### Changed
 
-- Frontend riorganizzato a livelli (`domain`, `infrastructure/tauri`, `presentation`) con import tramite alias `@/`; ESLint ora impedisce le dipendenze nel verso sbagliato ([ADR-0005](docs/adr/0005-architettura-a-livelli.md)).
+- Frontend riorganizzato a livelli (`domain`, `application`, `infrastructure`, `presentation`) con import tramite alias `@/`; ESLint impedisce le dipendenze nel verso sbagliato ([ADR-0005](docs/adr/0005-architettura-a-livelli.md)).
+- La finestra "Laboratorio M0" è sostituita dal calendario; il widget countdown resta nel codice ma è nascosto fino alla M3.
+- TypeScript compila per ES2022.
 - `.gitignore` ampliato: installer, cache degli strumenti, file temporanei e impostazioni locali degli assistenti AI.
+- Disattivata l'attribuzione automatica degli assistenti AI nei commit e nelle pull request (`.claude/settings.json`).
+
+### Security
+
+- Solo la finestra principale può usare il database; scritture solo con parametri.
+- Dipendenza di sviluppo `minimatch` aggiornata (GHSA-g3hv-75wg-m249): `npm audit` senza vulnerabilità.
 
 ## [0.1.0] - 2026-11-12
 
@@ -26,14 +50,12 @@ Milestone M0: setup del progetto e prototipo dei rischi.
 - Controlli di qualità: ESLint, Prettier, Vitest con soglia del 70 %, secretlint e hook pre-commit.
 - CI su Windows (lint, test, clippy, build, scansione segreti con gitleaks) e Dependabot.
 - Documentazione: README, AGENTS.md, visione, ADR 0001–0003, guida ai test della M0, CONTRIBUTING, SECURITY.
-
 - Comando `set_low_memory`: il widget e la finestra principale ridotta a icona usano il livello di memoria "basso" di WebView2.
 - Risultati delle misure M0 e ADR-0004 sui promemoria (app nella tray come livello principale).
 
 ### Changed
 
 - Tutte le finestre condividono la GPU nel processo principale e un solo renderer WebView2, per ridurre la RAM.
-
 - `.gitignore` di Visual Studio sostituito con regole per Node, Rust e Tauri che bloccano segreti e database locali.
 
 [Unreleased]: https://github.com/Gattospia555/NekoCalendar/compare/v0.1.0...HEAD

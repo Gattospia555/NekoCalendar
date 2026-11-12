@@ -53,4 +53,4 @@ Le festività possono spostare il rilascio di una o due settimane, sempre entro 
 
 ## Decisioni principali
 
-Vedi gli ADR in [docs/adr/](adr/): stack (Tauri 2 + React + TypeScript), backend (Supabase Free a Francoforte, offline-first), sincronizzazione (ultima modifica vince, campo per campo, con orologio logico ibrido), promemoria (app nella tray come livello principale, notifiche programmate solo con il pacchetto MSIX).
+Vedi gli ADR in [docs/adr/](adr/): stack (Tauri 2 + React + TypeScript), backend (Supabase Free a Francoforte, offline-first), sincronizzazione (ultima modifica vince, campo per campo, con orologio logico ibrido), promemoria (app nella tray come livello principale, notifiche programmate solo con il pacchetto MSIX), database locale (plugin SQL ufficiale di Tauri con migrazioni).

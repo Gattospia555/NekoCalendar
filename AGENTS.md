@@ -13,23 +13,28 @@ Il proprietario del progetto **non è uno sviluppatore**: spiega sempre in modo 
 
 ## Comandi
 
-| Scopo                          | Comando                                                                                        |
-| ------------------------------ | ---------------------------------------------------------------------------------------------- |
-| Installare                     | `npm install`                                                                                  |
-| Avviare in sviluppo            | `npm run tauri dev`                                                                            |
-| Tutti i controlli (come la CI) | `npm run check`                                                                                |
-| Test con copertura             | `npm run test:coverage`                                                                        |
-| Core Rust                      | `cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test` |
-| Installer                      | `npm run tauri build`                                                                          |
-| Misura RAM/CPU                 | `powershell -ExecutionPolicy Bypass -File .\scripts\measure.ps1`                               |
+| Scopo                           | Comando                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Installare                      | `npm install`                                                                                  |
+| Avviare in sviluppo             | `npm run tauri dev`                                                                            |
+| Anteprima nel browser (no Rust) | `npm run dev` (dati di esempio in memoria)                                                     |
+| Tutti i controlli (come la CI)  | `npm run check`                                                                                |
+| Test con copertura              | `npm run test:coverage`                                                                        |
+| Core Rust                       | `cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test` |
+| Installer                       | `npm run tauri build`                                                                          |
+| Misura RAM/CPU                  | `powershell -ExecutionPolicy Bypass -File .\scripts\measure.ps1`                               |
 
 ## Struttura e convenzioni di codice
 
-- Frontend a livelli, con dipendenze **solo verso il dominio**: `presentation` → `infrastructure` → `domain` (lo impone ESLint; dettagli in [ADR-0005](docs/adr/0005-architettura-a-livelli.md)). Si importa con l'alias `@/` (= `src/`).
-- `src/domain/`: logica **pura** in TypeScript (niente Tauri, niente React, niente DOM). Ogni funzione ha test Vitest accanto al file; copertura minima 70 %.
-- `src/infrastructure/tauri/`: unico punto che parla con Tauri (`invoke`, finestre). Niente codice grafico.
-- `src/presentation/app/`, `src/presentation/widget/`: componenti React; `src/presentation/theme/`: token e stile base. Testi visibili in italiano (dalla M1 tramite i18n IT/EN). Mai importare `@tauri-apps/*` qui: si passa da `infrastructure`.
-- Un livello `src/application/` (casi d'uso che coordinano dominio e infrastruttura) nasce solo quando serve davvero (previsto dalla M1), non prima.
+- Frontend a livelli, con dipendenze **solo verso il dominio**: `presentation` → `application` → `domain` e `infrastructure` → `application` → `domain` (lo impone ESLint; dettagli in [ADR-0005](docs/adr/0005-architettura-a-livelli.md)). Si importa con l'alias `@/` (= `src/`).
+- `src/domain/`: logica **pura** in TypeScript (niente Tauri, niente React, niente DOM). Ogni funzione ha test Vitest accanto al file.
+- `src/application/`: casi d'uso (`CalendarService`) e interfacce degli archivi (`CalendarStore`). Niente Tauri, niente React, niente implementazioni concrete; nei test si usa `MemoryStore`.
+- `src/infrastructure/storage/`: `MemoryStore` e conversione righe del database ⇄ dati. `src/infrastructure/tauri/`: unico punto che parla con Tauri (`invoke`, finestre, database SQLite). Niente codice grafico.
+- `src/presentation/app/`, `src/presentation/widget/`: componenti React; `src/presentation/theme/`: token e stile base. Mai importare `@tauri-apps/*` qui: si passa da `infrastructure`.
+- `src/presentation/i18n/`: ogni testo visibile passa da `t("chiave")`; le chiavi stanno in `messages.ts`, italiano e inglese insieme.
+- Copertura minima 70 % su `src/domain`, `src/application` e `src/infrastructure/storage`.
+- Database: ogni cambio di schema è una **nuova** migrazione in `src-tauri/migrations/` (mai modificare quelle rilasciate), con test in Rust (`database.rs`) e in TypeScript (`rows.test.ts`).
+- Date: ore "da orologio" + fuso IANA; vedi [docs/architecture.md](docs/architecture.md).
 - `src-tauri/`: Rust ridotto al minimo, codice specifico di Windows dietro `#[cfg(windows)]`.
 - Accessibilità: elementi interattivi veri (`<button>`, `<label>`), contrasto ≥ 4,5:1, aree cliccabili ≥ 44 px, rispetto di "riduci animazioni".
 - Risorse: i widget si ridisegnano solo quando cambia qualcosa di visibile; niente polling.
