@@ -14,10 +14,10 @@
       {
         "label": "main",
         "title": "NekoCalendar",
-        "width": 1100,
-        "height": 760,
-        "minWidth": 800,
-        "minHeight": 560,
+        "width": 1320,
+        "height": 860,
+        "minWidth": 960,
+        "minHeight": 640,
         "center": true,
         "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --in-process-gpu --renderer-process-limit=1"
       },
@@ -36,7 +36,8 @@
         "skipTaskbar": true,
         "alwaysOnBottom": true,
         "focus": false,
-        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --in-process-gpu --renderer-process-limit=1"
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --in-process-gpu --renderer-process-limit=1",
+        "visible": false
       }
     ],
     "security": {

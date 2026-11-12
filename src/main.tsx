@@ -7,7 +7,7 @@ import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "@/presentation/theme/tokens.css";
 import "@/presentation/theme/base.css";
-import { LabApp } from "@/presentation/app/LabApp";
+import { App } from "@/presentation/app/App";
 import { CountdownWidget } from "@/presentation/widget/CountdownWidget";
 import { currentWindowLabel } from "@/infrastructure/tauri/widgetWindow";
 
@@ -21,5 +21,5 @@ const isWidget =
 document.documentElement.dataset.view = isWidget ? "widget" : "app";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>{isWidget ? <CountdownWidget /> : <LabApp />}</React.StrictMode>,
+  <React.StrictMode>{isWidget ? <CountdownWidget /> : <App />}</React.StrictMode>,
 );
