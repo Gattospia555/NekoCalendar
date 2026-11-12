@@ -7,8 +7,8 @@ Circa 15 minuti. Serve il PC con gli strumenti già installati per la M0.
 Dalla cartella del progetto:
 
 ```powershell
-git fetch
-git checkout feature/m1-calendar
+git fetch --prune
+git checkout feature/m1-data-calendar
 git pull
 npm install
 npm run tauri dev
