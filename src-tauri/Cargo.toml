@@ -28,3 +28,7 @@ lto = true
 opt-level = 3
 panic = "abort"
 strip = true
+
+# API di Windows per le notifiche programmate (ScheduledToastNotification).
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = ["Data_Xml_Dom", "Foundation", "UI_Notifications"] }
