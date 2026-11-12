@@ -40,10 +40,14 @@ export default defineConfig(() => ({
     environment: "node",
     coverage: {
       provider: "v8" as const,
-      include: ["src/domain/**/*.ts"],
-      exclude: ["src/domain/**/*.test.ts"],
+      include: [
+        "src/domain/**/*.ts",
+        "src/application/**/*.ts",
+        "src/infrastructure/storage/**/*.ts",
+      ],
+      exclude: ["src/**/*.test.ts", "src/application/store.ts"],
       reporter: ["text", "html"],
-      // Obiettivo del progetto: almeno il 70 % sulla logica di dominio.
+      // Obiettivo del progetto: almeno il 70 % sulla logica (dominio, casi d'uso e archivi).
       thresholds: { lines: 70, functions: 70, branches: 70, statements: 70 },
     },
   },

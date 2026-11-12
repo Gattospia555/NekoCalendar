@@ -20,6 +20,13 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# Database locale SQLite con migrazioni (plugin ufficiale).
+tauri-plugin-sql = { version = "2.6", features = ["sqlite"] }
+
+[dev-dependencies]
+# Solo per i test delle migrazioni: stessa versione di sqlx usata dal plugin.
+sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio"] }
+tokio = { version = "1", features = ["macros", "rt"] }
 
 # Ottimizzazioni per un eseguibile piccolo e veloce: https://tauri.app/concept/size/
 [profile.release]

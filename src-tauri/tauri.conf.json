@@ -64,5 +64,10 @@
         "languages": ["Italian", "English"]
       }
     }
+  },
+  "plugins": {
+    "sql": {
+      "preload": ["sqlite:nekocalendar.db"]
+    }
   }
 }
