@@ -21,6 +21,9 @@ Milestone M1: dati e calendario.
 - Anteprima nel browser con dati di esempio (`npm run dev`).
 - Documentazione: architettura, modello dei dati, ADR-0006 (database locale), guida ai test della M1.
 
+- Animazioni leggere che rispondono ai gesti: cambio periodo con la direzione giusta, indicatore che scivola tra le viste, "Oggi" che si accende, "pop" sull'evento appena salvato, dialoghi e attività completate animati. Si spengono con "Riduci animazioni" di Windows.
+- Token di movimento del tema (durate e curve) e "+" sulla casella del mese sotto il mouse.
+
 ### Changed
 
 - Frontend riorganizzato a livelli (`domain`, `application`, `infrastructure`, `presentation`) con import tramite alias `@/`; ESLint impedisce le dipendenze nel verso sbagliato ([ADR-0005](docs/adr/0005-architettura-a-livelli.md)).
@@ -28,6 +31,14 @@ Milestone M1: dati e calendario.
 - TypeScript compila per ES2022.
 - `.gitignore` ampliato: installer, cache degli strumenti, file temporanei e impostazioni locali degli assistenti AI.
 - Disattivata l'attribuzione automatica degli assistenti AI nei commit e nelle pull request (`.claude/settings.json`).
+
+### Fixed
+
+- La vista Giorno mostrava una colonna larga zero e nessun evento.
+- L'intestazione cambiava forma da una vista all'altra (pulsanti che si spostavano, "Nuovo evento" a capo).
+- Il mese lasciava un vuoto sotto la griglia sugli schermi grandi e veniva tagliato su quelli piccoli; ora riempie la finestra e mostra quanti eventi ci stanno.
+- Giorno e settimana si aprivano sull'ora corrente nascondendo gli eventi del mattino; ora partono dal primo evento.
+- Etichette delle ore tagliate, "Tutto il giorno" a capo storto, eventi brevi illeggibili.
 
 ### Security
 

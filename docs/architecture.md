@@ -78,3 +78,11 @@ flowchart TB
 - Si carica tutto in memoria una volta (centinaia o migliaia di eventi) e si espande solo l'intervallo della vista.
 - L'ora corrente si aggiorna **una volta al minuto**, mai al secondo; nessun polling.
 - Il codice del database si carica solo dentro Tauri (import dinamico).
+- Il mese misura l'altezza delle righe con un `ResizeObserver` (solo quando la finestra cambia dimensione) per decidere quanti eventi mostrare per casella.
+
+## Movimento
+
+- Durate e curve sono token del tema (`--motion-fast`, `--motion-normal`, `--motion-slow`, `--ease-*` in `tokens.css`): uno Style Pack potrà cambiarli.
+- Ogni animazione risponde a un gesto (o all'apertura dell'app), dura meno di 400 ms, non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
+- La direzione del cambio di periodo viene da `useCalendarApp` (`transition`: avanti, indietro, vista, oggi); la vista entra con una nuova chiave React e una classe `enter-*`.
+- Tutto in CSS, senza librerie. Con "Riduci animazioni" di Windows (`prefers-reduced-motion`) `base.css` le spegne tutte.
