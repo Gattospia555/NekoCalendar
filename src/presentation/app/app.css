@@ -1973,3 +1973,19 @@ textarea.input {
 :root[data-vt="zoom"]::view-transition-new(page) {
   animation: vt-fade-in 300ms var(--ease-enter) 120ms both;
 }
+
+/* ---------- Festeggiamenti ---------- */
+
+.celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.celebration-paw {
+  position: absolute;
+  fill: currentColor;
+  will-change: transform, opacity;
+}

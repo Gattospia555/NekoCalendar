@@ -16,11 +16,15 @@ import { TimeGridView } from "./components/TimeGridView";
 import { Toolbar } from "./components/Toolbar";
 import { YearView } from "./components/YearView";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { celebrate } from "./motion/celebrate";
 import { useAnimatedNavigation } from "./motion/useAnimatedNavigation";
 import { isInsideTransition, runTransition } from "./motion/viewTransition";
 import { FreshEventContext } from "./occurrenceUtils";
 import { useCalendarApp, type CalendarApp as AppState } from "./useCalendarApp";
 import "./app.css";
+
+/** Attesa prima delle zampette: il tempo che la finestra si chiuda e l'evento compaia. */
+const CELEBRATION_DELAY_MS = 280;
 
 const VIEW_KEYS: Record<string, CalendarView> = {
   "1": "day",
@@ -222,7 +226,8 @@ function CalendarScreen({ app }: { app: AppState }) {
               upcoming={app.upcomingList}
               tasks={app.tasks}
               onOpen={open}
-              onToggleTask={(task, done) => {
+              onToggleTask={(task, done, source) => {
+                if (done) celebrate(source, task.color ?? undefined);
                 void app.actions.setTaskDone(task, done);
               }}
             />
@@ -233,8 +238,9 @@ function CalendarScreen({ app }: { app: AppState }) {
         now={app.now}
         upcoming={app.upcomingList}
         onOpen={open}
-        onDone={(occurrence) => {
+        onDone={(occurrence, source) => {
           const event = app.eventOf(occurrence);
+          celebrate(source, occurrence.color);
           if (event) void app.actions.setTaskDone(event, true);
         }}
       />
@@ -260,7 +266,15 @@ function CalendarScreen({ app }: { app: AppState }) {
               );
             }
             if (!ok) return;
+            const created = editor.mode === "new";
             closeEditor(true);
+            // Evento nuovo: festa! Le zampette partono dalla sua etichetta, appena compare.
+            if (created) {
+              window.setTimeout(
+                () => celebrate(document.querySelector(".is-fresh"), draft.color ?? undefined),
+                CELEBRATION_DELAY_MS,
+              );
+            }
           }}
           onDelete={async (scope) => {
             if (editor.mode !== "edit") return;
