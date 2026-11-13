@@ -1,6 +1,7 @@
 /**
- * Festeggiamento: una manciata di zampette che saltano fuori da un punto
- * (la casella dell'attività appena completata, l'evento appena creato) e ricadono.
+ * Festeggiamento: poche zampette che saltano fuori da un punto (la casella
+ * dell'attività appena completata) e ricadono. Piccolo e breve: è un sorriso, non
+ * una festa di capodanno, e non copre il lavoro.
  *
  * - Elementi DOM animati con le Web Animations: niente canvas, niente timer.
  * - Tutto viene rimosso alla fine (circa un secondo): a riposo non resta nulla.
@@ -16,14 +17,14 @@ const PAW_SVG =
   '<ellipse cx="14.6" cy="6.2" rx="2.1" ry="2.7"/>' +
   '<ellipse cx="18.4" cy="10" rx="2.1" ry="2.6"/></svg>';
 
-const COUNT = 22;
-const DURATION_MS = 1000;
+const COUNT = 8;
+const DURATION_MS = 650;
 
-/** Colori del tema corrente (chiaro o scuro), più il colore dell'evento se c'è. */
+/** Colore dell'evento (se c'è) e i due terracotta del tema corrente. */
 function palette(extra?: string): string[] {
   const style = getComputedStyle(document.documentElement);
   const read = (name: string) => style.getPropertyValue(name).trim();
-  return [read("--neko-accent"), read("--neko-accent-soft"), read("--neko-peach"), extra].filter(
+  return [extra, read("--neko-accent"), read("--neko-accent-soft")].filter(
     (color): color is string => Boolean(color),
   );
 }
@@ -47,7 +48,7 @@ export function celebrate(source: Element | null | undefined, color?: string): v
     const paw = document.createElement("span");
     paw.className = "celebration-paw";
     paw.innerHTML = PAW_SVG;
-    const size = 14 + Math.random() * 14;
+    const size = 10 + Math.random() * 8;
     paw.style.width = `${size}px`;
     paw.style.height = `${size}px`;
     paw.style.left = `${originX - size / 2}px`;
@@ -56,11 +57,12 @@ export function celebrate(source: Element | null | undefined, color?: string): v
     layer.append(paw);
 
     // Ventaglio verso l'alto, poi la "gravità" le fa ricadere.
-    const angle = (-90 + (Math.random() - 0.5) * 150) * (Math.PI / 180);
-    const speed = 90 + Math.random() * 110;
+    const angle =
+      (-90 + (i / (COUNT - 1) - 0.5) * 140 + (Math.random() - 0.5) * 16) * (Math.PI / 180);
+    const speed = 45 + Math.random() * 40;
     const dx = Math.cos(angle) * speed;
     const dy = Math.sin(angle) * speed;
-    const spin = (Math.random() - 0.5) * 540;
+    const spin = (Math.random() - 0.5) * 240;
     return paw.animate(
       [
         { transform: "translate(0, 0) rotate(0deg) scale(0.3)", opacity: 1 },
@@ -70,13 +72,13 @@ export function celebrate(source: Element | null | undefined, color?: string): v
           offset: 0.45,
         },
         {
-          transform: `translate(${dx * 1.4}px, ${dy + 90}px) rotate(${spin}deg) scale(0.8)`,
+          transform: `translate(${dx * 1.3}px, ${dy + 40}px) rotate(${spin}deg) scale(0.8)`,
           opacity: 0,
         },
       ],
       {
-        duration: DURATION_MS * (0.8 + Math.random() * 0.4),
-        easing: "cubic-bezier(0.2, 0.6, 0.35, 1)",
+        duration: DURATION_MS * (0.85 + Math.random() * 0.15),
+        easing: "cubic-bezier(0.05, 0.7, 0.1, 1)",
         fill: "forwards",
       },
     );
