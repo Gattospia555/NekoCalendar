@@ -33,6 +33,7 @@ Milestone M1: dati e calendario.
 - Disattivata l'attribuzione automatica degli assistenti AI nei commit e nelle pull request (`.claude/settings.json`).
 - Countdown nella barra del prossimo evento: anello che si riempie e tempo che manca, come nel mockup.
 - Grafica più vicina al mockup approvato: caselle del mese pulite (con "1 dic" per il primo giorno di un altro mese), etichette con l'ora in grassetto nel colore dell'evento, intestazione con le frecce accanto al titolo, date brevi nei prossimi eventi.
+- Tema base "morbido e gattoso" ([ADR-0007](docs/adr/0007-stile-morbido-e-gattoso.md)): colori più tenui e caldi, angoli tondi, mese a cuscinetti, etichette a pillola, ombre calde, Nunito al posto di Poppins, Fraunces "soft", niente etichette tutte maiuscole; orecchie sul giorno di oggi e sopra le schede, zampette al posto dei pallini, impronte leggere sullo sfondo.
 
 ### Fixed
 
