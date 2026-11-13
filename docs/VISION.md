@@ -13,7 +13,7 @@ Elementi distintivi su cui investire più cura: countdown ed effetti, widget leg
 - **Must**: viste giorno/settimana/mese/anno/agenda; eventi con ricorrenze RRULE; promemoria e notifiche affidabili anche ad app chiusa; widget desktop mese e agenda; countdown personalizzabile; motore Style Pack con il solo tema Base Neko chiaro/scuro; archivio locale solido con backup/export; import/export ICS; italiano e inglese; sicurezza di base; documentazione.
 - **Should** (se i tempi lo consentono, in quest'ordine): account e sync offline-first con Supabase; backup nel cloud.
 
-**Subito dopo la 1.0 (Could, in ordine di priorità)**: API key e API pubblica v1; calendari collaborativi; integrazioni Google/Outlook/CalDAV; Android; piano Plus; Focus/Pomodoro; liste condivise; turni di lavoro; cifratura end-to-end; pubblicità non invasiva (mai nei widget).
+**Subito dopo la 1.0 (Could, in ordine di priorità)**: API key e API pubblica v1; calendari collaborativi, con un **sito web del calendario** stile TimeTree (stesso codice React dell'app, dati da Supabase); integrazioni Google/Outlook/CalDAV; Android; piano Plus; Focus/Pomodoro; liste condivise; turni di lavoro; cifratura end-to-end; pubblicità non invasiva (mai nei widget).
 
 **Fase grafica (dopo la 1.0)**: Style Pack Pixel Art e Cute, mascotte Neko interattiva, ricerca asset integrata, asset personali e temi condivisibili.
 
