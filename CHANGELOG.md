@@ -22,7 +22,10 @@ Milestone M1: dati e calendario.
 - Documentazione: architettura, modello dei dati, ADR-0006 (database locale), guida ai test della M1.
 - Animazioni leggere che rispondono ai gesti: cambio periodo con la direzione giusta, indicatore che scivola tra le viste, "Oggi" che si accende, "pop" sull'evento appena salvato, dialoghi e attività completate animati. Si spengono con "Riduci animazioni" di Windows.
 - Token di movimento del tema (durate e curve) e "+" sulla casella del mese sotto il mouse.
-- Animazioni "wow": pagine che scorrono di lato con profondità, giorno del mese che si allarga nella vista Giorno, evento che si trasforma nella finestra di modifica, curve a molla, zampette che festeggiano attività completate ed eventi nuovi.
+- Animazioni "wow": pagine che scorrono di lato, giorno del mese che si allarga nella vista Giorno, evento che si trasforma nella finestra di modifica, curve a molla, zampette che festeggiano le attività completate.
+- Icone a colori per gli eventi (Fluent Emoji di Microsoft, MIT), scelte in automatico dal titolo e dal tipo: torta per i compleanni, aereo per i viaggi, piatto per le cene…
+- Ora corrente leggibile accanto alla linea rossa nelle viste Giorno e Settimana.
+- Nomi dei colori nell'editor (Salvia, Cielo, Mirtillo…), letti anche dagli screen reader.
 
 ### Changed
 
@@ -34,6 +37,8 @@ Milestone M1: dati e calendario.
 - Countdown nella barra del prossimo evento: anello che si riempie e tempo che manca, come nel mockup.
 - Grafica più vicina al mockup approvato: caselle del mese pulite (con "1 dic" per il primo giorno di un altro mese), etichette con l'ora in grassetto nel colore dell'evento, intestazione con le frecce accanto al titolo, date brevi nei prossimi eventi.
 - Tema base "morbido e gattoso" ([ADR-0007](docs/adr/0007-stile-morbido-e-gattoso.md)): colori più tenui e caldi, angoli tondi, mese a cuscinetti, etichette a pillola, ombre calde, Nunito al posto di Poppins, Fraunces "soft", niente etichette tutte maiuscole; orecchie sul giorno di oggi e sopra le schede, zampette al posto dei pallini, impronte leggere sullo sfondo.
+- Tema base "Latte & Fusa" ([ADR-0008](docs/adr/0008-direzione-latte-e-fusa.md)), dopo una ricerca sulle app di riferimento: superfici a tre livelli al posto di bordi e ombre, terracotta solo per le azioni, otto tinte per gli eventi in chiaro e in scuro, mese a griglia sottile, quattro raggi, curve di movimento di Material 3, festeggiamento più piccolo e solo per le attività, countdown nei colori del prossimo evento. Il gatto resta in un solo punto: le orecchie sul giorno di oggi.
+- Nuovi colori dei calendari predefiniti (Personale salvia, Lavoro cielo, Compleanni rosa) e delle festività (miele); i colori già salvati vengono ricondotti alla tinta più vicina.
 
 ### Fixed
 

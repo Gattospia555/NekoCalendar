@@ -80,13 +80,19 @@ flowchart TB
 - Il codice del database si carica solo dentro Tauri (import dinamico).
 - Il mese misura l'altezza delle righe con un `ResizeObserver` (solo quando la finestra cambia dimensione) per decidere quanti eventi mostrare per casella.
 
+## Aspetto (tema base)
+
+- Direzione "Latte & Fusa" ([ADR-0008](adr/0008-direzione-latte-e-fusa.md)): colori, raggi, ombre e curve sono token in `src/presentation/theme/tokens.css`.
+- **Colori degli eventi** (`presentation/app/eventPalette.ts`): otto tinte, ognuna con `--ev-<nome>-tint|stripe|ink` per chiaro e scuro. Nel database si salva il colore della striscia; `hueOf` riconduce qualsiasi colore (anche delle versioni precedenti) alla tinta più vicina e `eventStyle` imposta le variabili CSS `--event-tint`, `--event-color` e `--event-ink` sull'elemento.
+- **Icone degli eventi**: `suggestIcon` (dominio, `domain/eventIcon.ts`) sceglie l'icona dal titolo e dal tipo; `presentation/app/emoji.ts` trova il file (Fluent Emoji, 3D o piatto) in `src/presentation/assets/emoji/`. Le icone restano file separati, non incorporati nel JavaScript.
+
 ## Movimento
 
 - Durate e curve sono token del tema (`--motion-fast`, `--motion-normal`, `--motion-slow`, `--ease-*` in `tokens.css`): uno Style Pack potrà cambiarli.
-- Ogni animazione risponde a un gesto (o all'apertura dell'app), dura meno di 400 ms, non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
+- Ogni animazione risponde a un gesto (o all'apertura dell'app), dura tra 150 e 450 ms con le curve di Material 3 (`--ease-enter`, `--ease-exit`, `--ease-standard`), non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
 - La direzione del cambio di periodo viene da `useCalendarApp` (`transition`: avanti, indietro, vista, oggi); la vista entra con una nuova chiave React.
 - **View Transitions** (`motion/viewTransition.ts`): il browser fotografa la schermata prima e dopo un cambio di stato (applicato con `flushSync`) e anima il passaggio. La vista corrente si chiama `page` (scorrimento di lato per avanti/indietro, dissolvenze); l'elemento che si trasforma si chiama `vt-morph` e il nome passa dall'elemento piccolo (giorno, evento, pulsante) a quello grande (vista Giorno, finestra) tra le due foto. `<html data-vt>` dice al CSS quale effetto usare.
 - Viste e finestre decidono **una volta sola, quando nascono**, se entrare con la loro animazione CSS o lasciare fare alla View Transition (`isInsideTransition`), così le due non si sommano e nulla riparte a fine transizione.
 - **Molle**: curve elastiche scritte con `linear()` nei token (`--ease-spring`, `--ease-spring-soft`).
-- **Festeggiamenti** (`motion/celebrate.ts`): zampette animate con le Web Animations, rimosse dopo circa un secondo.
+- **Festeggiamenti** (`motion/celebrate.ts`): otto zampette animate con le Web Animations quando si completa un'attività, rimosse dopo 0,65 secondi.
 - Niente librerie. Senza supporto alle View Transitions il cambio avviene subito con le animazioni CSS; con "Riduci animazioni" di Windows (`prefers-reduced-motion`) non parte nulla.

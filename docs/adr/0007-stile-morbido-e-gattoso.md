@@ -1,6 +1,6 @@
 # ADR-0007: Stile "morbido e gattoso" per il tema base
 
-**Stato:** Accettato · **Data:** 2026-11-13 · **Decisori:** proprietario del progetto (Gatto), con proposte dell'agente AI
+**Stato:** Sostituito in parte da [ADR-0008](0008-direzione-latte-e-fusa.md) (restano i font e l'idea delle orecchie su "oggi") · **Data:** 2026-11-13 · **Decisori:** proprietario del progetto (Gatto), con proposte dell'agente AI
 
 ## Contesto
 
