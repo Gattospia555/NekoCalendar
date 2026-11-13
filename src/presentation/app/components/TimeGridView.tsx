@@ -3,10 +3,10 @@ import { weekDays } from "@/domain/calendarGrid";
 import { minutesBetween, parseDateKey, weekdayIndex } from "@/domain/datetime";
 import { layoutDay, occurrencesOnDay } from "@/domain/occurrences";
 import type { DateKey, Occurrence } from "@/domain/types";
-import { formatDayLong, formatTimeRange, weekdayNames } from "@/presentation/i18n/i18n";
+import { formatDayLong, formatTime, formatTimeRange, weekdayNames } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { FreshEventContext, tint, useOccurrenceTitle } from "../occurrenceUtils";
-import { OccurrenceChip } from "./OccurrenceBits";
+import { eventStyle, FreshEventContext, useOccurrenceTitle } from "../occurrenceUtils";
+import { EventEmoji, OccurrenceChip } from "./OccurrenceBits";
 
 /** Altezza di un'ora in pixel. */
 const HOUR_PX = 52;
@@ -103,6 +103,11 @@ export function TimeGridView({
                 {h === 0 ? "" : `${String(h).padStart(2, "0")}:00`}
               </span>
             ))}
+            {days.includes(today) && (
+              <span className="now-time" style={{ top: (nowMinute / 60) * HOUR_PX }}>
+                {formatTime(now)}
+              </span>
+            )}
           </div>
           {days.map((day) => (
             <div
@@ -126,7 +131,7 @@ export function TimeGridView({
                     block.occurrence.eventId === freshId ? " is-fresh" : ""
                   }${block.endMinute - block.startMinute < SHORT_MINUTES ? " is-short" : ""}`}
                   style={{
-                    ...tint(block.occurrence.color),
+                    ...eventStyle(block.occurrence.color),
                     top: (block.startMinute / 60) * HOUR_PX,
                     height: Math.max(
                       ((block.endMinute - block.startMinute) / 60) * HOUR_PX - 2,
@@ -140,7 +145,10 @@ export function TimeGridView({
                     onOpen(block.occurrence, event.currentTarget);
                   }}
                 >
-                  <span className="block-title">{titleOf(block.occurrence)}</span>
+                  <span className="block-title">
+                    <EventEmoji occurrence={block.occurrence} />
+                    {titleOf(block.occurrence)}
+                  </span>
                   <span className="block-time">
                     {formatTimeRange(language, block.occurrence.start, block.occurrence.end, false)}
                   </span>

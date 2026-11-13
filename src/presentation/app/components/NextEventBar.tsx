@@ -3,7 +3,7 @@ import { minutesUntil } from "@/domain/occurrences";
 import type { Occurrence } from "@/domain/types";
 import { formatDayShort, formatTimeRange } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { useOccurrenceTitle } from "../occurrenceUtils";
+import { eventStyle, useOccurrenceTitle } from "../occurrenceUtils";
 import { Icon } from "./Icons";
 import { Cover } from "./OccurrenceBits";
 
@@ -86,7 +86,7 @@ export function NextEventBar({ now, upcoming, onOpen, onDone }: NextEventBarProp
             : t("footer.onDay", { date: formatDayShort(language, day) });
 
   return (
-    <footer className="next-bar">
+    <footer className="next-bar" style={eventStyle(next.color)}>
       <div key={next.key} className="next-main">
         <Cover occurrence={next} size={58} />
         <div className="next-text">

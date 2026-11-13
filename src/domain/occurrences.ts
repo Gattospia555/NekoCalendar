@@ -25,7 +25,7 @@ import type {
 
 /** Calendario virtuale delle festività (non salvato nel database). */
 export const HOLIDAYS_CALENDAR_ID = "holidays-it";
-export const HOLIDAYS_COLOR = "#2e9a5e";
+export const HOLIDAYS_COLOR = "#d9a520";
 
 export interface OccurrenceQuery {
   events: readonly CalendarEvent[];

@@ -27,6 +27,15 @@ export const it = {
   "calendars.color": "Colore",
   "calendars.create": "Crea calendario",
 
+  "color.salvia": "Salvia",
+  "color.cielo": "Cielo",
+  "color.mirtillo": "Mirtillo",
+  "color.lavanda": "Lavanda",
+  "color.rosa": "Rosa",
+  "color.miele": "Miele",
+  "color.menta": "Menta",
+  "color.ardesia": "Ardesia",
+
   "toolbar.previous": "Precedente",
   "toolbar.next": "Successivo",
   "toolbar.today": "Oggi",
@@ -200,6 +209,15 @@ export const en: Record<MessageKey, string> = {
   "calendars.name": "Name",
   "calendars.color": "Colour",
   "calendars.create": "Create calendar",
+
+  "color.salvia": "Sage",
+  "color.cielo": "Sky",
+  "color.mirtillo": "Blueberry",
+  "color.lavanda": "Lavender",
+  "color.rosa": "Rose",
+  "color.miele": "Honey",
+  "color.menta": "Mint",
+  "color.ardesia": "Slate",
 
   "toolbar.previous": "Previous",
   "toolbar.next": "Next",

@@ -27,7 +27,8 @@ Usate solo per lo sviluppo e i test (non distribuite): Vitest, ESLint, Prettier,
 
 ## Asset
 
-| Asset                                                                | Licenza                                | Note                                                       |
-| -------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------- |
-| Icone dell'app in `src-tauri/icons/`                                 | MIT, come il progetto (© CatDevStudio) | Disegno originale; sorgente in `assets/brand/app-icon.svg` |
-| Icone dell'interfaccia (`src/presentation/app/components/Icons.tsx`) | MIT, come il progetto (© CatDevStudio) | Disegnate per NekoCalendar, nessun set esterno             |
+| Asset                                                                | Licenza                                | Note                                                                                                                                                          |
+| -------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Icone dell'app in `src-tauri/icons/`                                 | MIT, come il progetto (© CatDevStudio) | Disegno originale; sorgente in `assets/brand/app-icon.svg`                                                                                                    |
+| Icone dell'interfaccia (`src/presentation/app/components/Icons.tsx`) | MIT, come il progetto (© CatDevStudio) | Disegnate per NekoCalendar, nessun set esterno                                                                                                                |
+| Icone degli eventi (`src/presentation/assets/emoji/`)                | MIT (© Microsoft Corporation)          | [Fluent Emoji](https://github.com/microsoft/fluentui-emoji), 3D ridotte a 96 px WebP e piatte SVG; testo della licenza in `LICENSE.txt` nella stessa cartella |

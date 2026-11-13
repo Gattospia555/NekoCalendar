@@ -18,9 +18,9 @@ import type { CalendarStore, Snapshot } from "./store";
 
 /** Calendari creati al primo avvio, con i colori del tema Base Neko. */
 export const DEFAULT_CALENDARS: { key: "personal" | "work" | "birthdays"; color: string }[] = [
-  { key: "personal", color: "#c58463" },
-  { key: "work", color: "#4f7fb8" },
-  { key: "birthdays", color: "#d06a8c" },
+  { key: "personal", color: "#6fa35a" },
+  { key: "work", color: "#5b93c7" },
+  { key: "birthdays", color: "#d96c8a" },
 ];
 
 const DEVICE_KEY = "deviceId";

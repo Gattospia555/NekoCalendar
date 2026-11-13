@@ -1,6 +1,7 @@
 import type { Calendar, CalendarView } from "@/domain/types";
 import { HOLIDAYS_COLOR } from "@/domain/occurrences";
 import { useI18n } from "@/presentation/i18n/I18nContext";
+import { eventStripe } from "../eventPalette";
 import { CatLogo, Icon, type IconName } from "./Icons";
 
 interface SidebarProps {
@@ -84,7 +85,7 @@ export function Sidebar(props: SidebarProps) {
               <input
                 type="checkbox"
                 checked={calendar.visible}
-                style={{ accentColor: calendar.color }}
+                style={{ accentColor: eventStripe(calendar.color) }}
                 onChange={(event) => props.onToggleCalendar(calendar, event.target.checked)}
               />
               <span>{calendar.name}</span>
@@ -96,7 +97,7 @@ export function Sidebar(props: SidebarProps) {
             <input
               type="checkbox"
               checked={props.showHolidays}
-              style={{ accentColor: HOLIDAYS_COLOR }}
+              style={{ accentColor: eventStripe(HOLIDAYS_COLOR) }}
               onChange={(event) => props.onToggleHolidays(event.target.checked)}
             />
             <span>{t("calendars.holidays")}</span>

@@ -1,6 +1,8 @@
 /*
- * Stile della finestra principale: il mockup approvato (famiglia NekoTune).
- * Colori e font arrivano dai token del tema (src/theme/tokens.css).
+ * Stile della finestra principale, direzione "Latte & Fusa" (ADR-0008).
+ * Regole: niente bordi né ombre a riposo (la profondità la danno le superfici), il
+ * terracotta solo sulle azioni, il colore vero negli eventi. Colori e font arrivano dai
+ * token del tema (src/presentation/theme/tokens.css).
  */
 
 /* ---------- Struttura ---------- */
@@ -25,7 +27,7 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
-  background: linear-gradient(180deg, var(--neko-bg-top) 0, var(--neko-bg) 260px);
+  background: var(--neko-bg);
   container: main / inline-size;
 }
 
@@ -117,11 +119,6 @@
   outline-offset: 2px;
 }
 
-.paw {
-  fill: var(--neko-accent-soft);
-  opacity: 0.85;
-}
-
 /* ---------- Pulsanti ---------- */
 
 .round-btn,
@@ -135,7 +132,6 @@
   border-radius: 50%;
   background: var(--neko-surface);
   color: var(--neko-ink);
-  box-shadow: var(--neko-shadow);
   cursor: pointer;
 }
 
@@ -163,19 +159,18 @@
   border: 0;
   background: var(--neko-surface);
   color: var(--neko-ink);
-  box-shadow: var(--neko-shadow);
 }
 
+/* L'unico colore forte dell'interfaccia: il terracotta segnala "qui si agisce". */
 .primary-btn {
   border: 0;
-  /* una leggera sfumatura dall'alto: sembra un bottone morbido, non piatto */
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--neko-accent) 82%, white),
-    var(--neko-accent)
-  );
+  background: var(--neko-accent);
   color: var(--neko-on-accent);
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--neko-accent) 30%, transparent);
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--neko-accent) 88%, var(--neko-ink));
+  box-shadow: var(--neko-shadow-strong);
 }
 
 .primary-btn:disabled {
@@ -200,7 +195,7 @@
 
 .round-btn:hover,
 .pill-btn:hover {
-  border-color: var(--neko-accent-soft);
+  background: color-mix(in srgb, var(--neko-ink) 6%, var(--neko-surface));
 }
 
 /* ---------- Barra laterale ---------- */
@@ -212,8 +207,7 @@
   gap: 2px;
   padding: 18px 14px;
   overflow-y: auto;
-  background: var(--neko-surface);
-  box-shadow: 6px 0 30px color-mix(in srgb, var(--neko-accent-soft) 9%, transparent);
+  background: var(--neko-surface-soft);
   position: relative;
   z-index: 1;
 }
@@ -231,16 +225,15 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: 14px;
+  border-radius: var(--neko-radius-sm);
   background: var(--neko-peach);
-  box-shadow: var(--neko-shadow);
 }
 
 .brand-name {
   font-family: "Nunito", var(--font-body);
   font-weight: 900;
   font-size: 19px;
-  color: var(--neko-accent-soft);
+  color: var(--neko-accent-text);
 }
 
 .nav-item {
@@ -252,37 +245,26 @@
   min-height: 44px;
   padding: 0 12px 0 16px;
   border: 0;
-  border-radius: 14px;
+  border-radius: var(--neko-radius-sm);
   background: transparent;
   color: var(--neko-ink);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
 }
 
 .nav-item:hover {
-  background: var(--neko-surface-soft);
+  background: color-mix(in srgb, var(--neko-ink) 5%, transparent);
 }
 
 .nav-item.is-active {
-  background: var(--neko-peach);
-  font-weight: 600;
-}
-
-.nav-item.is-active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 10px;
-  width: 4px;
-  height: 24px;
-  border-radius: 2px;
-  background: var(--neko-accent-soft);
+  background: color-mix(in srgb, var(--neko-ink) 7%, transparent);
+  font-weight: 700;
 }
 
 .nav-item.is-active svg {
-  color: var(--neko-accent);
+  color: var(--neko-accent-text);
 }
 
 .nav-count {
@@ -291,8 +273,8 @@
   height: 22px;
   padding: 0 7px;
   border-radius: 11px;
-  background: var(--neko-peach);
-  color: var(--neko-accent-ink);
+  background: color-mix(in srgb, var(--neko-ink) 8%, transparent);
+  color: var(--neko-ink-soft);
   font-size: 12px;
   font-weight: 700;
   display: inline-flex;
@@ -334,9 +316,8 @@
   width: 30px;
   height: 30px;
   border-radius: 15px;
-  background: var(--neko-surface);
+  background: color-mix(in srgb, var(--neko-ink) 7%, transparent);
   color: var(--neko-ink);
-  box-shadow: 0 1px 5px rgba(110, 70, 40, 0.16);
 }
 
 .calendar-list,
@@ -354,13 +335,13 @@
   gap: 14px;
   min-height: 40px;
   padding: 0 12px 0 16px;
-  border-radius: 14px;
-  font-size: 14px;
+  border-radius: var(--neko-radius-sm);
+  font-size: 15px;
   cursor: pointer;
 }
 
 .calendar-row:hover {
-  background: var(--neko-surface-soft);
+  background: color-mix(in srgb, var(--neko-ink) 5%, transparent);
 }
 
 .calendar-row input,
@@ -410,15 +391,17 @@
 .toolbar h1 {
   min-width: 0;
   overflow: hidden;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 34px;
+  line-height: 44px;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--neko-ink);
 }
 
+/* L'anno resta sullo sfondo: il mese è quello che conta. */
 .toolbar .accent {
-  color: var(--neko-accent-soft);
+  color: var(--neko-ink-soft);
+  font-weight: 500;
 }
 
 .toolbar-sub {
@@ -439,9 +422,8 @@
   display: inline-flex;
   gap: 2px;
   padding: 4px;
-  border-radius: 23px;
-  background: var(--neko-surface);
-  box-shadow: var(--neko-shadow);
+  border-radius: var(--neko-radius-pill);
+  background: color-mix(in srgb, var(--neko-ink) 6%, var(--neko-bg));
 }
 
 .segmented button {
@@ -449,16 +431,22 @@
   min-height: 38px;
   padding: 0 16px;
   border: 0;
-  border-radius: 19px;
+  border-radius: var(--neko-radius-pill);
   background: transparent;
-  color: var(--neko-ink);
-  font-size: 13px;
+  color: var(--neko-ink-soft);
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
 
+.segmented button:hover {
+  color: var(--neko-ink);
+}
+
+/* La vista scelta è una "linguetta" chiara sul binario: niente terracotta, non è un'azione. */
 .segmented button[aria-pressed="true"] {
-  color: var(--neko-on-accent);
+  color: var(--neko-ink);
+  font-weight: 700;
 }
 
 /* L'indicatore della vista scelta: scivola da un pulsante all'altro. */
@@ -467,8 +455,9 @@
   top: 4px;
   bottom: 4px;
   left: 0;
-  border-radius: 19px;
-  background: var(--neko-accent);
+  border-radius: var(--neko-radius-pill);
+  background: var(--neko-surface);
+  box-shadow: 0 1px 2px rgb(74 52 38 / 0.08);
   /* molla: l'indicatore arriva un filo oltre il pulsante e torna indietro */
   transition:
     transform var(--motion-spring) var(--ease-spring),
@@ -477,48 +466,41 @@
 
 /* ---------- Etichette degli eventi ---------- */
 
-.chip,
-.block,
-.cover {
-  --event-tint: color-mix(in srgb, var(--event-color) 20%, var(--neko-surface));
-}
-
+/*
+ * Ogni evento porta tre colori della sua tinta (impostati da eventStyle):
+ * --event-tint (sfondo), --event-color (striscia) e --event-ink (testo, contrasto ≥ 6:1).
+ */
 .chip {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   width: 100%;
   min-height: 24px;
-  padding: 3px 10px;
+  padding: 3px 8px 3px 6px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--neko-radius-xs);
   background: var(--event-tint);
-  color: var(--neko-ink);
+  color: var(--event-ink);
   font-size: 12px;
+  font-weight: 600;
   line-height: 16px;
   text-align: left;
   cursor: pointer;
 }
 
 .chip:hover {
-  background: color-mix(in srgb, var(--event-color) 36%, var(--neko-surface));
+  background: color-mix(in srgb, var(--event-color) 20%, var(--event-tint));
 }
 
-.chip-dot {
+.event-emoji {
   flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--event-color);
-}
-
-.chip {
-  color: color-mix(in srgb, var(--event-color) 45%, var(--neko-ink));
+  width: 14px;
+  height: 14px;
 }
 
 .chip-time {
-  font-weight: 700;
-  color: color-mix(in srgb, var(--event-color) 70%, var(--neko-ink));
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .chip-title {
@@ -534,34 +516,35 @@
   opacity: 0.7;
 }
 
+/* Copertina: la tinta dell'evento con la sua icona a colori al centro. */
 .cover {
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--event-color) 38%, var(--neko-surface));
-  color: color-mix(in srgb, var(--event-color) 60%, var(--neko-ink));
-  box-shadow: 0 3px 10px rgba(110, 70, 40, 0.14);
+  border-radius: var(--neko-radius-sm);
+  background: var(--event-tint);
+}
+
+.cover img {
+  display: block;
 }
 
 /* ---------- Vista mese ---------- */
 
-/* Mese "a cuscinetti": ogni giorno è una tessera morbida, senza righe della griglia. */
+/* Mese: una griglia di linee sottilissime dentro la scheda, come un foglio a quadretti. */
 .month {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden auto;
-  padding: 2px 10px 10px;
 }
 
 .month-row {
   flex: 1 1 0;
   min-height: 80px;
-  gap: 6px;
-  padding: 3px 0;
+  border-top: 1px solid var(--neko-line);
 }
 
 .month-head,
@@ -571,9 +554,9 @@
 }
 
 .month-weekday {
-  padding: 12px 10px 6px;
-  font-size: 14px;
-  font-weight: 800;
+  padding: 12px 12px 8px;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--neko-ink-soft);
 }
 
@@ -581,15 +564,23 @@
   position: relative;
   min-width: 0;
   overflow: hidden;
-  padding: 5px 6px;
+  /* in alto un po' più d'aria: le orecchie del giorno di oggi non vengono tagliate */
+  padding: 8px 6px 5px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
   align-items: center;
   gap: 3px 6px;
-  border-radius: 18px;
-  background: var(--neko-surface-soft);
+  border-left: 1px solid var(--neko-line);
   cursor: pointer;
+}
+
+.month-cell:first-child {
+  border-left: 0;
+}
+
+.month-cell:hover {
+  background: color-mix(in srgb, var(--neko-ink) 2.5%, transparent);
 }
 
 .month-cell {
@@ -603,19 +594,18 @@
   }
 }
 
-/* Come nel mockup: caselle bianche; i giorni degli altri mesi hanno solo il numero più chiaro. */
+/* I giorni degli altri mesi stanno un passo indietro: numero chiaro, fondo appena velato. */
 .month-cell.is-other .day-number {
   color: var(--neko-ink-soft);
   font-weight: 500;
 }
 
 .month-cell.is-other {
-  background: transparent;
+  background: var(--neko-surface-soft);
 }
 
 .month-cell.is-today {
-  background: var(--neko-peach);
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--neko-accent-soft) 55%, transparent);
+  background: color-mix(in srgb, var(--neko-accent) 5%, transparent);
 }
 
 .day-number {
@@ -632,7 +622,7 @@
 }
 
 .day-number:hover {
-  background: var(--neko-peach);
+  background: color-mix(in srgb, var(--neko-ink) 8%, transparent);
 }
 
 .is-today .day-number {
@@ -643,7 +633,7 @@
 .today-label {
   font-size: 12px;
   font-weight: 800;
-  color: var(--neko-accent);
+  color: var(--neko-accent-text);
 }
 
 .month-chips {
@@ -672,11 +662,17 @@
   padding: 1px 6px;
   line-height: 16px;
   border: 0;
+  border-radius: var(--neko-radius-xs);
   background: transparent;
-  color: var(--neko-accent);
+  color: var(--neko-ink-soft);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.more-btn:hover {
+  background: color-mix(in srgb, var(--neko-ink) 6%, transparent);
+  color: var(--neko-ink);
 }
 
 /* ---------- Viste giorno e settimana ---------- */
@@ -788,10 +784,10 @@
   overflow: hidden;
   padding: 4px 8px;
   border: 0;
-  border-left: 4px solid var(--event-color);
-  border-radius: 12px;
+  border-left: 3px solid var(--event-color);
+  border-radius: 8px;
   background: var(--event-tint);
-  color: var(--neko-ink);
+  color: var(--event-ink);
   font-size: 12px;
   line-height: 16px;
   text-align: left;
@@ -828,7 +824,7 @@
 }
 
 .block-title {
-  font-weight: 600;
+  font-weight: 700;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -840,7 +836,18 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--neko-ink-soft);
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+.block .event-emoji {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+
+.block:hover {
+  background: color-mix(in srgb, var(--event-color) 20%, var(--event-tint));
 }
 
 .now-line {
@@ -855,12 +862,27 @@
 .now-line::before {
   content: "";
   position: absolute;
-  left: -5px;
-  top: -4px;
-  width: 10px;
-  height: 10px;
+  left: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--neko-accent);
+}
+
+/* L'ora esatta nella colonna delle ore, all'altezza della linea: si legge senza cercarla. */
+.hours .now-time {
+  z-index: 1;
+  right: 4px;
+  padding: 1px 6px;
+  border-radius: var(--neko-radius-pill);
+  background: var(--neko-accent);
+  color: var(--neko-on-accent);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* ---------- Vista anno ---------- */
@@ -905,7 +927,7 @@
 }
 
 .year-day:hover {
-  background: var(--neko-peach);
+  background: color-mix(in srgb, var(--neko-ink) 7%, transparent);
 }
 
 .year-day.is-busy::after {
@@ -917,7 +939,7 @@
   height: 4px;
   margin-left: -2px;
   border-radius: 2px;
-  background: var(--neko-accent-soft);
+  background: var(--neko-ink-soft);
 }
 
 .year-day.is-today {
@@ -958,7 +980,7 @@
   min-height: 56px;
   padding: 6px 8px;
   border: 0;
-  border-radius: 14px;
+  border-radius: var(--neko-radius-sm);
   background: transparent;
   color: var(--neko-ink);
   text-align: left;
@@ -966,7 +988,7 @@
 }
 
 .agenda-item:hover {
-  background: var(--neko-surface-soft);
+  background: color-mix(in srgb, var(--neko-ink) 4%, transparent);
 }
 
 .agenda-time {
@@ -1061,7 +1083,7 @@
   width: 100%;
   padding: 8px;
   border: 0;
-  border-radius: 16px;
+  border-radius: var(--neko-radius-sm);
   background: transparent;
   color: var(--neko-ink);
   text-align: left;
@@ -1069,11 +1091,11 @@
 }
 
 .upcoming-item:hover {
-  background: var(--neko-surface-soft);
+  background: color-mix(in srgb, var(--neko-ink) 4%, transparent);
 }
 
 .upcoming-item.is-next {
-  background: var(--neko-peach);
+  background: color-mix(in srgb, var(--neko-ink) 5%, transparent);
 }
 
 .upcoming-text {
@@ -1083,7 +1105,7 @@
 }
 
 .upcoming-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   overflow: hidden;
   white-space: nowrap;
@@ -1101,17 +1123,17 @@
   gap: 12px;
   min-height: 44px;
   padding: 0 8px;
-  border-radius: 12px;
+  border-radius: var(--neko-radius-sm);
   cursor: pointer;
 }
 
 .task-row:hover {
-  background: var(--neko-surface-soft);
+  background: color-mix(in srgb, var(--neko-ink) 4%, transparent);
 }
 
 .task-title {
   flex: 1;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .task-row.is-done .task-title {
@@ -1133,7 +1155,7 @@
   gap: 12px 24px;
   padding: 12px 24px 12px 16px;
   background: var(--neko-surface);
-  box-shadow: 0 -10px 30px color-mix(in srgb, var(--neko-accent-soft) 12%, transparent);
+  border-top: 1px solid var(--neko-line);
 }
 
 .next-divider {
@@ -1143,7 +1165,10 @@
   background: var(--neko-line);
 }
 
-/* Countdown: anello che si riempie e tempo che manca, in Fraunces come i titoli. */
+/*
+ * Countdown: anello che si riempie e tempo che manca, in Fraunces come i titoli.
+ * Prende i colori del prossimo evento (la barra riceve eventStyle).
+ */
 .countdown {
   flex: none;
   display: grid;
@@ -1152,8 +1177,8 @@
   column-gap: 12px;
   align-items: center;
   padding: 6px 18px 6px 6px;
-  border-radius: 20px;
-  background: var(--neko-surface-soft);
+  border-radius: var(--neko-radius);
+  background: var(--event-tint, var(--neko-surface-soft));
 }
 
 .countdown svg {
@@ -1167,11 +1192,11 @@
 }
 
 .countdown-track {
-  stroke: color-mix(in srgb, var(--neko-accent-soft) 30%, var(--neko-surface-soft));
+  stroke: color-mix(in srgb, var(--event-color, var(--neko-accent-soft)) 25%, transparent);
 }
 
 .countdown-ring {
-  stroke: var(--neko-accent-soft);
+  stroke: var(--event-color, var(--neko-accent-soft));
   stroke-linecap: round;
   transition: stroke-dashoffset var(--motion-slow) var(--ease-standard);
 }
@@ -1179,7 +1204,8 @@
 .countdown-label {
   font-size: 12px;
   font-weight: 800;
-  color: var(--neko-ink-soft);
+  color: var(--event-ink, var(--neko-ink-soft));
+  opacity: 0.8;
 }
 
 .countdown-value {
@@ -1187,7 +1213,8 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 28px;
-  color: var(--neko-accent);
+  color: var(--event-ink, var(--neko-accent-text));
+  font-variant-numeric: tabular-nums;
 }
 
 .next-main {
@@ -1220,15 +1247,15 @@
   gap: 4px;
   padding: 2px 9px;
   border-radius: 999px;
-  background: var(--neko-peach);
-  color: var(--neko-accent-ink);
+  background: var(--event-tint, var(--neko-peach));
+  color: var(--event-ink, var(--neko-accent-ink));
   font-size: 12px;
   letter-spacing: 0;
 }
 
 .next-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .next-sub {
@@ -1352,7 +1379,7 @@ fieldset {
   background: var(--neko-bg);
   color: var(--neko-ink);
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 textarea.input {
@@ -1466,8 +1493,8 @@ textarea.input {
   min-height: 36px;
   padding: 0 4px 0 12px;
   border-radius: 18px;
-  background: var(--neko-peach);
-  color: var(--neko-accent-ink);
+  background: color-mix(in srgb, var(--neko-ink) 7%, transparent);
+  color: var(--neko-ink);
   font-size: 13px;
   font-weight: 600;
 }
@@ -1572,13 +1599,10 @@ textarea.input {
 }
 
 /* ---------- Dettagli da gatto ----------
- * Piccoli segni del gatto di NekoCalendar, tutti disegnati qui (nessuna immagine esterna):
- * orecchie sul giorno di oggi e sopra le schede del pannello, zampette al posto dei pallini,
- * impronte leggerissime sullo sfondo. Sono decorazioni fisse, non la mascotte animata
- * (quella arriva nella fase grafica, dopo la 1.0).
+ * Un solo segno del gatto, nel punto che conta: il numero di oggi ha le orecchie.
+ * Tutto il resto resta tranquillo (la mascotte animata arriva nella fase grafica).
  */
 
-/* Oggi ha le orecchie. */
 .is-today .day-number,
 .timegrid-day.is-today .timegrid-date {
   position: relative;
@@ -1589,82 +1613,20 @@ textarea.input {
 .timegrid-day.is-today .timegrid-date::before {
   content: "";
   position: absolute;
-  top: -8px;
+  top: -7px;
   left: 50%;
-  width: 30px;
-  height: 11px;
+  width: 26px;
+  height: 10px;
   translate: -50% 0;
   background: inherit;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 30'%3E%3Cpath d='M4 30 Q8 6 18 2 Q24 0 28 8 L36 30 Z M44 30 L52 8 Q56 0 62 2 Q72 6 76 30 Z'/%3E%3C/svg%3E")
     center / contain no-repeat;
 }
 
-/* Le schede del pannello hanno un gatto nascosto dietro: si vedono solo le orecchie. */
-.side-panel .panel {
-  position: relative;
-}
-
-.side-panel .panel::before {
-  content: "";
-  position: absolute;
-  top: -15px;
-  left: 30px;
-  width: 52px;
-  height: 20px;
-  background: var(--neko-peach);
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 30'%3E%3Cpath d='M4 30 Q8 6 18 2 Q24 0 28 8 L36 30 Z M44 30 L52 8 Q56 0 62 2 Q72 6 76 30 Z'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-}
-
-/* Zampette al posto dei pallini colorati. */
-.chip-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 0;
-  background: var(--event-color);
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='12' cy='15.5' rx='5.2' ry='4.4'/%3E%3Cellipse cx='5.6' cy='10' rx='2.1' ry='2.6'/%3E%3Cellipse cx='9.4' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='14.6' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='18.4' cy='10' rx='2.1' ry='2.6'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-}
-
-/* Impronte leggerissime sullo sfondo, nel colore del tema. */
-.main {
-  position: relative;
-}
-
-.main::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: var(--neko-accent-soft);
-  opacity: 0.1;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg transform='translate(20 22) rotate(-18) scale(.75)'%3E%3Cellipse cx='12' cy='15.5' rx='5.2' ry='4.4'/%3E%3Cellipse cx='5.6' cy='10' rx='2.1' ry='2.6'/%3E%3Cellipse cx='9.4' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='14.6' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='18.4' cy='10' rx='2.1' ry='2.6'/%3E%3C/g%3E%3Cg transform='translate(92 86) rotate(16) scale(.6)'%3E%3Cellipse cx='12' cy='15.5' rx='5.2' ry='4.4'/%3E%3Cellipse cx='5.6' cy='10' rx='2.1' ry='2.6'/%3E%3Cellipse cx='9.4' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='14.6' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='18.4' cy='10' rx='2.1' ry='2.6'/%3E%3C/g%3E%3C/svg%3E")
-    repeat;
-  pointer-events: none;
-}
-
-.main > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Il saluto lascia un'impronta. */
-.greeting-title::after {
-  content: "";
-  display: inline-block;
-  width: 26px;
-  height: 26px;
-  margin-left: 8px;
-  vertical-align: -3px;
-  background: var(--neko-accent-soft);
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='12' cy='15.5' rx='5.2' ry='4.4'/%3E%3Cellipse cx='5.6' cy='10' rx='2.1' ry='2.6'/%3E%3Cellipse cx='9.4' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='14.6' cy='6.2' rx='2.1' ry='2.7'/%3E%3Cellipse cx='18.4' cy='10' rx='2.1' ry='2.6'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-  rotate: 14deg;
-}
-
 /* ---------- Movimento ----------
  * Regole: ogni animazione risponde a un gesto (o accompagna l'apertura dell'app),
- * dura meno di 400 ms, non blocca i clic e non gira all'infinito (zero consumo a riposo).
+ * dura al massimo 300-450 ms, non blocca i clic e non gira all'infinito (zero consumo
+ * a riposo). Curve di Material 3: si entra decisi e si rallenta, si esce in fretta.
  * Con "Riduci animazioni" di Windows si spengono tutte (base.css).
  */
 
@@ -1710,24 +1672,15 @@ textarea.input {
   transition-duration: 80ms;
 }
 
-.primary-btn:hover:not(:disabled) {
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--neko-accent) 35%, transparent);
-}
-
-.chip:hover,
-.block:hover {
-  filter: brightness(0.97);
-}
-
 /* Casella del mese: al passaggio compare un "+" discreto, cliccando si crea un evento lì. */
 .month-cell::after {
   content: "+";
   position: absolute;
-  top: 5px;
+  top: 8px;
   right: 10px;
   font-size: 18px;
   line-height: 26px;
-  color: var(--neko-accent);
+  color: var(--neko-ink-soft);
   opacity: 0;
   transform: scale(0.6);
   transition:
@@ -1745,36 +1698,32 @@ textarea.input {
   transition: background-color var(--motion-fast) var(--ease-standard);
 }
 
-.month-cell:not(.is-today):hover {
-  background: color-mix(in srgb, var(--neko-peach) 50%, var(--neko-surface));
-}
-
 /* Cambio di periodo o di vista: avanti entra da destra, indietro da sinistra. */
 @keyframes enter-from-right {
   from {
     opacity: 0;
-    transform: translateX(28px);
+    transform: translateX(32px);
   }
 }
 
 @keyframes enter-from-left {
   from {
     opacity: 0;
-    transform: translateX(-28px);
+    transform: translateX(-32px);
   }
 }
 
 @keyframes enter-fade {
   from {
     opacity: 0;
-    transform: scale(0.985);
+    transform: scale(0.98);
   }
 }
 
 @keyframes enter-rise {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
 }
 
@@ -1882,7 +1831,7 @@ textarea.input {
 @keyframes dialog-in {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.92);
+    transform: translateY(12px) scale(0.96);
   }
 }
 
@@ -1893,7 +1842,7 @@ textarea.input {
 }
 
 .dialog[open]:not(.is-morphed) {
-  animation: dialog-in var(--motion-spring) var(--ease-spring-soft);
+  animation: dialog-in var(--motion-slow) var(--ease-enter);
 }
 
 .dialog[open]::backdrop {
@@ -1910,7 +1859,7 @@ textarea.input {
 .shell .toolbar,
 .shell .calendar-area > .view-stage.enter-none,
 .shell .side-panel > * {
-  animation: enter-rise 420ms var(--ease-enter) backwards;
+  animation: enter-rise 400ms var(--ease-enter) backwards;
 }
 
 .shell .toolbar {
@@ -1941,7 +1890,7 @@ textarea.input {
 /* ---------- Trasformazioni (View Transitions) ----------
  * Il browser fotografa la schermata prima e dopo il cambio e anima tra le due
  * (vedi motion/viewTransition.ts). Qui si decide come:
- *   page     → la vista corrente: pagine 3D, dissolvenze;
+ *   page     → la vista corrente: scorrimenti e dissolvenze;
  *   vt-morph → l'elemento che si trasforma (giorno → vista Giorno, evento → finestra).
  * Dura al massimo poco più di mezzo secondo; con "Riduci animazioni" non parte.
  */
@@ -1974,67 +1923,67 @@ textarea.input {
 }
 
 /*
- * Avanti e indietro: le pagine scorrono di lato, con un po' di profondità.
- * La vecchia arretra e sfuma, la nuova arriva dal lato giusto con la molla morbida.
+ * Avanti e indietro: la pagina vecchia scivola via di poco e sfuma, la nuova arriva
+ * dal lato giusto (32 px) e si posa. Breve e sobrio: si cambia mese decine di volte.
  */
 @keyframes page-out-left {
   to {
     opacity: 0;
-    transform: translateX(-6%) scale(0.97);
+    transform: translateX(-16px);
   }
 }
 
 @keyframes page-out-right {
   to {
     opacity: 0;
-    transform: translateX(6%) scale(0.97);
+    transform: translateX(16px);
   }
 }
 
 @keyframes page-in-right {
   from {
     opacity: 0;
-    transform: translateX(9%);
+    transform: translateX(32px);
   }
 }
 
 @keyframes page-in-left {
   from {
     opacity: 0;
-    transform: translateX(-9%);
+    transform: translateX(-32px);
   }
 }
 
 :root[data-vt="next"]::view-transition-old(page) {
-  animation: page-out-left 190ms var(--ease-exit) both;
+  animation: page-out-left var(--motion-fast) var(--ease-exit) both;
 }
 
 :root[data-vt="next"]::view-transition-new(page) {
-  animation: page-in-right 480ms var(--ease-spring-soft) 110ms both;
+  animation: page-in-right var(--motion-slow) var(--ease-enter) 60ms both;
 }
 
 :root[data-vt="previous"]::view-transition-old(page) {
-  animation: page-out-right 190ms var(--ease-exit) both;
+  animation: page-out-right var(--motion-fast) var(--ease-exit) both;
 }
 
 :root[data-vt="previous"]::view-transition-new(page) {
-  animation: page-in-left 480ms var(--ease-spring-soft) 110ms both;
+  animation: page-in-left var(--motion-slow) var(--ease-enter) 60ms both;
 }
 
 /* Cambio vista e "Oggi": dissolvenza con un leggero zoom. */
 @keyframes vt-zoom-in {
   from {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
 }
 
 :root:is([data-vt="view"], [data-vt="today"])::view-transition-old(page) {
-  animation: vt-fade-out 160ms var(--ease-exit) both;
+  animation: vt-fade-out var(--motion-fast) var(--ease-exit) both;
 }
 
 :root:is([data-vt="view"], [data-vt="today"])::view-transition-new(page) {
-  animation: vt-zoom-in var(--motion-spring) var(--ease-spring-soft) both;
+  animation: vt-zoom-in var(--motion-slow) var(--ease-enter) both;
 }
 
 /* Trasformazione: giorno → vista Giorno, evento o pulsante → finestra (e ritorno). */
@@ -2042,8 +1991,8 @@ textarea.input {
   z-index: 10;
   overflow: clip;
   border-radius: var(--neko-radius-lg);
-  animation-duration: 520ms;
-  animation-timing-function: var(--ease-spring-soft);
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-enter);
 }
 
 /*

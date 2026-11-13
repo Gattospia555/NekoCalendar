@@ -66,23 +66,3 @@ export function CatLogo({ size = 28, color = "currentColor" }: { size?: number; 
     </svg>
   );
 }
-
-/** Zampetta decorativa, come nel mockup. */
-export function Paw({ size = 20 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-      className="paw"
-    >
-      <ellipse cx="12" cy="16" rx="5" ry="4.2" />
-      <ellipse cx="5.5" cy="10.5" rx="2" ry="2.6" />
-      <ellipse cx="9.5" cy="6.5" rx="2" ry="2.7" />
-      <ellipse cx="14.5" cy="6.5" rx="2" ry="2.7" />
-      <ellipse cx="18.5" cy="10.5" rx="2" ry="2.6" />
-    </svg>
-  );
-}

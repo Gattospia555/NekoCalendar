@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import { Dialog } from "./Dialog";
-import { EVENT_COLORS } from "../occurrenceUtils";
+import { EVENT_HUES, HUE_STRIPES } from "../eventPalette";
 
 interface CalendarDialogProps {
   onCreate: (name: string, color: string) => void;
@@ -12,7 +12,7 @@ export function CalendarDialog({ onCreate, onClose }: CalendarDialogProps) {
   const { t } = useI18n();
   const uid = useId();
   const [name, setName] = useState("");
-  const [color, setColor] = useState(EVENT_COLORS[3]);
+  const [color, setColor] = useState(HUE_STRIPES.menta);
   const valid = name.trim().length > 0;
 
   const submit = () => {
@@ -56,16 +56,16 @@ export function CalendarDialog({ onCreate, onClose }: CalendarDialogProps) {
         <fieldset className="colors">
           <legend>{t("calendars.color")}</legend>
           <div className="swatches">
-            {EVENT_COLORS.map((value) => (
-              <label key={value} className="swatch">
+            {EVENT_HUES.map((hue) => (
+              <label key={hue} className="swatch" title={t(`color.${hue}`)}>
                 <input
                   type="radio"
                   name={`${uid}-color`}
-                  checked={color === value}
-                  onChange={() => setColor(value)}
+                  checked={color === HUE_STRIPES[hue]}
+                  onChange={() => setColor(HUE_STRIPES[hue])}
                 />
-                <span style={{ background: value }} aria-hidden="true" />
-                <span className="sr-only">{value}</span>
+                <span style={{ background: `var(--ev-${hue}-stripe)` }} aria-hidden="true" />
+                <span className="sr-only">{t(`color.${hue}`)}</span>
               </label>
             ))}
           </div>

@@ -1,32 +1,42 @@
-import type { EventKind, Occurrence } from "@/domain/types";
+import type { Occurrence } from "@/domain/types";
 import { formatTime } from "@/presentation/i18n/i18n";
-import { tint, useFreshClass, useOccurrenceTitle } from "../occurrenceUtils";
-import { Icon, type IconName } from "./Icons";
+import { emojiUrl, iconOf } from "../emoji";
+import { eventStyle, useFreshClass, useOccurrenceTitle } from "../occurrenceUtils";
 
-const KIND_ICONS: Record<EventKind, IconName> = {
-  event: "calendar",
-  birthday: "cake",
-  anniversary: "heart",
-  task: "task",
-  holiday: "flag",
-};
-
-/** "Copertina" quadrata come gli album di NekoTune: colore dell'evento e icona del tipo. */
+/**
+ * "Copertina" quadrata come gli album di NekoTune: la tinta dell'evento e la sua icona
+ * a colori (scelta dal titolo: torta per i compleanni, aereo per i viaggi…).
+ */
 export function Cover({
   occurrence,
   size = 52,
 }: {
-  occurrence: Pick<Occurrence, "kind" | "color">;
+  occurrence: Pick<Occurrence, "kind" | "color" | "title">;
   size?: number;
 }) {
+  const emoji = Math.round(size * 0.62);
   return (
     <span
       className="cover"
-      style={{ ...tint(occurrence.color), width: size, height: size }}
+      style={{ ...eventStyle(occurrence.color), width: size, height: size }}
       aria-hidden="true"
     >
-      <Icon name={KIND_ICONS[occurrence.kind]} size={Math.round(size * 0.5)} />
+      <img src={emojiUrl(iconOf(occurrence), "3d")} alt="" width={emoji} height={emoji} />
     </span>
+  );
+}
+
+/** Icona piccola e piatta per etichette e blocchi del calendario. */
+export function EventEmoji({ occurrence }: { occurrence: Pick<Occurrence, "kind" | "title"> }) {
+  return (
+    <img
+      className="event-emoji"
+      src={emojiUrl(iconOf(occurrence), "flat")}
+      alt=""
+      width={14}
+      height={14}
+      aria-hidden="true"
+    />
   );
 }
 
@@ -46,14 +56,14 @@ export function OccurrenceChip({
     <button
       type="button"
       className={`chip${occurrence.done ? " chip-done" : ""}${fresh}`}
-      style={tint(occurrence.color)}
+      style={eventStyle(occurrence.color)}
       title={time ? `${time} ${title}` : title}
       onClick={(event) => {
         event.stopPropagation();
         onOpen(occurrence, event.currentTarget);
       }}
     >
-      <span className="chip-dot" aria-hidden="true" />
+      <EventEmoji occurrence={occurrence} />
       {time && <span className="chip-time">{time}</span>}
       <span className="chip-title">{title}</span>
     </button>

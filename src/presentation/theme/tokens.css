@@ -1,22 +1,26 @@
 /*
- * Tema "Base Neko" (chiaro/scuro), versione morbida: i colori della famiglia NekoTune
- * resi più tenui, angoli tondi, ombre calde, Fraunces "soft" e Nunito.
- * È lo Style Pack predefinito, sempre gratuito.
- * In M4 questi valori arriveranno dal file style.json dello Style Pack.
+ * Tema "Base Neko", direzione "Latte & Fusa" (ADR-0008): minimalismo caldo.
+ * La profondità viene da tre livelli di superficie, non da bordi e ombre; il colore
+ * vero sta negli eventi (otto tinte); il terracotta è riservato alle azioni.
+ * È lo Style Pack predefinito, sempre gratuito. In M4 questi valori arriveranno
+ * dal file style.json dello Style Pack.
  */
 :root {
   color-scheme: light;
 
-  --neko-bg: #fdf6f1;
-  --neko-bg-top: #fce6da;
-  --neko-surface: #fffcfa;
-  --neko-surface-soft: #fcf2eb;
-  --neko-peach: #fde3d4;
-  --neko-line: #f5e8de;
-  --neko-ink: #2e211b;
-  --neko-ink-soft: #6e5f55;
+  /* Superfici: fondo dell'app, superficie rialzata (schede, pannelli), superficie tenue. */
+  --neko-bg: #f6efe6;
+  --neko-bg-top: #f3e6da;
+  --neko-surface: #fffdfa;
+  --neko-surface-soft: #fbf6f0;
+  --neko-peach: #f6e2d3;
+  --neko-line: #ede3d8;
+  --neko-ink: #3a2e26;
+  --neko-ink-soft: #6f6054;
+  /* Azioni: terracotta. Per i testi piccoli una versione più scura (contrasto ≥ 4,5:1). */
   --neko-accent: #a8613f;
-  --neko-accent-soft: #c58463;
+  --neko-accent-text: #94532f;
+  --neko-accent-soft: #c98a63;
   --neko-accent-ink: #7a3f22;
   --neko-on-accent: #ffffff;
   --neko-good: #1e6b43;
@@ -25,28 +29,61 @@
   --neko-warn-bg: #fbefc9;
   --neko-danger: #9a2f1f;
 
-  /* Morbido: angoli tondi e ombre calde e sfumate, come cuscini. */
-  --neko-radius-sm: 14px;
-  --neko-radius: 22px;
-  --neko-radius-lg: 30px;
-  --neko-shadow: 0 8px 28px rgba(205, 140, 105, 0.14);
-  --neko-shadow-strong: 0 20px 56px rgba(170, 105, 75, 0.22);
+  /*
+   * Colori degli eventi: tinta (sfondo), striscia (barretta o pallino) e testo.
+   * Ogni coppia testo/tinta supera 6:1 di contrasto. Vedi eventPalette.ts.
+   */
+  --ev-salvia-tint: #e3f0dc;
+  --ev-salvia-stripe: #6fa35a;
+  --ev-salvia-ink: #2f5424;
+  --ev-cielo-tint: #ddebf7;
+  --ev-cielo-stripe: #5b93c7;
+  --ev-cielo-ink: #24496b;
+  --ev-mirtillo-tint: #e2e4f8;
+  --ev-mirtillo-stripe: #6470c8;
+  --ev-mirtillo-ink: #2e3577;
+  --ev-lavanda-tint: #ece4f7;
+  --ev-lavanda-stripe: #9478c9;
+  --ev-lavanda-ink: #4a3577;
+  --ev-rosa-tint: #fbe1e8;
+  --ev-rosa-stripe: #d96c8a;
+  --ev-rosa-ink: #7a2e44;
+  --ev-miele-tint: #fbf0cc;
+  --ev-miele-stripe: #d9a520;
+  --ev-miele-ink: #6b4f00;
+  --ev-menta-tint: #d9f0ec;
+  --ev-menta-stripe: #3fa394;
+  --ev-menta-ink: #1e5a51;
+  --ev-ardesia-tint: #e9e6e2;
+  --ev-ardesia-stripe: #8c847c;
+  --ev-ardesia-ink: #45403a;
+
+  /* Forme: quattro raggi soltanto (etichette, blocchi e campi, schede e finestre, pillole). */
+  --neko-radius-xs: 6px;
+  --neko-radius-sm: 10px;
+  --neko-radius: 16px;
+  --neko-radius-lg: 16px;
+  --neko-radius-pill: 999px;
+
+  /* Ombre quasi invisibili, nel marrone caldo del tema; più marcate solo per finestre e menu. */
+  --neko-shadow: 0 1px 2px rgb(74 52 38 / 0.04);
+  --neko-shadow-strong: 0 1px 2px rgb(74 52 38 / 0.05), 0 8px 24px -6px rgb(74 52 38 / 0.14);
 
   --font-display: "Fraunces Variable", Georgia, serif;
   --font-body: "Nunito Variable", "Nunito", system-ui, sans-serif;
 
-  /* Movimento: durate brevi e curve morbide, uguali in tutta l'app. */
-  --motion-fast: 120ms;
+  /* Movimento (curve di Material 3): standard, ingresso deciso, uscita rapida. */
+  --motion-fast: 150ms;
   --motion-normal: 200ms;
-  --motion-slow: 320ms;
+  --motion-slow: 300ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
-  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
   /*
    * Molle (curve elastiche): arrivano un po' oltre e tornano indietro.
    * Generate da una molla smorzata (smorzamento 0,55 e 0,7), scritte con linear().
    */
-  --motion-spring: 560ms;
+  --motion-spring: 500ms;
   --ease-spring: linear(
     0,
     0.055,
@@ -107,55 +144,91 @@
     1.004,
     1
   );
-  --press-scale: 0.95;
+  --press-scale: 0.96;
   /* Con "Riduci animazioni" di Windows le animazioni si spengono del tutto (base.css). */
 }
 
-/* Tema scuro: segue Windows ("auto") oppure la scelta fatta nelle impostazioni. */
+/* Tema scuro, caldo e mai nero: segue Windows ("auto") oppure la scelta nelle impostazioni. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --neko-bg: #201915;
-    --neko-bg-top: #2d211b;
-    --neko-surface: #2b221d;
-    --neko-surface-soft: #342923;
-    --neko-peach: #4d372b;
-    --neko-line: #3b2f28;
-    --neko-ink: #f7eee8;
-    --neko-ink-soft: #cdbcaf;
-    --neko-accent: #e8a986;
-    --neko-accent-soft: #c98a69;
-    --neko-accent-ink: #f6cdb3;
-    --neko-on-accent: #1f1814;
+    --neko-bg: #1c1815;
+    --neko-bg-top: #241e1a;
+    --neko-surface: #2e2924;
+    --neko-surface-soft: #24201c;
+    --neko-peach: #3f3028;
+    --neko-line: #3a332d;
+    --neko-ink: #f3ebe2;
+    --neko-ink-soft: #b8a898;
+    --neko-accent: #e59a73;
+    --neko-accent-text: #eaa682;
+    --neko-accent-soft: #c98a63;
+    --neko-accent-ink: #f4c9ae;
+    --neko-on-accent: #1c1815;
     --neko-good: #9ad8b1;
     --neko-good-bg: #1f3a2a;
     --neko-warn: #f1d27a;
     --neko-warn-bg: #3d3216;
     --neko-danger: #f2a497;
-    --neko-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
-    --neko-shadow-strong: 0 20px 56px rgba(0, 0, 0, 0.5);
+    /* Al buio niente ombre: un filo di luce sul bordo superiore. */
+    --neko-shadow: inset 0 1px 0 rgb(255 240 225 / 0.05);
+    --neko-shadow-strong: inset 0 1px 0 rgb(255 240 225 / 0.06), 0 12px 32px -8px rgb(0 0 0 / 0.55);
+    --ev-salvia-tint: #26331f;
+    --ev-salvia-ink: #bfe0ae;
+    --ev-cielo-tint: #1e2c3a;
+    --ev-cielo-ink: #b5d3ef;
+    --ev-mirtillo-tint: #24263f;
+    --ev-mirtillo-ink: #c3c8f2;
+    --ev-lavanda-tint: #2d2540;
+    --ev-lavanda-ink: #d6c7f0;
+    --ev-rosa-tint: #3a2229;
+    --ev-rosa-ink: #f4bfcd;
+    --ev-miele-tint: #352d17;
+    --ev-miele-ink: #f0d98a;
+    --ev-menta-tint: #1d3330;
+    --ev-menta-ink: #a8e0d6;
+    --ev-ardesia-tint: #2c2926;
+    --ev-ardesia-ink: #d9d3cc;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --neko-bg: #201915;
-  --neko-bg-top: #2d211b;
-  --neko-surface: #2b221d;
-  --neko-surface-soft: #342923;
-  --neko-peach: #4d372b;
-  --neko-line: #3b2f28;
-  --neko-ink: #f7eee8;
-  --neko-ink-soft: #cdbcaf;
-  --neko-accent: #e8a986;
-  --neko-accent-soft: #c98a69;
-  --neko-accent-ink: #f6cdb3;
-  --neko-on-accent: #1f1814;
+  --neko-bg: #1c1815;
+  --neko-bg-top: #241e1a;
+  --neko-surface: #2e2924;
+  --neko-surface-soft: #24201c;
+  --neko-peach: #3f3028;
+  --neko-line: #3a332d;
+  --neko-ink: #f3ebe2;
+  --neko-ink-soft: #b8a898;
+  --neko-accent: #e59a73;
+  --neko-accent-text: #eaa682;
+  --neko-accent-soft: #c98a63;
+  --neko-accent-ink: #f4c9ae;
+  --neko-on-accent: #1c1815;
   --neko-good: #9ad8b1;
   --neko-good-bg: #1f3a2a;
   --neko-warn: #f1d27a;
   --neko-warn-bg: #3d3216;
   --neko-danger: #f2a497;
-  --neko-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
-  --neko-shadow-strong: 0 20px 56px rgba(0, 0, 0, 0.5);
+  /* Al buio niente ombre: un filo di luce sul bordo superiore. */
+  --neko-shadow: inset 0 1px 0 rgb(255 240 225 / 0.05);
+  --neko-shadow-strong: inset 0 1px 0 rgb(255 240 225 / 0.06), 0 12px 32px -8px rgb(0 0 0 / 0.55);
+  --ev-salvia-tint: #26331f;
+  --ev-salvia-ink: #bfe0ae;
+  --ev-cielo-tint: #1e2c3a;
+  --ev-cielo-ink: #b5d3ef;
+  --ev-mirtillo-tint: #24263f;
+  --ev-mirtillo-ink: #c3c8f2;
+  --ev-lavanda-tint: #2d2540;
+  --ev-lavanda-ink: #d6c7f0;
+  --ev-rosa-tint: #3a2229;
+  --ev-rosa-ink: #f4bfcd;
+  --ev-miele-tint: #352d17;
+  --ev-miele-ink: #f0d98a;
+  --ev-menta-tint: #1d3330;
+  --ev-menta-ink: #a8e0d6;
+  --ev-ardesia-tint: #2c2926;
+  --ev-ardesia-ink: #d9d3cc;
 }

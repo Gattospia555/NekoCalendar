@@ -8,7 +8,6 @@ import {
 } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import { useOccurrenceTitle } from "../occurrenceUtils";
-import { Paw } from "./Icons";
 import { Cover } from "./OccurrenceBits";
 
 interface SidePanelProps {
@@ -61,7 +60,6 @@ export function SidePanel({
       <section className="panel card" aria-labelledby="panel-upcoming">
         <div className="panel-head">
           <h2 id="panel-upcoming">{t("panel.upcoming")}</h2>
-          <Paw size={22} />
         </div>
         {upcoming.length === 0 ? (
           <p className="panel-empty">{t("panel.noUpcoming")}</p>
