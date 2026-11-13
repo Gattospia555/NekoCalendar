@@ -4,10 +4,10 @@ NekoCalendar include o usa questi componenti di terze parti. L'elenco completo d
 
 ## Font (inclusi nell'app)
 
-| Font                 | Autori                             | Licenza                   | Fonte                                                                                          |
-| -------------------- | ---------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
-| Fraunces (variabile) | The Fraunces Project Authors       | SIL Open Font License 1.1 | [github.com/undercasetype/Fraunces](https://github.com/undercasetype/Fraunces), via Fontsource |
-| Poppins              | Indian Type Foundry, Jonny Pinhorn | SIL Open Font License 1.1 | Google Fonts, via Fontsource                                                                   |
+| Font                                     | Autori                                                                          | Licenza                   | Fonte                                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
+| Fraunces (variabile, assi peso e "SOFT") | The Fraunces Project Authors                                                    | SIL Open Font License 1.1 | [github.com/undercasetype/Fraunces](https://github.com/undercasetype/Fraunces), via Fontsource |
+| Nunito (variabile)                       | The Nunito Project Authors (Vernon Adams, Jacques Le Bailly, Manvel Shmavonyan) | SIL Open Font License 1.1 | [github.com/googlefonts/nunito](https://github.com/googlefonts/nunito), via Fontsource         |
 
 ## Librerie principali
 

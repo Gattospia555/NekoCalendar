@@ -1,10 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "@fontsource-variable/fraunces";
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/500.css";
-import "@fontsource/poppins/600.css";
-import "@fontsource/poppins/700.css";
+// Fraunces con l'asse "SOFT" (lettere più morbide) e Nunito, tondo e accogliente.
+import "@fontsource-variable/fraunces/soft.css";
+import "@fontsource-variable/nunito";
 import "@/presentation/theme/tokens.css";
 import "@/presentation/theme/base.css";
 import { App } from "@/presentation/app/App";
