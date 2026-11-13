@@ -75,7 +75,7 @@ export function TimeGridView({
             aria-label={formatDayLong(language, day)}
             onClick={(event) => onOpenDay(day, event.currentTarget)}
           >
-            <span className="timegrid-weekday">{names[weekdayIndex(day)].toUpperCase()}</span>
+            <span className="timegrid-weekday">{names[weekdayIndex(day)]}</span>
             <span className="timegrid-date">{parseDateKey(day).day}</span>
           </button>
         ))}

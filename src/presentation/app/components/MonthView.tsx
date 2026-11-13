@@ -8,7 +8,7 @@ import { useI18n } from "@/presentation/i18n/I18nContext";
 import { OccurrenceChip } from "./OccurrenceBits";
 
 /** Spazio occupato in una casella da numero del giorno e margini, da ogni etichetta e da "+N". */
-const CELL_CHROME_PX = 39;
+const CELL_CHROME_PX = 45;
 const CHIP_PX = 25;
 const MORE_PX = 21;
 const GAP_PX = 3;
@@ -75,7 +75,7 @@ export function MonthView({
       <div className="month-head" role="row">
         {names.map((name) => (
           <div key={name} role="columnheader" className="month-weekday">
-            {name.toUpperCase()}
+            {name}
           </div>
         ))}
       </div>
@@ -112,9 +112,7 @@ export function MonthView({
                     ? formatDayMonth(language, day)
                     : parseDateKey(day).day}
                 </button>
-                {day === today && (
-                  <span className="today-label">{t("agenda.today").toUpperCase()}</span>
-                )}
+                {day === today && <span className="today-label">{t("agenda.today")}</span>}
                 <div className="month-chips">
                   {shown.map((o) => (
                     <OccurrenceChip key={o.key} occurrence={o} onOpen={onOpen} />

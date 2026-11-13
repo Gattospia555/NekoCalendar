@@ -51,7 +51,7 @@ function Countdown({ minutes, title }: { minutes: number; title: string }) {
           transform="rotate(-90 23 23)"
         />
       </svg>
-      <span className="countdown-label">{t("footer.countdown").toUpperCase()}</span>
+      <span className="countdown-label">{t("footer.countdown")}</span>
       <span className="countdown-value">{value}</span>
     </div>
   );
@@ -91,7 +91,7 @@ export function NextEventBar({ now, upcoming, onOpen, onDone }: NextEventBarProp
         <Cover occurrence={next} size={58} />
         <div className="next-text">
           <div className="next-label">
-            <span>{t("footer.label").toUpperCase()}</span>
+            <span>{t("footer.label")}</span>
             <span className="badge">
               <Icon name="clock" size={13} /> {badge}
             </span>
