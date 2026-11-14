@@ -1,6 +1,6 @@
 # ADR-0008: Direzione "Latte & Fusa" per il tema base
 
-**Stato:** Accettato · **Data:** 2026-11-13 · **Decisori:** proprietario del progetto (Gatto), dopo una ricerca dell'agente AI · **Sostituisce in parte:** [ADR-0007](0007-stile-morbido-e-gattoso.md)
+**Stato:** Sostituito in parte da [ADR-0009](0009-stile-famiglia-neko.md) (restano tinte e icone degli eventi e curve di movimento) · **Data:** 2026-11-13 · **Decisori:** proprietario del progetto (Gatto), dopo una ricerca dell'agente AI · **Sostituisce in parte:** [ADR-0007](0007-stile-morbido-e-gattoso.md)
 
 ## Contesto
 

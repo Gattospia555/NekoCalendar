@@ -82,7 +82,11 @@ flowchart TB
 
 ## Aspetto (tema base)
 
-- Direzione "Latte & Fusa" ([ADR-0008](adr/0008-direzione-latte-e-fusa.md)): colori, raggi, ombre e curve sono token in `src/presentation/theme/tokens.css`.
+- Stile della famiglia Neko ([ADR-0009](adr/0009-stile-famiglia-neko.md), [guida](style-neko.md)), coerente con NekoTune: colori, raggi, ombre, font (Plus Jakarta Sans) e curve sono token in `src/presentation/theme/tokens.css`.
+- **Struttura** in tre colonne (`CalendarApp.tsx`): `Sidebar` (nuovo evento, `MiniMonth`, calendari), la vista corrente con `Toolbar`, `NekoPanel` (Neko, countdown, attività, in arrivo). Sotto i 1180 px il pannello di Neko scende sotto la vista.
+- **Cielo**: `skyPeriod` (dominio, `domain/neko.ts`) dice se è mattina, pomeriggio, sera o notte; `<div class="shell" data-sky>` sceglie la sfumatura (`--sky-*`). Con il tema scuro è sempre notte.
+- **Neko**: `nekoMessage` (dominio) sceglie la frase in base all'ora e ai prossimi impegni; l'interfaccia la traduce (`neko.*` in `messages.ts`) e mostra il disegno sveglio o assonnato (`src/presentation/assets/neko/`).
+- **Vista Giorno** (`DayTimeline.tsx`): striscia della settimana con i pallini (`busyDays` e `occurrencesOnDay`), poi gli impegni come linea del tempo; la vista Settimana usa ancora la griglia oraria (`TimeGridView`).
 - **Colori degli eventi** (`presentation/app/eventPalette.ts`): otto tinte, ognuna con `--ev-<nome>-tint|stripe|ink` per chiaro e scuro. Nel database si salva il colore della striscia; `hueOf` riconduce qualsiasi colore (anche delle versioni precedenti) alla tinta più vicina e `eventStyle` imposta le variabili CSS `--event-tint`, `--event-color` e `--event-ink` sull'elemento.
 - **Icone degli eventi**: `suggestIcon` (dominio, `domain/eventIcon.ts`) sceglie l'icona dal titolo e dal tipo; `presentation/app/emoji.ts` trova il file (Fluent Emoji, 3D o piatto) in `src/presentation/assets/emoji/`. Le icone restano file separati, non incorporati nel JavaScript.
 

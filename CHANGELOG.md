@@ -26,6 +26,10 @@ Milestone M1: dati e calendario.
 - Icone a colori per gli eventi (Fluent Emoji di Microsoft, MIT), scelte in automatico dal titolo e dal tipo: torta per i compleanni, aereo per i viaggi, piatto per le cene…
 - Ora corrente leggibile accanto alla linea rossa nelle viste Giorno e Settimana.
 - Nomi dei colori nell'editor (Salvia, Cielo, Mirtillo…), letti anche dagli screen reader.
+- Vista Giorno come linea del tempo: striscia della settimana con i pallini degli impegni, icone grandi, cose passate sbiadite, linea di "adesso" con l'ora e il prossimo impegno in evidenza.
+- Neko, il gatto di NekoCalendar: seduto sul suo pannello, parla dei prossimi impegni (sveglio di giorno, assonnato di notte), con il countdown del prossimo evento.
+- Mini calendario del mese nella colonna sinistra, "In arrivo" con le copertine dei prossimi eventi.
+- Guida di stile della famiglia Neko ([docs/style-neko.md](docs/style-neko.md)).
 
 ### Changed
 
@@ -38,6 +42,8 @@ Milestone M1: dati e calendario.
 - Grafica più vicina al mockup approvato: caselle del mese pulite (con "1 dic" per il primo giorno di un altro mese), etichette con l'ora in grassetto nel colore dell'evento, intestazione con le frecce accanto al titolo, date brevi nei prossimi eventi.
 - Tema base "morbido e gattoso" ([ADR-0007](docs/adr/0007-stile-morbido-e-gattoso.md)): colori più tenui e caldi, angoli tondi, mese a cuscinetti, etichette a pillola, ombre calde, Nunito al posto di Poppins, Fraunces "soft", niente etichette tutte maiuscole; orecchie sul giorno di oggi e sopra le schede, zampette al posto dei pallini, impronte leggere sullo sfondo.
 - Tema base "Latte & Fusa" ([ADR-0008](docs/adr/0008-direzione-latte-e-fusa.md)), dopo una ricerca sulle app di riferimento: superfici a tre livelli al posto di bordi e ombre, terracotta solo per le azioni, otto tinte per gli eventi in chiaro e in scuro, mese a griglia sottile, quattro raggi, curve di movimento di Material 3, festeggiamento più piccolo e solo per le attività, countdown nei colori del prossimo evento. Il gatto resta in un solo punto: le orecchie sul giorno di oggi.
+- Stile della famiglia Neko ([ADR-0009](docs/adr/0009-stile-famiglia-neko.md)), coerente con NekoTune: sfondo a "cielo" crema-lilla che segue l'ora, pannelli chiari e tondi, Plus Jakarta Sans al posto di Fraunces e Nunito, accento pesca (più profondo dove c'è testo, per il contrasto), pulsanti icona tondi, etichette di sezione maiuscole.
+- Nuova struttura in tre colonne: calendario a sinistra, vista al centro, Neko a destra. La barra del prossimo evento in basso è sostituita dal countdown nel pannello di Neko; "Nuovo evento" passa nella colonna sinistra.
 - Nuovi colori dei calendari predefiniti (Personale salvia, Lavoro cielo, Compleanni rosa) e delle festività (miele); i colori già salvati vengono ricondotti alla tinta più vicina.
 
 ### Fixed
