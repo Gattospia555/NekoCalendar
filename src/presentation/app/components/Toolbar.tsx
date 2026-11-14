@@ -100,7 +100,7 @@ export function Toolbar(props: ToolbarProps) {
           {hello}
           {subtitle ? ` · ${subtitle}` : ""}
         </p>
-        <h1 key={title} className={`enter-${props.transition}`}>
+        <h1 key={title} className={props.transition === "none" ? undefined : "enter-title"}>
           {match ? (
             <>
               {match[1]}

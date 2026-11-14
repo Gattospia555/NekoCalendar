@@ -601,10 +601,10 @@
   border-radius: var(--neko-radius-pill);
   background: var(--neko-surface);
   box-shadow: 0 2px 6px rgb(110 70 60 / 0.12);
-  /* molla: l'indicatore arriva un filo oltre il pulsante e torna indietro */
+  /* molla leggera, come in NekoTune: l'indicatore arriva un filo oltre e torna */
   transition:
-    transform var(--motion-spring) var(--ease-spring),
-    width var(--motion-spring) var(--ease-spring);
+    transform var(--motion-normal) var(--ease-bounce),
+    width var(--motion-normal) var(--ease-bounce);
 }
 
 /* ---------- Vista Giorno: la giornata come linea del tempo ---------- */
@@ -2012,13 +2012,16 @@ textarea.input {
 }
 
 /* ---------- Movimento ----------
- * Regole: ogni animazione risponde a un gesto (o accompagna l'apertura dell'app),
- * dura al massimo 300-450 ms, non blocca i clic e non gira all'infinito (zero consumo
- * a riposo). Curve di Material 3: si entra decisi e si rallenta, si esce in fretta.
- * Con "Riduci animazioni" di Windows si spengono tutte (base.css).
+ * Lo stesso linguaggio di NekoTune (src/style.css di NekoTune):
+ * - curva "a molla" leggera (--ease-bounce) per i piccoli effetti, 200-350 ms;
+ * - le sezioni entrano salendo appena e apparendo (fadeInUp), niente scorrimenti di lato;
+ * - le schede si sollevano al passaggio del mouse, i pulsanti si schiacciano al clic;
+ * - le finestre si aprono con un piccolo "pop".
+ * Ogni animazione risponde a un gesto (o all'apertura di una vista) e non gira
+ * all'infinito: a riposo il consumo resta zero. Con "Riduci animazioni" si spengono (base.css).
  */
 
-/* Risposta al clic: i pulsanti "cedono" un attimo, i colori cambiano morbidi. */
+/* Colori e sfondi cambiano morbidi, le forme rispondono con la molla. */
 .round-btn,
 .icon-btn,
 .pill-btn,
@@ -2034,33 +2037,99 @@ textarea.input {
 .tl-card,
 .week-day,
 .mini-day,
+.mini-nav,
 .coming-card,
 .task-row,
 .calendar-row,
 .year-day,
-.mini-btn {
+.mini-btn > span {
   transition:
     background-color var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
     box-shadow var(--motion-normal) var(--ease-standard),
-    transform var(--motion-spring) var(--ease-spring),
-    filter var(--motion-fast) var(--ease-standard);
+    transform var(--motion-fast) var(--ease-bounce);
 }
 
+/* Pulsanti tondi: al passaggio salgono di un pixel, prendono il pesca e un alone. */
+.round-btn:hover,
+.mini-nav:hover,
+.mini-btn:hover > span {
+  color: var(--neko-accent-text);
+  border-color: color-mix(in srgb, var(--neko-accent-soft) 55%, var(--neko-line));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--neko-accent-soft) 35%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Pulsante principale: si alza e si illumina. */
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--neko-accent) 45%, transparent);
+}
+
+.pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Al clic tutto "cede" un attimo e torna su con la molla. */
 .round-btn:active,
 .icon-btn:active,
 .pill-btn:active,
-.primary-btn:active:not(:disabled),
 .ghost-btn:active,
 .danger-btn:active,
 .segmented button:active,
 .day-number:active,
+.mini-day:active,
+.mini-nav:active,
+.week-day:active,
 .chip:active,
 .block:active,
-.mini-btn:active {
-  /* si schiaccia subito, poi al rilascio torna su con un piccolo rimbalzo */
-  transform: scale(var(--press-scale));
-  transition-duration: 80ms;
+.mini-btn:active > span {
+  transform: scale(0.92);
+  transition: transform 0.1s var(--ease-bounce);
+}
+
+.primary-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  transition: transform 0.1s var(--ease-bounce);
+}
+
+/* Voci della colonna sinistra: scivolano un poco a destra, come il menu di NekoTune. */
+.calendar-row:hover,
+.nav-item:hover {
+  transform: translateX(4px);
+}
+
+/* Schede: si sollevano al passaggio; la copertina si ingrandisce piano. */
+.coming-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 16px 28px -14px rgb(90 60 50 / 0.5);
+}
+
+.coming-card:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: transform 0.1s var(--ease-bounce);
+}
+
+.coming-card img {
+  transition: transform var(--motion-slow) var(--ease-out-quint);
+}
+
+.coming-card:hover img {
+  transform: scale(1.06);
+}
+
+.tl-card:hover,
+.agenda-item:hover {
+  transform: translateY(-2px);
+}
+
+.tl-item.is-next .tl-card:hover {
+  box-shadow: 0 10px 24px -10px rgb(90 60 50 / 0.35);
+}
+
+.week-day:hover {
+  transform: translateY(-2px);
 }
 
 /* Casella del mese: al passaggio compare un "+" discreto, cliccando si crea un evento lì. */
@@ -2076,7 +2145,7 @@ textarea.input {
   transform: scale(0.6);
   transition:
     opacity var(--motion-fast) var(--ease-standard),
-    transform var(--motion-normal) var(--ease-standard);
+    transform var(--motion-fast) var(--ease-bounce);
   pointer-events: none;
 }
 
@@ -2089,119 +2158,115 @@ textarea.input {
   transition: background-color var(--motion-fast) var(--ease-standard);
 }
 
-/* Cambio di periodo o di vista: avanti entra da destra, indietro da sinistra. */
-@keyframes enter-from-right {
+/* Entrate: come le sezioni e le schede di NekoTune. */
+@keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateX(32px);
+    transform: translateY(20px);
   }
 }
 
-@keyframes enter-from-left {
+@keyframes card-fade-up {
   from {
     opacity: 0;
-    transform: translateX(-32px);
+    transform: translateY(20px) scale(0.95);
   }
 }
 
-@keyframes enter-fade {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-}
-
-@keyframes enter-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
-.enter-next {
-  animation: enter-from-right var(--motion-slow) var(--ease-enter);
-}
-
-.enter-previous {
-  animation: enter-from-left var(--motion-slow) var(--ease-enter);
-}
-
-.enter-view,
-.enter-today {
-  animation: enter-fade var(--motion-slow) var(--ease-enter);
-}
-
-/* Il titolo segue con un movimento più piccolo, così non distrae. */
-.toolbar h1.enter-next {
-  animation-name: enter-from-right;
-  animation-duration: var(--motion-normal);
-}
-
-/* "Oggi": la casella o la colonna di oggi si accende un momento per farsi trovare. */
-@keyframes today-glow {
-  0%,
-  100% {
-    box-shadow: inset 0 0 0 0 transparent;
-  }
-  35% {
-    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--neko-accent) 55%, transparent);
-  }
-}
-
-.via-today .month-cell.is-today,
-.via-today .year-day.is-today {
-  animation: today-glow 900ms var(--ease-standard) 120ms;
-}
-
-.via-today .timegrid-day.is-today .timegrid-date,
-.via-today .is-today .day-number {
-  animation: pop 420ms var(--ease-standard) 150ms;
-}
-
-/* Evento appena salvato: un piccolo "pop" dice dove è finito. */
-@keyframes pop {
+@keyframes pop-in {
   0% {
-    transform: scale(1);
+    opacity: 0;
+    transform: scale(0.8);
   }
-  40% {
-    transform: scale(1.08);
+
+  60% {
+    transform: scale(1.05);
   }
+
   100% {
+    opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes fresh-glow {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--event-color) 60%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 8px transparent;
-  }
-}
-
-@keyframes arrive {
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: scale(0.5);
   }
 }
 
+/* Cambio di periodo o di vista: il contenuto sale appena e appare. */
+.enter-view {
+  animation: fade-in-up var(--motion-normal) ease-out;
+}
+
+.toolbar h1.enter-title {
+  animation: fade-in-up var(--motion-normal) ease-out;
+}
+
+/* Le righe della giornata e le copertine entrano una dopo l'altra, con la molla. */
+.timeline > .tl-item,
+.coming-grid > li {
+  animation: card-fade-up 0.5s var(--ease-bounce) backwards;
+}
+
+.timeline > .tl-item:nth-child(2),
+.coming-grid > li:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+.timeline > .tl-item:nth-child(3),
+.coming-grid > li:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+.timeline > .tl-item:nth-child(4),
+.coming-grid > li:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+.timeline > .tl-item:nth-child(n + 5) {
+  animation-delay: 0.2s;
+}
+
+/* Elenchi (agenda, attività): un'onda leggera, 20 ms tra una riga e l'altra. */
+.agenda-day,
+.task-list > li {
+  animation: fade-in-up 0.4s ease-out backwards;
+}
+
+.agenda-day:nth-child(2),
+.task-list > li:nth-child(2) {
+  animation-delay: 0.02s;
+}
+
+.agenda-day:nth-child(3),
+.task-list > li:nth-child(3) {
+  animation-delay: 0.04s;
+}
+
+.agenda-day:nth-child(n + 4),
+.task-list > li:nth-child(n + 4) {
+  animation-delay: 0.06s;
+}
+
+/* Apertura dell'app: i tre pannelli salgono insieme, una volta sola. */
+.shell > .panel,
+.shell > .neko-panel {
+  animation: fade-in-up var(--motion-normal) ease-out backwards;
+}
+
+/* Evento appena salvato: un "pop" dice dove è finito. */
 .chip.is-fresh,
-.block.is-fresh {
-  animation:
-    arrive var(--motion-spring) var(--ease-spring),
-    fresh-glow 900ms var(--ease-enter) 200ms;
-}
-
+.block.is-fresh,
+.tl-item.is-fresh .cover,
 .agenda-item.is-fresh {
-  --event-color: var(--neko-accent);
-  animation: fresh-glow 900ms var(--ease-enter);
+  animation: pop-in var(--motion-normal) var(--ease-bounce);
 }
 
-/* Attività completata: la casella "salta" e il titolo viene barrato da sinistra a destra. */
+/* Attività completata: la casella fa "pop" e il titolo viene barrato da sinistra a destra. */
 .task-row input:checked {
-  animation: pop 320ms var(--ease-standard);
+  animation: pop-in var(--motion-normal) var(--ease-bounce);
 }
 
 .task-title {
@@ -2210,222 +2275,29 @@ textarea.input {
   background-position: 0 55%;
   background-size: 0 1px;
   transition:
-    background-size var(--motion-slow) var(--ease-standard),
-    color var(--motion-slow) var(--ease-standard);
+    background-size var(--motion-normal) var(--ease-standard),
+    color var(--motion-normal) var(--ease-standard);
 }
 
 .task-row.is-done .task-title {
   background-size: 100% 1px; /* la riga che barra il titolo */
 }
 
-/* Finestre di dialogo: compaiono con una leggera crescita, lo sfondo si scurisce piano. */
-@keyframes dialog-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.96);
-  }
-}
-
-@keyframes backdrop-in {
-  from {
-    opacity: 0;
-  }
-}
-
-.dialog[open]:not(.is-morphed) {
-  animation: dialog-in var(--motion-slow) var(--ease-enter);
+/* Finestre di dialogo: lo sfondo si scurisce, la finestra fa "pop". */
+.dialog[open] {
+  animation: pop-in var(--motion-normal) var(--ease-bounce);
 }
 
 .dialog[open]::backdrop {
-  animation: backdrop-in var(--motion-normal) linear;
+  animation: fade-in var(--motion-fast) ease;
 }
 
 /* Prossimo evento: quando cambia, la sua scheda entra dal basso. */
 .next-box {
-  animation: enter-rise var(--motion-slow) var(--ease-enter);
-}
-
-/* Apertura dell'app: un'unica entrata ordinata, da sinistra a destra. */
-.shell .sidebar,
-.shell .toolbar,
-.shell .main > .view-stage.enter-none,
-.shell .neko-panel > * {
-  animation: enter-rise 400ms var(--ease-enter) backwards;
-}
-
-.shell .toolbar {
-  animation-delay: 60ms;
-}
-
-.shell .main > .view-stage.enter-none {
-  animation-delay: 120ms;
-}
-
-.shell .neko-panel > :nth-child(1) {
-  animation-delay: 180ms;
-}
-
-.shell .neko-panel > :nth-child(2) {
-  animation-delay: 230ms;
-}
-
-.shell .neko-panel > :nth-child(3) {
-  animation-delay: 280ms;
+  animation: fade-in-up var(--motion-normal) ease-out;
 }
 
 /* L'ora corrente nella griglia: un alone fermo (niente pulsazioni continue). */
 .now-line::before {
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--neko-accent) 22%, transparent);
-}
-
-/* ---------- Trasformazioni (View Transitions) ----------
- * Il browser fotografa la schermata prima e dopo il cambio e anima tra le due
- * (vedi motion/viewTransition.ts). Qui si decide come:
- *   page     → la vista corrente: scorrimenti e dissolvenze;
- *   vt-morph → l'elemento che si trasforma (giorno → vista Giorno, evento → finestra).
- * Dura al massimo poco più di mezzo secondo; con "Riduci animazioni" non parte.
- */
-
-.view-stage {
-  view-transition-name: page;
-}
-
-:root[data-vt-target="zoom"] .view-stage > .card,
-:root[data-vt-target="morph"] .dialog[open] {
-  view-transition-name: vt-morph;
-}
-
-/* Barra laterale e intestazione: dissolvenza rapida (di solito non cambiano). */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: var(--motion-normal);
-}
-
-@keyframes vt-fade-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes vt-fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-/*
- * Avanti e indietro: la pagina vecchia scivola via di poco e sfuma, la nuova arriva
- * dal lato giusto (32 px) e si posa. Breve e sobrio: si cambia mese decine di volte.
- */
-@keyframes page-out-left {
-  to {
-    opacity: 0;
-    transform: translateX(-16px);
-  }
-}
-
-@keyframes page-out-right {
-  to {
-    opacity: 0;
-    transform: translateX(16px);
-  }
-}
-
-@keyframes page-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(32px);
-  }
-}
-
-@keyframes page-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-32px);
-  }
-}
-
-:root[data-vt="next"]::view-transition-old(page) {
-  animation: page-out-left var(--motion-fast) var(--ease-exit) both;
-}
-
-:root[data-vt="next"]::view-transition-new(page) {
-  animation: page-in-right var(--motion-slow) var(--ease-enter) 60ms both;
-}
-
-:root[data-vt="previous"]::view-transition-old(page) {
-  animation: page-out-right var(--motion-fast) var(--ease-exit) both;
-}
-
-:root[data-vt="previous"]::view-transition-new(page) {
-  animation: page-in-left var(--motion-slow) var(--ease-enter) 60ms both;
-}
-
-/* Cambio vista e "Oggi": dissolvenza con un leggero zoom. */
-@keyframes vt-zoom-in {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-}
-
-:root:is([data-vt="view"], [data-vt="today"])::view-transition-old(page) {
-  animation: vt-fade-out var(--motion-fast) var(--ease-exit) both;
-}
-
-:root:is([data-vt="view"], [data-vt="today"])::view-transition-new(page) {
-  animation: vt-zoom-in var(--motion-slow) var(--ease-enter) both;
-}
-
-/* Trasformazione: giorno → vista Giorno, evento o pulsante → finestra (e ritorno). */
-::view-transition-group(vt-morph) {
-  z-index: 10;
-  overflow: clip;
-  border-radius: var(--neko-radius-lg);
-  animation-duration: 420ms;
-  animation-timing-function: var(--ease-enter);
-}
-
-/*
- * La forma cresce (o si restringe) come una finestra che si apre: le due foto restano
- * alla loro misura, nitide, ancorate in alto a sinistra, e la forma le ritaglia.
- */
-::view-transition-old(vt-morph),
-::view-transition-new(vt-morph) {
-  height: 100%;
-  object-fit: none;
-  object-position: top left;
-}
-
-::view-transition-old(vt-morph) {
-  animation: vt-fade-out 120ms linear both;
-}
-
-::view-transition-new(vt-morph) {
-  animation: vt-fade-in 160ms linear both;
-}
-
-/* Allargando un giorno, il resto del mese sparisce in fretta. */
-:root[data-vt="zoom"]::view-transition-old(page) {
-  animation: vt-fade-out 200ms var(--ease-exit) both;
-}
-
-:root[data-vt="zoom"]::view-transition-new(page) {
-  animation: vt-fade-in 300ms var(--ease-enter) 120ms both;
-}
-
-/* ---------- Festeggiamenti ---------- */
-
-.celebration {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.celebration-paw {
-  position: absolute;
-  fill: currentColor;
-  will-change: transform, opacity;
 }

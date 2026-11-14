@@ -1,6 +1,5 @@
-import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useId, useLayoutEffect, useRef, type ReactNode } from "react";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { isInsideTransition } from "../motion/viewTransition";
 import { Icon } from "./Icons";
 
 interface DialogProps {
@@ -19,11 +18,7 @@ export function Dialog({ title, onClose, children, footer, wide = false }: Dialo
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const { t } = useI18n();
-  // Aperta da una trasformazione (evento → finestra)? Allora niente animazione d'entrata propria.
-  const [morphed] = useState(isInsideTransition);
-
-  // useLayoutEffect: la finestra si apre nello stesso istante del cambio di stato,
-  // così la View Transition la trova già aperta nella seconda foto.
+  // useLayoutEffect: la finestra si apre prima che il browser disegni, senza un lampo vuoto.
   useLayoutEffect(() => {
     const dialog = ref.current;
     if (dialog && !dialog.open) dialog.showModal();
@@ -33,7 +28,7 @@ export function Dialog({ title, onClose, children, footer, wide = false }: Dialo
   return (
     <dialog
       ref={ref}
-      className={`dialog${wide ? " dialog-wide" : ""}${morphed ? " is-morphed" : ""}`}
+      className={`dialog${wide ? " dialog-wide" : ""}`}
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault(); // chiudiamo noi, così React resta allineato
