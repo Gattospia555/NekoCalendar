@@ -1,8 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// Fraunces con l'asse "SOFT" (lettere più morbide) e Nunito, tondo e accogliente.
-import "@fontsource-variable/fraunces/soft.css";
-import "@fontsource-variable/nunito";
+// Plus Jakarta Sans, lo stesso font di NekoTune (famiglia Neko), incluso nell'app.
+import "@fontsource-variable/plus-jakarta-sans";
 import "@/presentation/theme/tokens.css";
 import "@/presentation/theme/base.css";
 import { App } from "@/presentation/app/App";

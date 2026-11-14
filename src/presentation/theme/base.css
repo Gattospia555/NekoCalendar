@@ -13,8 +13,7 @@ body,
 
 body {
   font-family: var(--font-body);
-  /* Fraunces al massimo della morbidezza (asse "SOFT"); Nunito ignora l'impostazione. */
-  font-variation-settings: "SOFT" 100;
+  font-weight: 500;
   font-size: 15px;
   line-height: 1.5;
   color: var(--neko-ink);
@@ -34,7 +33,8 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   margin: 0;
 }
 
