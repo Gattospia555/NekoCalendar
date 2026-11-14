@@ -717,6 +717,11 @@
   margin: 0;
 }
 
+/* Spazio sopra la prima riga: la linea di "adesso" può stare prima del primo impegno. */
+.timeline {
+  padding-top: 14px;
+}
+
 /* Ogni riga: ora, icona, scheda; tra un'icona e l'altra un tratto nel colore dell'evento. */
 .tl-item {
   position: relative;
