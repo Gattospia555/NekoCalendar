@@ -16,7 +16,7 @@ import {
   weekdayNames,
 } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { EVENT_COLORS } from "../occurrenceUtils";
+import { EVENT_HUES, eventStripe, HUE_STRIPES } from "../eventPalette";
 import type { Scope } from "../useCalendarApp";
 import { Dialog } from "./Dialog";
 import { Icon } from "./Icons";
@@ -547,23 +547,24 @@ export function EventEditor({
                 />
                 <span
                   style={{
-                    background:
-                      calendars.find((c) => c.id === draft.calendarId)?.color ?? "#999999",
+                    background: eventStripe(
+                      calendars.find((c) => c.id === draft.calendarId)?.color ?? "",
+                    ),
                   }}
                   aria-hidden="true"
                 />
                 <span className="sr-only">{t("event.colorDefault")}</span>
               </label>
-              {EVENT_COLORS.map((color) => (
-                <label key={color} className="swatch">
+              {EVENT_HUES.map((hue) => (
+                <label key={hue} className="swatch" title={t(`color.${hue}`)}>
                   <input
                     type="radio"
                     name={id("color")}
-                    checked={draft.color === color}
-                    onChange={() => set("color", color)}
+                    checked={draft.color === HUE_STRIPES[hue]}
+                    onChange={() => set("color", HUE_STRIPES[hue])}
                   />
-                  <span style={{ background: color }} aria-hidden="true" />
-                  <span className="sr-only">{color}</span>
+                  <span style={{ background: `var(--ev-${hue}-stripe)` }} aria-hidden="true" />
+                  <span className="sr-only">{t(`color.${hue}`)}</span>
                 </label>
               ))}
             </div>

@@ -4,10 +4,9 @@ NekoCalendar include o usa questi componenti di terze parti. L'elenco completo d
 
 ## Font (inclusi nell'app)
 
-| Font                 | Autori                             | Licenza                   | Fonte                                                                                          |
-| -------------------- | ---------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
-| Fraunces (variabile) | The Fraunces Project Authors       | SIL Open Font License 1.1 | [github.com/undercasetype/Fraunces](https://github.com/undercasetype/Fraunces), via Fontsource |
-| Poppins              | Indian Type Foundry, Jonny Pinhorn | SIL Open Font License 1.1 | Google Fonts, via Fontsource                                                                   |
+| Font                                        | Autori                                           | Licenza                   | Fonte                                                                                              |
+| ------------------------------------------- | ------------------------------------------------ | ------------------------- | -------------------------------------------------------------------------------------------------- |
+| Plus Jakarta Sans (variabile, pesi 200–800) | The Plus Jakarta Sans Project Authors (Tokotype) | SIL Open Font License 1.1 | [github.com/tokotype/PlusJakartaSans](https://github.com/tokotype/PlusJakartaSans), via Fontsource |
 
 ## Librerie principali
 
@@ -27,7 +26,9 @@ Usate solo per lo sviluppo e i test (non distribuite): Vitest, ESLint, Prettier,
 
 ## Asset
 
-| Asset                                                                | Licenza                                | Note                                                       |
-| -------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------- |
-| Icone dell'app in `src-tauri/icons/`                                 | MIT, come il progetto (© CatDevStudio) | Disegno originale; sorgente in `assets/brand/app-icon.svg` |
-| Icone dell'interfaccia (`src/presentation/app/components/Icons.tsx`) | MIT, come il progetto (© CatDevStudio) | Disegnate per NekoCalendar, nessun set esterno             |
+| Asset                                                                | Licenza                                | Note                                                                                                                                                          |
+| -------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Icone dell'app in `src-tauri/icons/`                                 | MIT, come il progetto (© CatDevStudio) | Disegno originale; sorgente in `assets/brand/app-icon.svg`                                                                                                    |
+| Icone dell'interfaccia (`src/presentation/app/components/Icons.tsx`) | MIT, come il progetto (© CatDevStudio) | Disegnate per NekoCalendar, nessun set esterno                                                                                                                |
+| Icone degli eventi (`src/presentation/assets/emoji/`)                | MIT (© Microsoft Corporation)          | [Fluent Emoji](https://github.com/microsoft/fluentui-emoji), 3D ridotte a 96 px WebP e piatte SVG; testo della licenza in `LICENSE.txt` nella stessa cartella |
+| Disegni di Neko (`src/presentation/assets/neko/`)                    | MIT, come il progetto (© CatDevStudio) | Disegno originale, provvisorio fino alla fase grafica                                                                                                         |

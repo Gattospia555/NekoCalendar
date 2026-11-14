@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useId, useLayoutEffect, useRef, type ReactNode } from "react";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import { Icon } from "./Icons";
 
@@ -18,8 +18,8 @@ export function Dialog({ title, onClose, children, footer, wide = false }: Dialo
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const { t } = useI18n();
-
-  useEffect(() => {
+  // useLayoutEffect: la finestra si apre prima che il browser disegni, senza un lampo vuoto.
+  useLayoutEffect(() => {
     const dialog = ref.current;
     if (dialog && !dialog.open) dialog.showModal();
     return () => dialog?.close();

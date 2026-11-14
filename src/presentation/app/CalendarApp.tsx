@@ -1,21 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { CalendarService } from "@/application/calendarService";
 import type { Snapshot } from "@/application/store";
+import { weekDays } from "@/domain/calendarGrid";
+import { addDays } from "@/domain/datetime";
 import { draftForNew } from "@/domain/eventDraft";
+import { skyPeriod } from "@/domain/neko";
 import type { CalendarView, DateKey, Occurrence } from "@/domain/types";
 import { I18nProvider, useI18n } from "@/presentation/i18n/I18nContext";
 import { AgendaView } from "./components/AgendaView";
 import { CalendarDialog } from "./components/CalendarDialog";
+import { DayTimeline } from "./components/DayTimeline";
 import { EventEditor, type EditorTarget } from "./components/EventEditor";
 import { MonthView } from "./components/MonthView";
-import { NextEventBar } from "./components/NextEventBar";
+import { NekoPanel } from "./components/NekoPanel";
 import { SettingsDialog } from "./components/SettingsDialog";
-import { SidePanel } from "./components/SidePanel";
 import { Sidebar } from "./components/Sidebar";
 import { TimeGridView } from "./components/TimeGridView";
 import { Toolbar } from "./components/Toolbar";
 import { YearView } from "./components/YearView";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { FreshEventContext } from "./occurrenceUtils";
 import { useCalendarApp, type CalendarApp as AppState } from "./useCalendarApp";
 import "./app.css";
 
@@ -28,8 +32,7 @@ const VIEW_KEYS: Record<string, CalendarView> = {
 };
 
 /** Tasti rapidi, attivi solo quando non si sta scrivendo e non c'è una finestra aperta. */
-function useShortcuts(app: AppState, busy: boolean, onNew: () => void) {
-  const { navigation } = app;
+function useShortcuts(navigation: AppState["navigation"], busy: boolean, onNew: () => void) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (busy || event.ctrlKey || event.metaKey || event.altKey) return;
@@ -49,6 +52,14 @@ function useShortcuts(app: AppState, busy: boolean, onNew: () => void) {
   }, [busy, navigation, onNew]);
 }
 
+/**
+ * Contenitore della vista corrente. Nasce di nuovo a ogni spostamento (chiave diversa)
+ * ed entra salendo appena, come le sezioni di NekoTune; all'apertura dell'app no.
+ */
+function ViewStage({ kind, children }: { kind: string; children: ReactNode }) {
+  return <div className={`view-stage${kind === "none" ? "" : " enter-view"}`}>{children}</div>;
+}
+
 function CalendarScreen({ app }: { app: AppState }) {
   const { t } = useI18n();
   const [editor, setEditor] = useState<EditorTarget | null>(null);
@@ -56,21 +67,33 @@ function CalendarScreen({ app }: { app: AppState }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const firstCalendar = app.calendars.find((c) => c.visible)?.id ?? app.calendars[0]?.id ?? "";
 
+  const nav = app.navigation;
+  const openEditor = (target: EditorTarget) => setEditor(target);
+  const closeEditor = () => setEditor(null);
+
   const newEvent = (
-    day: DateKey = app.view === "month" || app.view === "year" ? app.anchor : app.today,
+    day: DateKey = app.view === "week" || app.view === "agenda" ? app.today : app.anchor,
     time: string | null = null,
-  ) => setEditor({ mode: "new", draft: draftForNew(day, firstCalendar, "event", time) });
+  ) => openEditor({ mode: "new", draft: draftForNew(day, firstCalendar, "event", time) });
 
   const open = (occurrence: Occurrence) => {
     const event = app.eventOf(occurrence);
-    setEditor(
+    openEditor(
       event && !occurrence.readOnly
         ? { mode: "edit", event, occurrence }
         : { mode: "readonly", occurrence },
     );
   };
 
-  useShortcuts(app, Boolean(editor) || settingsOpen || calendarOpen, () => newEvent());
+  useShortcuts(nav, Boolean(editor) || settingsOpen || calendarOpen, () => newEvent());
+
+  // Pallini della striscia della settimana nella vista Giorno.
+  const weekStart = weekDays(app.anchor)[0];
+  const { query } = app;
+  const weekOccurrences = useMemo(
+    () => query(weekStart, addDays(weekStart, 7)),
+    [query, weekStart],
+  );
 
   const view = (() => {
     switch (app.view) {
@@ -82,21 +105,33 @@ function CalendarScreen({ app }: { app: AppState }) {
             occurrences={app.occurrences}
             onOpen={open}
             onNewOnDay={(day) => newEvent(day)}
-            onOpenDay={app.navigation.openDay}
+            onOpenDay={nav.openDay}
+          />
+        );
+      case "day":
+        return (
+          <DayTimeline
+            anchor={app.anchor}
+            today={app.today}
+            now={app.now}
+            occurrences={app.occurrences}
+            weekOccurrences={weekOccurrences}
+            onOpen={open}
+            onSelectDay={(day) => nav.openDay(day)}
+            onNew={(day) => newEvent(day)}
           />
         );
       case "week":
-      case "day":
         return (
           <TimeGridView
-            mode={app.view}
+            mode="week"
             anchor={app.anchor}
             today={app.today}
             now={app.now}
             occurrences={app.occurrences}
             onOpen={open}
             onNewAt={(day, time) => newEvent(day, time)}
-            onOpenDay={app.navigation.openDay}
+            onOpenDay={nav.openDay}
           />
         );
       case "year":
@@ -105,7 +140,7 @@ function CalendarScreen({ app }: { app: AppState }) {
             anchor={app.anchor}
             today={app.today}
             occurrences={app.occurrences}
-            onOpenDay={app.navigation.openDay}
+            onOpenDay={nav.openDay}
           />
         );
       case "agenda":
@@ -121,69 +156,58 @@ function CalendarScreen({ app }: { app: AppState }) {
   })();
 
   return (
-    <div className="shell">
-      <div className="shell-body">
-        <Sidebar
-          view={app.view}
-          calendars={app.calendars}
-          showHolidays={app.settings.showHolidays}
-          upcomingCount={app.upcomingList.length}
-          onShowCalendar={() =>
-            app.navigation.setView(
-              app.settings.defaultView === "agenda" ? "month" : app.settings.defaultView,
-            )
-          }
-          onShowAgenda={() => {
-            app.navigation.goToday();
-            app.navigation.setView("agenda");
-          }}
-          onToggleCalendar={(calendar, visible) =>
-            void app.actions.setCalendarVisible(calendar, visible)
-          }
-          onToggleHolidays={(visible) =>
-            void app.actions.saveSettings({ ...app.settings, showHolidays: visible })
-          }
-          onAddCalendar={() => setCalendarOpen(true)}
-          onOpenSettings={() => setSettingsOpen(true)}
-        />
-        <main className="main">
-          {app.error && (
-            <div className="error-banner" role="alert">
-              <span>{t("app.saveError", { error: app.error })}</span>
-              <button type="button" className="pill-btn" onClick={app.clearError}>
-                {t("event.close")}
-              </button>
-            </div>
-          )}
-          <div className="content">
-            <section className="calendar-area" aria-label={t("nav.calendar")}>
-              <Toolbar
-                view={app.view}
-                anchor={app.anchor}
-                onPrevious={app.navigation.previous}
-                onNext={app.navigation.next}
-                onToday={app.navigation.goToday}
-                onView={app.navigation.setView}
-                onNewEvent={() => newEvent()}
-              />
-              {view}
-            </section>
-            <SidePanel
-              now={app.now}
-              displayName={app.settings.displayName}
-              todayList={app.todayList}
-              upcoming={app.upcomingList}
-              tasks={app.tasks}
-              onOpen={open}
-              onToggleTask={(task, done) => void app.actions.setTaskDone(task, done)}
-            />
+    // Il "cielo": lo sfondo cambia colore con il momento della giornata.
+    <div className="shell" data-sky={skyPeriod(app.now)}>
+      <Sidebar
+        anchor={app.anchor}
+        today={app.today}
+        calendars={app.calendars}
+        showHolidays={app.settings.showHolidays}
+        query={app.query}
+        onNewEvent={() => newEvent()}
+        onPickDay={(day) => nav.openDay(day)}
+        onToggleCalendar={(calendar, visible) =>
+          void app.actions.setCalendarVisible(calendar, visible)
+        }
+        onToggleHolidays={(visible) =>
+          void app.actions.saveSettings({ ...app.settings, showHolidays: visible })
+        }
+        onAddCalendar={() => setCalendarOpen(true)}
+        onOpenSettings={() => setSettingsOpen(true)}
+      />
+      <main className="main panel" aria-label={t("nav.calendar")}>
+        {app.error && (
+          <div className="error-banner" role="alert">
+            <span>{t("app.saveError", { error: app.error })}</span>
+            <button type="button" className="pill-btn" onClick={app.clearError}>
+              {t("event.close")}
+            </button>
           </div>
-        </main>
-      </div>
-      <NextEventBar
+        )}
+        <Toolbar
+          view={app.view}
+          anchor={app.anchor}
+          now={app.now}
+          displayName={app.settings.displayName}
+          transition={app.transition.kind}
+          onPrevious={nav.previous}
+          onNext={nav.next}
+          onToday={nav.goToday}
+          onView={nav.setView}
+        />
+        {/* Nuova chiave a ogni spostamento: la vista entra con la sua animazione. */}
+        <FreshEventContext.Provider value={app.freshEventId}>
+          <ViewStage key={`${app.view}:${app.transition.tick}`} kind={app.transition.kind}>
+            {view}
+          </ViewStage>
+        </FreshEventContext.Provider>
+      </main>
+      <NekoPanel
         now={app.now}
-        upcoming={app.upcomingList}
+        upcoming={app.upcomingLong}
+        tasks={app.tasks}
         onOpen={open}
+        onToggleTask={(task, done) => void app.actions.setTaskDone(task, done)}
         onDone={(occurrence) => {
           const event = app.eventOf(occurrence);
           if (event) void app.actions.setTaskDone(event, true);
@@ -195,7 +219,7 @@ function CalendarScreen({ app }: { app: AppState }) {
           target={editor}
           calendars={app.calendars}
           timeZone={app.timeZone}
-          onClose={() => setEditor(null)}
+          onClose={() => closeEditor()}
           onSave={async (draft, scope) => {
             let ok: boolean;
             if (editor.mode === "edit" && scope === "one" && editor.occurrence) {
@@ -210,7 +234,9 @@ function CalendarScreen({ app }: { app: AppState }) {
                 editor.mode === "edit" ? editor.event : undefined,
               );
             }
-            if (ok) setEditor(null);
+            if (!ok) return;
+            // L'evento salvato si fa trovare con un piccolo "pop" (vedi app.css).
+            closeEditor();
           }}
           onDelete={async (scope) => {
             if (editor.mode !== "edit") return;
@@ -221,7 +247,7 @@ function CalendarScreen({ app }: { app: AppState }) {
                     editor.occurrence.occurrenceStart,
                   )
                 : await app.actions.deleteEvent(editor.event);
-            if (ok) setEditor(null);
+            if (ok) closeEditor();
           }}
         />
       )}

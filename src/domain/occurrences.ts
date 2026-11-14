@@ -25,7 +25,7 @@ import type {
 
 /** Calendario virtuale delle festività (non salvato nel database). */
 export const HOLIDAYS_CALENDAR_ID = "holidays-it";
-export const HOLIDAYS_COLOR = "#2e9a5e";
+export const HOLIDAYS_COLOR = "#d9a520";
 
 export interface OccurrenceQuery {
   events: readonly CalendarEvent[];
@@ -217,4 +217,20 @@ export function layoutDay(list: readonly Occurrence[], day: DateKey): TimedBlock
   }
   closeGroup();
   return blocks;
+}
+
+/**
+ * Giorni dell'intervallo `[from, to)` con almeno un impegno, contando anche i giorni
+ * intermedi degli eventi lunghi (fine esclusiva per quelli di tutto il giorno).
+ */
+export function busyDays(list: readonly Occurrence[], from: DateKey, to: DateKey): Set<DateKey> {
+  const busy = new Set<DateKey>();
+  for (const occurrence of list) {
+    const first = dateOf(occurrence.start);
+    const last = occurrence.allDay ? addDays(dateOf(occurrence.end), -1) : dateOf(occurrence.end);
+    for (let day = first < from ? from : first; day <= last && day < to; day = addDays(day, 1)) {
+      busy.add(day);
+    }
+  }
+  return busy;
 }

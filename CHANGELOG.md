@@ -10,7 +10,7 @@ Milestone M1: dati e calendario.
 ### Added
 
 - Database locale SQLite con migrazioni numerate (calendari, eventi, eccezioni, impostazioni), vincoli e campi per la sincronizzazione futura.
-- Calendario completo: viste giorno, settimana, mese, anno e agenda; barra laterale con calendari mostrabili o nascondibili; pannello con saluto, prossimi eventi e attività; barra del prossimo evento.
+- Calendario completo: viste giorno (come linea del tempo), settimana, mese, anno e agenda; colonna con "Nuovo evento", mini calendario e calendari mostrabili o nascondibili; pannello di Neko con countdown del prossimo evento, attività e eventi in arrivo.
 - Eventi con titolo, luogo, note, colore, tutto il giorno, promemoria multipli (le notifiche arrivano in M2) e ripetizioni (ogni giorno, settimana con giorni scelti, mese, anno; fine dopo N volte o in una data).
 - Modifica o eliminazione di una sola ripetizione oppure di tutta la serie.
 - Compleanni e anniversari con età, attività con scadenza da spuntare, festività nazionali italiane (incluso il 4 ottobre dal 2026).
@@ -20,6 +20,14 @@ Milestone M1: dati e calendario.
 - Icona dell'app originale (il gatto del mockup) in tutte le dimensioni.
 - Anteprima nel browser con dati di esempio (`npm run dev`).
 - Documentazione: architettura, modello dei dati, ADR-0006 (database locale), guida ai test della M1.
+- Animazioni con lo stesso linguaggio di NekoTune: le viste entrano salendo appena, righe e copertine una dopo l'altra con una molla leggera, schede che si sollevano al passaggio del mouse, pulsanti che si schiacciano al clic, finestre che si aprono con un "pop", "pop" sull'evento appena salvato e sulle attività completate. Nessuna animazione infinita; si spengono con "Riduci animazioni" di Windows.
+- Icone a colori per gli eventi (Fluent Emoji di Microsoft, MIT), scelte in automatico dal titolo e dal tipo: torta per i compleanni, aereo per i viaggi, piatto per le cene…
+- Ora corrente leggibile accanto alla linea rossa nelle viste Giorno e Settimana.
+- Nomi dei colori nell'editor (Salvia, Cielo, Mirtillo…), letti anche dagli screen reader.
+- Vista Giorno come linea del tempo: striscia della settimana con i pallini degli impegni, icone grandi, cose passate sbiadite, linea di "adesso" con l'ora e il prossimo impegno in evidenza.
+- Neko, il gatto di NekoCalendar: seduto sul suo pannello, parla dei prossimi impegni (sveglio di giorno, assonnato di notte), con il countdown del prossimo evento.
+- Mini calendario del mese nella colonna sinistra, "In arrivo" con le copertine dei prossimi eventi.
+- Guida di stile della famiglia Neko ([docs/style-neko.md](docs/style-neko.md)).
 
 ### Changed
 
@@ -28,6 +36,18 @@ Milestone M1: dati e calendario.
 - TypeScript compila per ES2022.
 - `.gitignore` ampliato: installer, cache degli strumenti, file temporanei e impostazioni locali degli assistenti AI.
 - Disattivata l'attribuzione automatica degli assistenti AI nei commit e nelle pull request (`.claude/settings.json`).
+- Tema base rifatto in tre passi su richiesta del proprietario ([ADR-0007](docs/adr/0007-stile-morbido-e-gattoso.md), [ADR-0008](docs/adr/0008-direzione-latte-e-fusa.md), [ADR-0009](docs/adr/0009-stile-famiglia-neko.md)). Dal secondo restano le otto tinte degli eventi in chiaro e in scuro, il pesca solo per le azioni e le orecchie da gatto sul giorno di oggi.
+- Stile della famiglia Neko ([ADR-0009](docs/adr/0009-stile-famiglia-neko.md)), coerente con NekoTune: sfondo a "cielo" crema-lilla che segue l'ora, pannelli chiari e tondi, Plus Jakarta Sans al posto di Fraunces e Nunito, accento pesca (più profondo dove c'è testo, per il contrasto), pulsanti icona tondi, etichette di sezione maiuscole.
+- Nuova struttura in tre colonne: calendario a sinistra, vista al centro, Neko a destra. La barra del prossimo evento in basso è sostituita dal countdown nel pannello di Neko; "Nuovo evento" passa nella colonna sinistra.
+- Nuovi colori dei calendari predefiniti (Personale salvia, Lavoro cielo, Compleanni rosa) e delle festività (miele); i colori già salvati vengono ricondotti alla tinta più vicina.
+
+### Fixed
+
+- La vista Giorno mostrava una colonna larga zero e nessun evento.
+- L'intestazione cambiava forma da una vista all'altra (pulsanti che si spostavano, "Nuovo evento" a capo).
+- Il mese lasciava un vuoto sotto la griglia sugli schermi grandi e veniva tagliato su quelli piccoli; ora riempie la finestra e mostra quanti eventi ci stanno.
+- Giorno e settimana si aprivano sull'ora corrente nascondendo gli eventi del mattino; ora partono dal primo evento.
+- Etichette delle ore tagliate, "Tutto il giorno" a capo storto, eventi brevi illeggibili.
 
 ### Security
 

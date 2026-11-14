@@ -2,7 +2,9 @@ import { describe, expect, it as test } from "vitest";
 import {
   formatDate,
   formatDayLong,
+  formatDayMonth,
   formatDayShort,
+  formatWeekdayDay,
   formatMonth,
   formatMonthYear,
   formatReminder,
@@ -44,6 +46,10 @@ describe("date e ore", () => {
     expect(formatMonth("it", "2026-02-01")).toBe("Febbraio");
     expect(formatDayLong("it", "2026-11-12")).toBe("Giovedì 12 novembre");
     expect(formatDayShort("it", "2026-11-12")).toMatch(/^gio 12 nov/);
+    expect(formatWeekdayDay("it", "2026-11-13")).toBe("Ven 13");
+    expect(formatWeekdayDay("en", "2026-11-13")).toBe("Fri 13");
+    expect(formatDayMonth("it", "2026-12-01")).toBe("1 dic");
+    expect(formatDayMonth("en", "2026-12-01")).toBe("1 Dec");
     expect(formatDate("en", "2026-11-12")).toBe("12 Nov 2026");
   });
 
