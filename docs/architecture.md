@@ -92,11 +92,7 @@ flowchart TB
 
 ## Movimento
 
-- Durate e curve sono token del tema (`--motion-fast`, `--motion-normal`, `--motion-slow`, `--ease-*` in `tokens.css`): uno Style Pack potrà cambiarli.
-- Ogni animazione risponde a un gesto (o all'apertura dell'app), dura tra 150 e 450 ms con le curve di Material 3 (`--ease-enter`, `--ease-exit`, `--ease-standard`), non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
-- La direzione del cambio di periodo viene da `useCalendarApp` (`transition`: avanti, indietro, vista, oggi); la vista entra con una nuova chiave React.
-- **View Transitions** (`motion/viewTransition.ts`): il browser fotografa la schermata prima e dopo un cambio di stato (applicato con `flushSync`) e anima il passaggio. La vista corrente si chiama `page` (scorrimento di lato per avanti/indietro, dissolvenze); l'elemento che si trasforma si chiama `vt-morph` e il nome passa dall'elemento piccolo (giorno, evento, pulsante) a quello grande (vista Giorno, finestra) tra le due foto. `<html data-vt>` dice al CSS quale effetto usare.
-- Viste e finestre decidono **una volta sola, quando nascono**, se entrare con la loro animazione CSS o lasciare fare alla View Transition (`isInsideTransition`), così le due non si sommano e nulla riparte a fine transizione.
-- **Molle**: curve elastiche scritte con `linear()` nei token (`--ease-spring`, `--ease-spring-soft`).
-- **Festeggiamenti** (`motion/celebrate.ts`): otto zampette animate con le Web Animations quando si completa un'attività, rimosse dopo 0,65 secondi.
-- Niente librerie. Senza supporto alle View Transitions il cambio avviene subito con le animazioni CSS; con "Riduci animazioni" di Windows (`prefers-reduced-motion`) non parte nulla.
+- Stesso linguaggio di NekoTune ([ADR-0009](adr/0009-stile-famiglia-neko.md), [guida](style-neko.md)): durate e curve sono token del tema (`--motion-fast` 200 ms, `--motion-normal` 350 ms, `--motion-slow` 500 ms, `--ease-bounce`, `--ease-out-quint`, `--ease-standard` in `tokens.css`); uno Style Pack potrà cambiarli.
+- Solo CSS, niente librerie. Ogni animazione risponde a un gesto o all'entrata di una vista, non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
+- La vista corrente rinasce con una nuova chiave React a ogni spostamento (`transition.tick` in `useCalendarApp`) ed entra con `fade-in-up`; righe della giornata e copertine entrano una dopo l'altra (`card-fade-up`), le finestre con `pop-in`.
+- Con "Riduci animazioni" di Windows (`prefers-reduced-motion`) non parte nulla (`base.css`).

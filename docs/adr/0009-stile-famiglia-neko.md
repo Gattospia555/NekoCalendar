@@ -26,7 +26,12 @@ Li abbiamo uniti nel concetto "Il cielo di Neko". Guardando la schermata princip
    - le frasi sono logica pura nel dominio (`domain/neko.ts`, testata): impegno in corso, tra poco, più tardi, attività da fare, domani, giornata libera, sonno di notte;
    - il disegno è originale e provvisorio (SVG nel progetto), sveglio o assonnato;
    - la mascotte animata resta nella fase grafica, come previsto dal piano.
-4. Finestre strette: sotto i 1440 px le colonne laterali si stringono; sotto i 1180 px Neko e le attività scendono sotto la vista e la pagina scorre.
+4. **Movimento come NekoTune**:
+   - la prima versione (pagine che scorrono di lato, giorno che si allarga nella vista, finestre che nascono dall'evento, zampette) non convinceva il proprietario;
+   - si adottano le animazioni di NekoTune, lette dal suo codice: viste che salgono appena, schede che entrano una dopo l'altra con una molla leggera e si sollevano al passaggio del mouse, pulsanti che si schiacciano, finestre con un "pop";
+   - le View Transitions e le zampette sono state tolte;
+   - le animazioni infinite di NekoTune (logo che pulsa, sfondo che fluttua) non si copiano, per tenere zero il consumo a riposo.
+5. Finestre strette: sotto i 1440 px le colonne laterali si stringono; sotto i 1180 px Neko e le attività scendono sotto la vista e la pagina scorre.
 
 ## Opzioni considerate
 

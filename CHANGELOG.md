@@ -10,7 +10,7 @@ Milestone M1: dati e calendario.
 ### Added
 
 - Database locale SQLite con migrazioni numerate (calendari, eventi, eccezioni, impostazioni), vincoli e campi per la sincronizzazione futura.
-- Calendario completo: viste giorno, settimana, mese, anno e agenda; barra laterale con calendari mostrabili o nascondibili; pannello con saluto, prossimi eventi e attività; barra del prossimo evento.
+- Calendario completo: viste giorno (come linea del tempo), settimana, mese, anno e agenda; colonna con "Nuovo evento", mini calendario e calendari mostrabili o nascondibili; pannello di Neko con countdown del prossimo evento, attività e eventi in arrivo.
 - Eventi con titolo, luogo, note, colore, tutto il giorno, promemoria multipli (le notifiche arrivano in M2) e ripetizioni (ogni giorno, settimana con giorni scelti, mese, anno; fine dopo N volte o in una data).
 - Modifica o eliminazione di una sola ripetizione oppure di tutta la serie.
 - Compleanni e anniversari con età, attività con scadenza da spuntare, festività nazionali italiane (incluso il 4 ottobre dal 2026).
@@ -20,9 +20,7 @@ Milestone M1: dati e calendario.
 - Icona dell'app originale (il gatto del mockup) in tutte le dimensioni.
 - Anteprima nel browser con dati di esempio (`npm run dev`).
 - Documentazione: architettura, modello dei dati, ADR-0006 (database locale), guida ai test della M1.
-- Animazioni leggere che rispondono ai gesti: cambio periodo con la direzione giusta, indicatore che scivola tra le viste, "Oggi" che si accende, "pop" sull'evento appena salvato, dialoghi e attività completate animati. Si spengono con "Riduci animazioni" di Windows.
-- Token di movimento del tema (durate e curve) e "+" sulla casella del mese sotto il mouse.
-- Animazioni "wow": pagine che scorrono di lato, giorno del mese che si allarga nella vista Giorno, evento che si trasforma nella finestra di modifica, curve a molla, zampette che festeggiano le attività completate.
+- Animazioni con lo stesso linguaggio di NekoTune: le viste entrano salendo appena, righe e copertine una dopo l'altra con una molla leggera, schede che si sollevano al passaggio del mouse, pulsanti che si schiacciano al clic, finestre che si aprono con un "pop", "pop" sull'evento appena salvato e sulle attività completate. Nessuna animazione infinita; si spengono con "Riduci animazioni" di Windows.
 - Icone a colori per gli eventi (Fluent Emoji di Microsoft, MIT), scelte in automatico dal titolo e dal tipo: torta per i compleanni, aereo per i viaggi, piatto per le cene…
 - Ora corrente leggibile accanto alla linea rossa nelle viste Giorno e Settimana.
 - Nomi dei colori nell'editor (Salvia, Cielo, Mirtillo…), letti anche dagli screen reader.
@@ -38,10 +36,7 @@ Milestone M1: dati e calendario.
 - TypeScript compila per ES2022.
 - `.gitignore` ampliato: installer, cache degli strumenti, file temporanei e impostazioni locali degli assistenti AI.
 - Disattivata l'attribuzione automatica degli assistenti AI nei commit e nelle pull request (`.claude/settings.json`).
-- Countdown nella barra del prossimo evento: anello che si riempie e tempo che manca, come nel mockup.
-- Grafica più vicina al mockup approvato: caselle del mese pulite (con "1 dic" per il primo giorno di un altro mese), etichette con l'ora in grassetto nel colore dell'evento, intestazione con le frecce accanto al titolo, date brevi nei prossimi eventi.
-- Tema base "morbido e gattoso" ([ADR-0007](docs/adr/0007-stile-morbido-e-gattoso.md)): colori più tenui e caldi, angoli tondi, mese a cuscinetti, etichette a pillola, ombre calde, Nunito al posto di Poppins, Fraunces "soft", niente etichette tutte maiuscole; orecchie sul giorno di oggi e sopra le schede, zampette al posto dei pallini, impronte leggere sullo sfondo.
-- Tema base "Latte & Fusa" ([ADR-0008](docs/adr/0008-direzione-latte-e-fusa.md)), dopo una ricerca sulle app di riferimento: superfici a tre livelli al posto di bordi e ombre, terracotta solo per le azioni, otto tinte per gli eventi in chiaro e in scuro, mese a griglia sottile, quattro raggi, curve di movimento di Material 3, festeggiamento più piccolo e solo per le attività, countdown nei colori del prossimo evento. Il gatto resta in un solo punto: le orecchie sul giorno di oggi.
+- Tema base rifatto in tre passi su richiesta del proprietario ([ADR-0007](docs/adr/0007-stile-morbido-e-gattoso.md), [ADR-0008](docs/adr/0008-direzione-latte-e-fusa.md), [ADR-0009](docs/adr/0009-stile-famiglia-neko.md)). Dal secondo restano le otto tinte degli eventi in chiaro e in scuro, il pesca solo per le azioni e le orecchie da gatto sul giorno di oggi.
 - Stile della famiglia Neko ([ADR-0009](docs/adr/0009-stile-famiglia-neko.md)), coerente con NekoTune: sfondo a "cielo" crema-lilla che segue l'ora, pannelli chiari e tondi, Plus Jakarta Sans al posto di Fraunces e Nunito, accento pesca (più profondo dove c'è testo, per il contrasto), pulsanti icona tondi, etichette di sezione maiuscole.
 - Nuova struttura in tre colonne: calendario a sinistra, vista al centro, Neko a destra. La barra del prossimo evento in basso è sostituita dal countdown nel pannello di Neko; "Nuovo evento" passa nella colonna sinistra.
 - Nuovi colori dei calendari predefiniti (Personale salvia, Lavoro cielo, Compleanni rosa) e delle festività (miele); i colori già salvati vengono ricondotti alla tinta più vicina.

@@ -64,21 +64,33 @@ I valori di NekoCalendar stanno in `src/presentation/theme/tokens.css`. La scelt
 Il gatto è il segno di famiglia, ma va usato con misura: in pochi punti scelti.
 
 - **NekoTune**: il gatto nel fumetto in basso ("Sto ascoltando…"), la testa sulla barra di avanzamento, le orecchie sulla copertina in riproduzione.
-- **NekoCalendar**: **Neko** seduto sul suo pannello, che parla dei prossimi impegni (sveglio di giorno, assonnato di notte); le **orecchie sul giorno di oggi** (mese, mini calendario, settimana); le zampette quando si completa un'attività.
+- **NekoCalendar**: **Neko** seduto sul suo pannello, che parla dei prossimi impegni (sveglio di giorno, assonnato di notte); le **orecchie sul giorno di oggi** (mese, mini calendario, settimana).
 - Il disegno di Neko è originale e provvisorio: la mascotte animata, con più stati, arriva nella fase grafica dopo la 1.0.
 
-## 6. Tono
+## 6. Movimento
+
+Le animazioni sono le stesse di NekoTune:
+
+- **Curve**: una molla leggera (`cubic-bezier(0.34, 1.56, 0.64, 1)`), 200 ms per i piccoli effetti e 350 ms per il resto; una frenata lunga (`cubic-bezier(0.22, 1, 0.36, 1)`, 500 ms) per gli ingrandimenti lenti.
+- **Sezioni e viste**: entrano salendo di 20 px e apparendo. Niente scorrimenti di lato, niente trasformazioni da un elemento all'altro.
+- **Schede**: entrano una dopo l'altra (50 ms di distanza) salendo con un piccolo rimbalzo. Al passaggio del mouse si sollevano di 6 px e la copertina si ingrandisce un poco.
+- **Pulsanti**: al passaggio salgono di 1 px (quelli tondi prendono il colore pesca e un alone); al clic si schiacciano (0,92) e tornano su con la molla.
+- **Voci di menu**: al passaggio scivolano di 4 px a destra.
+- **Finestre**: si aprono con un "pop" (da 0,8 a 1,05 a 1); lo sfondo si scurisce in 0,2 s.
+- **Mai animazioni infinite** nelle finestre di lavoro e nei widget: a riposo il consumo deve restare zero.
+
+## 7. Tono
 
 - Frasi brevi, semplici, gentili, con un pizzico di gatto ("miao", "pisolino"), mai infantili e mai invadenti.
 - Il gatto non interrompe: parla nel suo pannello, non con finestre o notifiche.
 
-## 7. Accessibilità
+## 8. Accessibilità
 
 - Contrasto del testo ≥ 4,5:1 (controllato per tutte le coppie di colori qui sopra).
 - Aree cliccabili ≥ 44 px, focus visibile (anello pesca), tutto usabile da tastiera.
 - Con "Riduci animazioni" di Windows le animazioni si spengono.
 
-## 8. Checklist per una nuova app Neko
+## 9. Checklist per una nuova app Neko
 
 1. Sfondo a cielo crema-lilla (o notte al buio), pannelli chiari e tondi sopra.
 2. Plus Jakarta Sans 500/700/800.
@@ -86,4 +98,5 @@ Il gatto è il segno di famiglia, ma va usato con misura: in pochi punti scelti.
 4. Pulsanti icona tondi con un filo di bordo, pulsanti a pillola.
 5. Etichette di sezione maiuscole e piccole.
 6. Il gatto in due o tre punti significativi, non dappertutto.
-7. Una struttura pensata per quello che fa l'app, non copiata da un'altra.
+7. Animazioni con la molla leggera di NekoTune, mai infinite.
+8. Una struttura pensata per quello che fa l'app, non copiata da un'altra.
