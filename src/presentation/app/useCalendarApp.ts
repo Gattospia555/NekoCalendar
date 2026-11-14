@@ -4,7 +4,7 @@ import type { Snapshot } from "@/application/store";
 import { shiftAnchor, viewRange } from "@/domain/calendarGrid";
 import { addDays, dateOf, instantToLocal, systemTimeZone } from "@/domain/datetime";
 import type { EventDraft } from "@/domain/eventDraft";
-import { buildOccurrences, occurrencesOnDay, upcoming } from "@/domain/occurrences";
+import { buildOccurrences, upcoming } from "@/domain/occurrences";
 import type {
   Calendar,
   CalendarEvent,
@@ -97,8 +97,8 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
   const range = useMemo(() => viewRange(view, anchor), [view, anchor]);
   const occurrences = useMemo(() => query(range.from, range.to), [query, range]);
   const nextDays = useMemo(() => query(today, addDays(today, 30)), [query, today]);
-  const upcomingList = useMemo(() => upcoming(nextDays, now, 6), [nextDays, now]);
-  const todayList = useMemo(() => occurrencesOnDay(nextDays, today), [nextDays, today]);
+  /** Prossimi impegni per Neko e "In arrivo": abbastanza da arrivare a domani anche nei giorni pieni. */
+  const upcomingLong = useMemo(() => upcoming(nextDays, now, 40), [nextDays, now]);
 
   /** Task aperti (prima i più urgenti) e gli ultimi completati. */
   const tasks = useMemo(() => {
@@ -198,8 +198,8 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
     transition,
     freshEventId,
     occurrences,
-    upcomingList,
-    todayList,
+    query,
+    upcomingLong,
     tasks,
     error,
     clearError: () => setError(null),

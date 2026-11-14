@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { AGENDA_DAYS } from "@/domain/calendarGrid";
 import { addDays, isoWeekNumber, parseDateKey, startOfWeek } from "@/domain/datetime";
 import type { CalendarView, DateKey } from "@/domain/types";
-import { formatDate, formatDayLong, formatMonthYear } from "@/presentation/i18n/i18n";
+import { formatDate, formatDayLong, formatMonthYear, greetingKey } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import type { Transition } from "../useCalendarApp";
 import { Icon } from "./Icons";
@@ -57,23 +57,30 @@ function ViewSwitcher({
 interface ToolbarProps {
   view: CalendarView;
   anchor: DateKey;
+  now: string;
+  displayName: string;
   /** Come si è arrivati al periodo mostrato: il titolo entra nella stessa direzione. */
   transition: Transition["kind"];
   onPrevious: () => void;
   onNext: () => void;
   onToday: () => void;
   onView: (view: CalendarView) => void;
-  onNewEvent: (source?: Element) => void;
 }
 
+/**
+ * Intestazione del calendario: saluto e periodo in piccolo, il titolo grande,
+ * le frecce con "Oggi" e il selettore delle viste.
+ */
 export function Toolbar(props: ToolbarProps) {
   const { t, language } = useI18n();
   const { view, anchor } = props;
 
   let title: string;
   let subtitle = "";
-  if (view === "day") title = formatDayLong(language, anchor);
-  else if (view === "year") title = String(parseDateKey(anchor).year);
+  if (view === "day") {
+    title = formatDayLong(language, anchor);
+    subtitle = t("toolbar.weekNumber", { n: isoWeekNumber(anchor) });
+  } else if (view === "year") title = String(parseDateKey(anchor).year);
   else if (view === "agenda") {
     title = t("view.agenda");
     subtitle = `${formatDate(language, anchor)} – ${formatDate(language, addDays(anchor, AGENDA_DAYS - 1))}`;
@@ -81,13 +88,18 @@ export function Toolbar(props: ToolbarProps) {
     title = formatMonthYear(language, view === "week" ? startOfWeek(anchor) : anchor);
     if (view === "week") subtitle = t("toolbar.weekNumber", { n: isoWeekNumber(anchor) });
   }
-  // L'anno in terracotta, come nel mockup ("Novembre 2026").
+  // L'anno più leggero: il mese è quello che conta ("Novembre 2026").
   const match = /^(.*?)(\s\d{4})$/.exec(title);
+  const greeting = t(greetingKey(Number(props.now.slice(11, 13))));
+  const hello = props.displayName ? `${greeting}, ${props.displayName}` : greeting;
 
-  // Come nel mockup: sopra il titolo con le frecce accanto, sotto le viste e "Nuovo evento".
   return (
     <div className="toolbar">
-      <div className="toolbar-row">
+      <div className="toolbar-text">
+        <p className="toolbar-hello">
+          {hello}
+          {subtitle ? ` · ${subtitle}` : ""}
+        </p>
         <h1 key={title} className={`enter-${props.transition}`}>
           {match ? (
             <>
@@ -98,40 +110,29 @@ export function Toolbar(props: ToolbarProps) {
             title
           )}
         </h1>
-        <div className="toolbar-nav">
-          <button
-            type="button"
-            className="round-btn"
-            aria-label={t("toolbar.previous")}
-            onClick={props.onPrevious}
-          >
-            <Icon name="left" />
-          </button>
-          <button
-            type="button"
-            className="round-btn"
-            aria-label={t("toolbar.next")}
-            onClick={props.onNext}
-          >
-            <Icon name="right" />
-          </button>
-          <button type="button" className="pill-btn" onClick={props.onToday}>
-            {t("toolbar.today")}
-          </button>
-        </div>
-        {subtitle && <span className="toolbar-sub">{subtitle}</span>}
       </div>
-      <div className="toolbar-row">
-        <ViewSwitcher view={view} onView={props.onView} />
+      <div className="toolbar-nav">
         <button
           type="button"
-          className="primary-btn"
-          onClick={(event) => props.onNewEvent(event.currentTarget)}
+          className="round-btn"
+          aria-label={t("toolbar.previous")}
+          onClick={props.onPrevious}
         >
-          <Icon name="plus" size={18} />
-          {t("toolbar.newEvent")}
+          <Icon name="left" />
+        </button>
+        <button
+          type="button"
+          className="round-btn"
+          aria-label={t("toolbar.next")}
+          onClick={props.onNext}
+        >
+          <Icon name="right" />
+        </button>
+        <button type="button" className="pill-btn" onClick={props.onToday}>
+          {t("toolbar.today")}
         </button>
       </div>
+      <ViewSwitcher view={view} onView={props.onView} />
     </div>
   );
 }

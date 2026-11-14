@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CalendarService } from "@/application/calendarService";
 import type { Snapshot } from "@/application/store";
+import { weekDays } from "@/domain/calendarGrid";
+import { addDays } from "@/domain/datetime";
 import { draftForNew } from "@/domain/eventDraft";
+import { skyPeriod } from "@/domain/neko";
 import type { CalendarView, DateKey, Occurrence } from "@/domain/types";
 import { I18nProvider, useI18n } from "@/presentation/i18n/I18nContext";
 import { AgendaView } from "./components/AgendaView";
 import { CalendarDialog } from "./components/CalendarDialog";
+import { DayTimeline } from "./components/DayTimeline";
 import { EventEditor, type EditorTarget } from "./components/EventEditor";
 import { MonthView } from "./components/MonthView";
-import { NextEventBar } from "./components/NextEventBar";
+import { NekoPanel } from "./components/NekoPanel";
 import { SettingsDialog } from "./components/SettingsDialog";
-import { SidePanel } from "./components/SidePanel";
 import { Sidebar } from "./components/Sidebar";
 import { TimeGridView } from "./components/TimeGridView";
 import { Toolbar } from "./components/Toolbar";
@@ -24,7 +27,6 @@ import { FreshEventContext } from "./occurrenceUtils";
 import { useCalendarApp, type CalendarApp as AppState } from "./useCalendarApp";
 import "./app.css";
 
-/** Attesa prima delle zampette: il tempo che la finestra si chiuda e l'evento compaia. */
 const VIEW_KEYS: Record<string, CalendarView> = {
   "1": "day",
   "2": "week",
@@ -99,7 +101,7 @@ function CalendarScreen({ app }: { app: AppState }) {
   };
 
   const newEvent = (
-    day: DateKey = app.view === "month" || app.view === "year" ? app.anchor : app.today,
+    day: DateKey = app.view === "week" || app.view === "agenda" ? app.today : app.anchor,
     time: string | null = null,
     source?: Element,
   ) => openEditor({ mode: "new", draft: draftForNew(day, firstCalendar, "event", time) }, source);
@@ -116,6 +118,14 @@ function CalendarScreen({ app }: { app: AppState }) {
 
   useShortcuts(nav, Boolean(editor) || settingsOpen || calendarOpen, () => newEvent());
 
+  // Pallini della striscia della settimana nella vista Giorno.
+  const weekStart = weekDays(app.anchor)[0];
+  const { query } = app;
+  const weekOccurrences = useMemo(
+    () => query(weekStart, addDays(weekStart, 7)),
+    [query, weekStart],
+  );
+
   const view = (() => {
     switch (app.view) {
       case "month":
@@ -129,11 +139,23 @@ function CalendarScreen({ app }: { app: AppState }) {
             onOpenDay={nav.openDay}
           />
         );
-      case "week":
       case "day":
         return (
+          <DayTimeline
+            anchor={app.anchor}
+            today={app.today}
+            now={app.now}
+            occurrences={app.occurrences}
+            weekOccurrences={weekOccurrences}
+            onOpen={open}
+            onSelectDay={(day) => nav.openDay(day)}
+            onNew={(day, source) => newEvent(day, null, source)}
+          />
+        );
+      case "week":
+        return (
           <TimeGridView
-            mode={app.view}
+            mode="week"
             anchor={app.anchor}
             today={app.today}
             now={app.now}
@@ -165,78 +187,61 @@ function CalendarScreen({ app }: { app: AppState }) {
   })();
 
   return (
-    <div className="shell">
-      <div className="shell-body">
-        <Sidebar
-          view={app.view}
-          calendars={app.calendars}
-          showHolidays={app.settings.showHolidays}
-          upcomingCount={app.upcomingList.length}
-          onShowCalendar={() =>
-            nav.setView(app.settings.defaultView === "agenda" ? "month" : app.settings.defaultView)
-          }
-          onShowAgenda={() =>
-            runTransition("view", () => {
-              app.navigation.goToday();
-              app.navigation.setView("agenda");
-            })
-          }
-          onToggleCalendar={(calendar, visible) =>
-            void app.actions.setCalendarVisible(calendar, visible)
-          }
-          onToggleHolidays={(visible) =>
-            void app.actions.saveSettings({ ...app.settings, showHolidays: visible })
-          }
-          onAddCalendar={() => setCalendarOpen(true)}
-          onOpenSettings={() => setSettingsOpen(true)}
-        />
-        <main className="main">
-          {app.error && (
-            <div className="error-banner" role="alert">
-              <span>{t("app.saveError", { error: app.error })}</span>
-              <button type="button" className="pill-btn" onClick={app.clearError}>
-                {t("event.close")}
-              </button>
-            </div>
-          )}
-          <div className="content">
-            <section className="calendar-area" aria-label={t("nav.calendar")}>
-              <Toolbar
-                view={app.view}
-                anchor={app.anchor}
-                transition={app.transition.kind}
-                onPrevious={nav.previous}
-                onNext={nav.next}
-                onToday={nav.goToday}
-                onView={nav.setView}
-                onNewEvent={(source) => newEvent(undefined, null, source)}
-              />
-              {/* Nuova chiave a ogni spostamento: la vista entra con la sua animazione. */}
-              <FreshEventContext.Provider value={app.freshEventId}>
-                <ViewStage key={`${app.view}:${app.transition.tick}`} kind={app.transition.kind}>
-                  {view}
-                </ViewStage>
-              </FreshEventContext.Provider>
-            </section>
-            <SidePanel
-              now={app.now}
-              displayName={app.settings.displayName}
-              todayList={app.todayList}
-              upcoming={app.upcomingList}
-              tasks={app.tasks}
-              onOpen={open}
-              onToggleTask={(task, done, source) => {
-                if (done) celebrate(source, task.color ? eventStripe(task.color) : undefined);
-                void app.actions.setTaskDone(task, done);
-              }}
-            />
+    // Il "cielo": lo sfondo cambia colore con il momento della giornata.
+    <div className="shell" data-sky={skyPeriod(app.now)}>
+      <Sidebar
+        anchor={app.anchor}
+        today={app.today}
+        calendars={app.calendars}
+        showHolidays={app.settings.showHolidays}
+        query={app.query}
+        onNewEvent={(source) => newEvent(undefined, null, source)}
+        onPickDay={(day) => nav.openDay(day)}
+        onToggleCalendar={(calendar, visible) =>
+          void app.actions.setCalendarVisible(calendar, visible)
+        }
+        onToggleHolidays={(visible) =>
+          void app.actions.saveSettings({ ...app.settings, showHolidays: visible })
+        }
+        onAddCalendar={() => setCalendarOpen(true)}
+        onOpenSettings={() => setSettingsOpen(true)}
+      />
+      <main className="main panel" aria-label={t("nav.calendar")}>
+        {app.error && (
+          <div className="error-banner" role="alert">
+            <span>{t("app.saveError", { error: app.error })}</span>
+            <button type="button" className="pill-btn" onClick={app.clearError}>
+              {t("event.close")}
+            </button>
           </div>
-        </main>
-      </div>
-      <NextEventBar
+        )}
+        <Toolbar
+          view={app.view}
+          anchor={app.anchor}
+          now={app.now}
+          displayName={app.settings.displayName}
+          transition={app.transition.kind}
+          onPrevious={nav.previous}
+          onNext={nav.next}
+          onToday={nav.goToday}
+          onView={nav.setView}
+        />
+        {/* Nuova chiave a ogni spostamento: la vista entra con la sua animazione. */}
+        <FreshEventContext.Provider value={app.freshEventId}>
+          <ViewStage key={`${app.view}:${app.transition.tick}`} kind={app.transition.kind}>
+            {view}
+          </ViewStage>
+        </FreshEventContext.Provider>
+      </main>
+      <NekoPanel
         now={app.now}
-        upcoming={app.upcomingList}
+        upcoming={app.upcomingLong}
+        tasks={app.tasks}
         onOpen={open}
+        onToggleTask={(task, done, source) => {
+          if (done) celebrate(source, task.color ? eventStripe(task.color) : undefined);
+          void app.actions.setTaskDone(task, done);
+        }}
         onDone={(occurrence, source) => {
           const event = app.eventOf(occurrence);
           celebrate(source, eventStripe(occurrence.color));
