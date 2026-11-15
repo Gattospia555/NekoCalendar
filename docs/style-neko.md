@@ -64,8 +64,15 @@ I valori di NekoCalendar stanno in `src/presentation/theme/tokens.css`. La scelt
 Il gatto è il segno di famiglia, ma va usato con misura: in pochi punti scelti.
 
 - **NekoTune**: il gatto nel fumetto in basso ("Sto ascoltando…"), la testa sulla barra di avanzamento, le orecchie sulla copertina in riproduzione.
-- **NekoCalendar**: **Neko** seduto sul suo pannello, che parla dei prossimi impegni (sveglio di giorno, assonnato di notte); le **orecchie sul giorno di oggi** (mese, mini calendario, settimana).
-- Il disegno di Neko è originale e provvisorio: la mascotte animata, con più stati, arriva nella fase grafica dopo la 1.0.
+- **NekoCalendar**: **Neko** seduto sul suo pannello, che parla dei prossimi impegni; il **giorno di oggi** ha la sagoma di una testa di gatto con le orecchie a punta (mese, mini calendario, settimana).
+- **La mascotte è una sola per tutta la famiglia**: lo stesso gatto arancione di NekoTune (contorno arancio, guance rosa, coda lunga). In NekoCalendar cambia umore (sveglio, contento, curioso, assonnato), sta fermo e si muove solo se lo si accarezza con un clic.
+- **Logo**: ogni app ha il suo soggetto con lo stesso gatto e la stessa piastrella tonda. NekoTune ha il gatto con la musica, NekoCalendar un gattino che abbraccia un calendario.
+
+## 5bis. Controlli
+
+- Niente menu e selettori di sistema: tendine, scelta della data e dell'ora sono componenti della famiglia, con i colori e le forme del tema, chiari e scuri.
+- Si usano anche da tastiera: frecce per muoversi, Invio per scegliere, Esc per chiudere, lettera iniziale per saltare a una voce. Gli screen reader li leggono come elenchi di scelte.
+- Gli interruttori (sì/no) sono a levetta; i gruppi di scelte grandi (come il tema) sono schede con un'anteprima.
 
 ## 6. Movimento
 

@@ -28,6 +28,10 @@ Milestone M1: dati e calendario.
 - Neko, il gatto di NekoCalendar: seduto sul suo pannello, parla dei prossimi impegni (sveglio di giorno, assonnato di notte), con il countdown del prossimo evento.
 - Mini calendario del mese nella colonna sinistra, "In arrivo" con le copertine dei prossimi eventi.
 - Guida di stile della famiglia Neko ([docs/style-neko.md](docs/style-neko.md)).
+- Menu a tendina, scelta della data e dell'ora fatti apposta (stile della famiglia Neko, chiari e scuri) al posto di quelli di Windows; si usano anche da tastiera. Gli orari si possono scrivere a mano ("930", "9.30", "21h05").
+- Impostazioni rinnovate: tema scelto con schede di anteprima, sezioni con icone, interruttore per le festività, anteprima del saluto, scorciatoie mostrate come tasti.
+- Neko, la mascotte, è lo stesso gatto di NekoTune; cambia umore e si può accarezzare con un clic.
+- Nuovo logo: un gattino che abbraccia un calendario, nella stessa famiglia del logo di NekoTune (icone dell'app rigenerate).
 
 ### Changed
 
@@ -43,6 +47,8 @@ Milestone M1: dati e calendario.
 
 ### Fixed
 
+- I calendari predefiniti potevano essere creati due volte (avvio ripetuto in sviluppo): ora hanno un id fisso, l'avvio parte una volta sola e i doppioni già salvati vengono uniti (gli eventi passano al calendario rimasto).
+- Il giorno di oggi aveva "orecchie" poco riconoscibili: ora è una testa di gatto con le orecchie a punta.
 - La vista Giorno mostrava una colonna larga zero e nessun evento.
 - L'intestazione cambiava forma da una vista all'altra (pulsanti che si spostavano, "Nuovo evento" a capo).
 - Il mese lasciava un vuoto sotto la griglia sugli schermi grandi e veniva tagliato su quelli piccoli; ora riempie la finestra e mostra quanti eventi ci stanno.
