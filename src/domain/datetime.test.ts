@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  parseClockTime,
   addDays,
   addMinutes,
   addMonths,
@@ -134,5 +135,22 @@ describe("fusi orari e ora legale", () => {
     expect(convertLocal("2026-11-12T09:00", "America/New_York", ROME)).toBe("2026-11-12T15:00");
     expect(convertLocal("2026-11-12T09:00", ROME, ROME)).toBe("2026-11-12T09:00");
     expect(todayIn(Date.UTC(2026, 10, 12, 23, 30), ROME)).toBe("2026-11-13");
+  });
+});
+
+describe("orari scritti a mano", () => {
+  it("riconosce i modi più comuni di scrivere un'ora", () => {
+    expect(parseClockTime("9")).toBe("09:00");
+    expect(parseClockTime("930")).toBe("09:30");
+    expect(parseClockTime(" 9:30 ")).toBe("09:30");
+    expect(parseClockTime("9.30")).toBe("09:30");
+    expect(parseClockTime("21h05")).toBe("21:05");
+  });
+
+  it("rifiuta ciò che non è un'ora", () => {
+    expect(parseClockTime("")).toBeNull();
+    expect(parseClockTime("24:00")).toBeNull();
+    expect(parseClockTime("9:75")).toBeNull();
+    expect(parseClockTime("ciao")).toBeNull();
   });
 });
