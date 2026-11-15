@@ -258,15 +258,10 @@
   padding: 0 4px;
 }
 
-.brand-tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--neko-radius-sm);
-  background: linear-gradient(160deg, #fde3c8, #f7c7a1);
-  box-shadow: 0 2px 6px rgb(208 139 98 / 0.25);
+.brand-logo {
+  flex: none;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgb(208 139 98 / 0.25));
 }
 
 .brand-name {
@@ -982,7 +977,7 @@
   min-width: 0;
   overflow: hidden;
   /* in alto un po' più d'aria: le orecchie del giorno di oggi non vengono tagliate */
-  padding: 8px 6px 5px;
+  padding: 11px 6px 5px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -1466,11 +1461,34 @@
 
 .neko-cat {
   position: absolute;
-  right: 18px;
-  top: -94px;
-  width: 132px;
-  height: auto;
-  pointer-events: none;
+  right: 22px;
+  top: -100px;
+  width: 112px;
+  height: 112px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--neko-radius);
+  background: none;
+  cursor: pointer;
+}
+
+.neko-mascot {
+  display: block;
+  overflow: visible;
+}
+
+/* La coda ruota attorno alla base, la testa si muove da sola (come in NekoTune). */
+.neko-tail {
+  transform-box: view-box;
+  transform-origin: 150px 228px;
+}
+
+.neko-head {
+  transform-box: view-box;
+}
+
+.neko-head--sleep {
+  transform: translateY(6px);
 }
 
 .neko-says {
@@ -1959,6 +1977,421 @@ textarea.input {
   margin-bottom: 8px;
 }
 
+/* ---------- Menu a tendina, data e ora (controlli della famiglia Neko) ---------- */
+
+.select,
+.picker {
+  position: relative;
+  min-width: 0;
+}
+
+.select-auto {
+  flex: 0 1 auto;
+}
+
+/* Il campo chiuso: come gli altri campi, con la freccia a destra. */
+.select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px 0 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.select-trigger:hover {
+  border-color: color-mix(in srgb, var(--neko-accent-soft) 45%, var(--neko-line));
+}
+
+.is-open > .select-trigger {
+  border-color: var(--neko-accent-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--neko-accent-soft) 30%, transparent);
+}
+
+.select-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.select-value.is-placeholder {
+  color: var(--neko-ink-soft);
+}
+
+.select-lead {
+  flex: none;
+  color: var(--neko-ink-soft);
+}
+
+.select-chevron {
+  flex: none;
+  color: var(--neko-ink-soft);
+  transition: transform var(--motion-fast) var(--ease-bounce);
+}
+
+.is-open .select-chevron {
+  transform: rotate(180deg);
+}
+
+/* Il pannello a comparsa: una scheda chiara e tonda che galleggia sopra tutto. */
+.popover {
+  position: fixed;
+  z-index: 50;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  border: 1px solid var(--neko-line);
+  border-radius: var(--neko-radius);
+  background: var(--neko-surface);
+  box-shadow: var(--neko-shadow-strong);
+  animation: pop-in var(--motion-normal) var(--ease-bounce);
+  list-style: none;
+}
+
+.popover:focus {
+  outline: none;
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: var(--neko-radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.select-option.is-active {
+  background: var(--neko-surface-soft);
+}
+
+.select-option[aria-selected="true"] {
+  color: var(--neko-accent-text);
+  font-weight: 800;
+}
+
+.select-check {
+  margin-left: auto;
+}
+
+.option-dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.option-emoji {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+/* Calendario a comparsa del campo data. */
+.date-panel {
+  width: 296px;
+  padding: 12px;
+}
+
+.date-panel .mini-grid:focus-visible {
+  outline: none;
+}
+
+.date-panel .mini-day {
+  width: 34px;
+  height: 34px;
+}
+
+.date-panel .mini-day.is-now {
+  color: var(--neko-accent-text);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--neko-accent-soft) 60%, transparent);
+}
+
+.date-panel .mini-day.is-selected {
+  background: var(--neko-accent);
+  color: var(--neko-on-accent);
+}
+
+.date-panel .mini-grid:focus-visible .mini-day.is-focus {
+  outline: 3px solid var(--neko-accent-soft);
+  outline-offset: 1px;
+}
+
+.date-panel-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+/* Campo orario: si scrive o si sceglie dall'elenco. */
+.time-picker {
+  flex: 0 0 116px;
+}
+
+.time-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--neko-ink-soft);
+  pointer-events: none;
+}
+
+.time-input {
+  padding-left: 36px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-list {
+  width: 116px;
+  max-height: 260px;
+}
+
+.date-time > .picker:first-child {
+  flex: 1 1 auto;
+}
+
+/* ---------- Impostazioni ---------- */
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 4px;
+}
+
+.settings-section {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.settings-title .round-icon {
+  width: 30px;
+  height: 30px;
+  color: var(--neko-accent-text);
+}
+
+.settings-body {
+  padding-left: 40px;
+}
+
+.settings-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--neko-ink-soft);
+}
+
+/* Tema: tre schede con un'anteprima in miniatura. */
+.theme-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.theme-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border: 2px solid var(--neko-line);
+  border-radius: var(--neko-radius);
+  background: var(--neko-surface);
+  color: var(--neko-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.theme-card[aria-checked="true"] {
+  border-color: var(--neko-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--neko-accent-soft) 25%, transparent);
+}
+
+.theme-preview {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4px;
+  height: 58px;
+  padding: 6px;
+  overflow: hidden;
+  border-radius: var(--neko-radius-sm);
+  background: linear-gradient(160deg, #f8f2ed, #e2cbdc);
+}
+
+.theme-preview span {
+  border-radius: 6px;
+  background: rgb(255 253 251 / 0.9);
+}
+
+.theme-preview span:nth-child(3) {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #b0603a;
+}
+
+.theme-card--dark .theme-preview {
+  background: linear-gradient(160deg, #1d191c, #3b2b47);
+}
+
+.theme-card--dark .theme-preview span {
+  background: rgb(42 36 39 / 0.95);
+}
+
+.theme-card--dark .theme-preview span:nth-child(3),
+.theme-card--auto .theme-preview span:nth-child(3) {
+  background: #e9a17a;
+}
+
+.theme-card--auto .theme-preview {
+  background:
+    linear-gradient(115deg, transparent 50%, #1d191c 50%), linear-gradient(160deg, #f8f2ed, #e2cbdc);
+}
+
+.theme-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.theme-card[aria-checked="true"] .theme-label {
+  color: var(--neko-accent-text);
+}
+
+/* Interruttore acceso/spento. */
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.switch-row > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.switch-title {
+  font-weight: 700;
+}
+
+.switch {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 46px;
+  height: 28px;
+  margin: 0;
+  border-radius: var(--neko-radius-pill);
+  background: color-mix(in srgb, var(--neko-ink) 18%, transparent);
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--neko-surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  transition: transform var(--motion-normal) var(--ease-bounce);
+}
+
+.switch:checked {
+  background: var(--neko-accent);
+}
+
+.switch:checked::after {
+  transform: translateX(18px);
+}
+
+/* Scorciatoie: tasti veri. */
+.shortcut-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shortcut-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.shortcut-keys {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 78px;
+}
+
+.shortcut-sep {
+  margin: 0 2px;
+  color: var(--neko-ink-soft);
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 1px solid var(--neko-line);
+  border-bottom-width: 3px;
+  border-radius: 8px;
+  background: var(--neko-surface);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@media (max-width: 640px) {
+  .settings-body {
+    padding-left: 0;
+  }
+
+  .theme-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Avvio ed errori ---------- */
 
 .splash {
@@ -1987,28 +2420,53 @@ textarea.input {
 }
 
 /* ---------- Dettagli da gatto ----------
- * Un solo segno del gatto, nel punto che conta: il numero di oggi ha le orecchie.
- * Tutto il resto resta tranquillo (la mascotte animata arriva nella fase grafica).
+ * Il giorno di oggi ha la forma della testa di Neko (la stessa sagoma di NekoTune e
+ * del logo), con il numero nel muso: mese, mini calendario, settimana e anno.
  */
 
 .is-today .day-number,
+.mini-day.is-today,
+.year-day.is-today,
 .timegrid-day.is-today .timegrid-date {
   position: relative;
+  isolation: isolate;
   overflow: visible;
+  background: transparent;
+  color: var(--neko-on-accent);
 }
 
 .is-today .day-number::before,
+.mini-day.is-today::before,
+.year-day.is-today::before,
 .timegrid-day.is-today .timegrid-date::before {
   content: "";
   position: absolute;
-  top: -7px;
+  z-index: -1;
   left: 50%;
-  width: 26px;
-  height: 10px;
-  translate: -50% 0;
-  background: inherit;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 30'%3E%3Cpath d='M4 30 Q8 6 18 2 Q24 0 28 8 L36 30 Z M44 30 L52 8 Q56 0 62 2 Q72 6 76 30 Z'/%3E%3C/svg%3E")
+  top: 62%;
+  height: 142%;
+  aspect-ratio: 152 / 150;
+  translate: -50% -62%;
+  background: var(--neko-accent);
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='46%2022%20152%20150'%3E%3Cpath%20d='M58%20118%20C54%2092%2064%2074%2078%2066%20L82%2034%20L108%2056%20C116%2054%20128%2054%20136%2056%20L162%2034%20L166%2066%20C180%2074%20190%2092%20186%20118%20C182%20146%20156%20162%20122%20162%20C88%20162%2062%20146%2058%20118%20Z'%20fill='black'%20stroke='black'%20stroke-width='8'%20stroke-linejoin='round'/%3E%3C/svg%3E")
     center / contain no-repeat;
+}
+
+/* Nel mini calendario la testa è un po' più piccola: la colonna della domenica è al bordo. */
+.mini-day.is-today::before {
+  height: 126%;
+}
+
+/* Il numero scende un poco, dentro il muso, sotto le orecchie. */
+.is-today .day-number,
+.mini-day.is-today,
+.year-day.is-today,
+.timegrid-day.is-today .timegrid-date {
+  padding-top: 3px;
+}
+
+.is-today .day-number:hover {
+  background: transparent;
 }
 
 /* ---------- Movimento ----------
@@ -2295,6 +2753,50 @@ textarea.input {
 /* Prossimo evento: quando cambia, la sua scheda entra dal basso. */
 .next-box {
   animation: fade-in-up var(--motion-normal) ease-out;
+}
+
+/*
+ * Neko si muove solo quando lo si tocca: passandoci sopra muove la coda, accarezzato
+ * (clic) salta di gioia con un cuore. Movimenti finiti, come in NekoTune ma senza giri infiniti.
+ */
+@keyframes neko-bob {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes neko-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  30% {
+    transform: rotate(-9deg);
+  }
+
+  70% {
+    transform: rotate(7deg);
+  }
+}
+
+.neko-cat:hover .neko-tail {
+  animation: neko-sway 1.1s ease-in-out 2;
+}
+
+.neko-cat.is-petted .neko-head:not(.neko-head--sleep) {
+  animation: neko-bob 0.45s ease-in-out 3;
+}
+
+.neko-cat .neko-extra {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop-in var(--motion-normal) var(--ease-bounce);
+}
+
+.neko-cat:active {
+  transform: scale(0.96);
+  transition: transform 0.1s var(--ease-bounce);
 }
 
 /* L'ora corrente nella griglia: un alone fermo (niente pulsazioni continue). */

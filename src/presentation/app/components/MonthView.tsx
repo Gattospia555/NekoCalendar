@@ -8,7 +8,7 @@ import { useI18n } from "@/presentation/i18n/I18nContext";
 import { OccurrenceChip } from "./OccurrenceBits";
 
 /** Spazio occupato in una casella da numero del giorno e margini, da ogni etichetta e da "+N". */
-const CELL_CHROME_PX = 45;
+const CELL_CHROME_PX = 48;
 const CHIP_PX = 25;
 const MORE_PX = 21;
 const GAP_PX = 3;

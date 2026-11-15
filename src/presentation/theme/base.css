@@ -98,3 +98,9 @@ textarea {
     transition: none !important;
   }
 }
+
+/* Caselle e pallini di sistema (dove restano) nel pesca del tema, non nel blu di Windows. */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--neko-accent);
+}

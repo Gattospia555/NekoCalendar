@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { addDays, dateOf } from "@/domain/datetime";
 import { nekoMessage } from "@/domain/neko";
 import { minutesUntil } from "@/domain/occurrences";
@@ -9,11 +10,10 @@ import {
   formatWeekdayDay,
 } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import nekoAwake from "../../assets/neko/neko-awake.svg";
-import nekoSleepy from "../../assets/neko/neko-sleepy.svg";
 import { emojiUrl, iconOf } from "../emoji";
 import { eventStyle, useOccurrenceTitle } from "../occurrenceUtils";
 import { Icon } from "./Icons";
+import { NekoMascot, type NekoMood } from "./NekoMascot";
 
 interface NekoPanelProps {
   now: string;
@@ -30,6 +30,8 @@ const DAY_MINUTES = 24 * 60;
 const WEEK_MINUTES = 7 * DAY_MINUTES;
 const RING_RADIUS = 28;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
+/** Per quanto Neko resta contento dopo una carezza. */
+const PET_MS = 2400;
 /** Quanti eventi dei giorni successivi mostrare in "In arrivo". */
 const COMING = 4;
 
@@ -80,6 +82,22 @@ export function NekoPanel({ now, upcoming, tasks, onOpen, onToggleTask, onDone }
   const today = dateOf(now);
 
   const message = nekoMessage(now, upcoming);
+  // Accarezzato (clic), Neko è contento per un attimo; poi torna al suo umore.
+  const [petted, setPetted] = useState(0);
+  useEffect(() => {
+    if (!petted) return;
+    const timer = window.setTimeout(() => setPetted(0), PET_MS);
+    return () => window.clearTimeout(timer);
+  }, [petted]);
+  const mood: NekoMood = petted
+    ? "happy"
+    : message.sleepy
+      ? "sleepy"
+      : message.key === "free" || message.key === "tomorrow"
+        ? "happy"
+        : message.key === "task"
+          ? "curious"
+          : "awake";
   const time =
     message.key === "later"
       ? message.time
@@ -115,13 +133,15 @@ export function NekoPanel({ now, upcoming, tasks, onOpen, onToggleTask, onDone }
   return (
     <aside className="neko-panel" aria-label={t("panel.upcoming")}>
       <section className="neko-card panel" style={next ? eventStyle(next.color) : undefined}>
-        <img
-          className="neko-cat"
-          src={message.sleepy ? nekoSleepy : nekoAwake}
-          alt={t(message.sleepy ? "neko.altSleepy" : "neko.alt")}
-          width={132}
-          height={110}
-        />
+        <button
+          type="button"
+          key={petted}
+          className={`neko-cat${petted ? " is-petted" : ""}`}
+          aria-label={t("neko.pet")}
+          onClick={() => setPetted(Date.now())}
+        >
+          <NekoMascot mood={mood} size={112} />
+        </button>
         <p className="section-label">{t("neko.label")}</p>
         <p className="neko-says" aria-live="polite">
           {said}

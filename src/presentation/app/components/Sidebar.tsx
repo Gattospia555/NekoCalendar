@@ -3,7 +3,8 @@ import type { Calendar, DateKey, Occurrence } from "@/domain/types";
 import { HOLIDAYS_COLOR } from "@/domain/occurrences";
 import { useI18n } from "@/presentation/i18n/I18nContext";
 import { eventStripe } from "../eventPalette";
-import { CatLogo, Icon } from "./Icons";
+import logo from "../../../../assets/brand/app-icon.svg";
+import { Icon } from "./Icons";
 import { MiniMonth } from "./MiniMonth";
 
 interface SidebarProps {
@@ -50,9 +51,7 @@ export function Sidebar(props: SidebarProps) {
   return (
     <aside className="sidebar panel" aria-label={t("nav.main")}>
       <div className="brand">
-        <span className="brand-tile">
-          <CatLogo size={28} color="#d08b62" />
-        </span>
+        <img className="brand-logo" src={logo} alt="" width={44} height={44} />
         <span className="brand-name">NekoCalendar</span>
       </div>
 
