@@ -14,6 +14,12 @@ export default defineConfig(() => ({
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
 
+  // Le icone degli eventi restano file separati (non incorporati nel JavaScript):
+  // il codice resta piccolo e l'avvio veloce; le immagini si caricano solo se visibili.
+  build: {
+    assetsInlineLimit: (file: string) => (file.includes("/assets/emoji/") ? false : undefined),
+  },
+
   // Opzioni per `tauri dev` e `tauri build`:
   // 1. non nascondere gli errori di Rust
   clearScreen: false,

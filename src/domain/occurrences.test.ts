@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   HOLIDAYS_CALENDAR_ID,
   buildOccurrences,
+  busyDays,
   layoutDay,
   minutesUntil,
   occurrencesOnDay,
@@ -229,5 +230,17 @@ describe("layoutDay", () => {
       "2026-11-12",
     );
     expect([block.startMinute, block.endMinute]).toEqual([0, 120]);
+  });
+});
+
+describe("giorni con impegni", () => {
+  it("segna i giorni pieni, anche quelli in mezzo agli eventi lunghi, dentro l'intervallo", () => {
+    const list = [
+      occ({ title: "Lago", allDay: true, start: "2026-11-14", end: "2026-11-16" }),
+      occ({ title: "Notte", start: "2026-11-12T23:00", end: "2026-11-13T01:00" }),
+      occ({ title: "Fuori", start: "2026-12-30T10:00", end: "2026-12-30T11:00" }),
+    ];
+    const busy = busyDays(list, "2026-11-13", "2026-12-01");
+    expect([...busy].sort()).toEqual(["2026-11-13", "2026-11-14", "2026-11-15"]);
   });
 });

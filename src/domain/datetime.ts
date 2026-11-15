@@ -267,3 +267,17 @@ export function convertLocal(
 export function todayIn(nowMs: number, timeZone: string): DateKey {
   return dateOf(instantToLocal(nowMs, timeZone));
 }
+
+/**
+ * Riconosce un orario scritto a mano: "9", "930", "9:30", "9.30", "21h05".
+ * Restituisce "HH:MM" (24 ore) oppure `null` se non è un orario valido.
+ */
+export function parseClockTime(text: string): string | null {
+  const clean = text.trim().replace(/[.,h]/g, ":");
+  const match = /^(\d{1,2})(?::?(\d{2}))?$/.exec(clean);
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = match[2] ? Number(match[2]) : 0;
+  if (hours > 23 || minutes > 59) return null;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}

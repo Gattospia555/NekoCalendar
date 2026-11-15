@@ -1,10 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "@fontsource-variable/fraunces";
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/500.css";
-import "@fontsource/poppins/600.css";
-import "@fontsource/poppins/700.css";
+// Plus Jakarta Sans, lo stesso font di NekoTune (famiglia Neko), incluso nell'app.
+import "@fontsource-variable/plus-jakarta-sans";
 import "@/presentation/theme/tokens.css";
 import "@/presentation/theme/base.css";
 import { App } from "@/presentation/app/App";

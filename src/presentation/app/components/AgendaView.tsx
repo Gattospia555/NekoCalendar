@@ -1,10 +1,11 @@
+import { useContext } from "react";
 import { AGENDA_DAYS } from "@/domain/calendarGrid";
 import { addDays } from "@/domain/datetime";
 import { occurrencesOnDay } from "@/domain/occurrences";
 import type { DateKey, Occurrence } from "@/domain/types";
 import { formatDayLong, formatTimeRange } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { useOccurrenceTitle } from "../occurrenceUtils";
+import { FreshEventContext, useOccurrenceTitle } from "../occurrenceUtils";
 import { Icon } from "./Icons";
 import { Cover } from "./OccurrenceBits";
 
@@ -12,13 +13,14 @@ interface AgendaViewProps {
   anchor: DateKey;
   today: DateKey;
   occurrences: Occurrence[];
-  onOpen: (occurrence: Occurrence) => void;
+  onOpen: (occurrence: Occurrence, source?: Element) => void;
 }
 
 /** Vista "agenda": i prossimi 30 giorni come elenco, raggruppati per giorno. */
 export function AgendaView({ anchor, today, occurrences, onOpen }: AgendaViewProps) {
   const { t, language } = useI18n();
   const titleOf = useOccurrenceTitle();
+  const freshId = useContext(FreshEventContext);
   const days = Array.from({ length: AGENDA_DAYS }, (_, i) => addDays(anchor, i))
     .map((day) => ({ day, list: occurrencesOnDay(occurrences, day) }))
     .filter((group) => group.list.length > 0);
@@ -44,8 +46,8 @@ export function AgendaView({ anchor, today, occurrences, onOpen }: AgendaViewPro
               <li key={o.key}>
                 <button
                   type="button"
-                  className={`agenda-item${o.done ? " chip-done" : ""}`}
-                  onClick={() => onOpen(o)}
+                  className={`agenda-item${o.done ? " chip-done" : ""}${o.eventId === freshId ? " is-fresh" : ""}`}
+                  onClick={(event) => onOpen(o, event.currentTarget)}
                 >
                   <Cover occurrence={o} size={44} />
                   <span className="agenda-time">

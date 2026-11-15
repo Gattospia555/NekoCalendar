@@ -78,3 +78,21 @@ flowchart TB
 - Si carica tutto in memoria una volta (centinaia o migliaia di eventi) e si espande solo l'intervallo della vista.
 - L'ora corrente si aggiorna **una volta al minuto**, mai al secondo; nessun polling.
 - Il codice del database si carica solo dentro Tauri (import dinamico).
+- Il mese misura l'altezza delle righe con un `ResizeObserver` (solo quando la finestra cambia dimensione) per decidere quanti eventi mostrare per casella.
+
+## Aspetto (tema base)
+
+- Stile della famiglia Neko ([ADR-0009](adr/0009-stile-famiglia-neko.md), [guida](style-neko.md)), coerente con NekoTune: colori, raggi, ombre, font (Plus Jakarta Sans) e curve sono token in `src/presentation/theme/tokens.css`.
+- **Struttura** in tre colonne (`CalendarApp.tsx`): `Sidebar` (nuovo evento, `MiniMonth`, calendari), la vista corrente con `Toolbar`, `NekoPanel` (Neko, countdown, attività, in arrivo). Sotto i 1180 px il pannello di Neko scende sotto la vista.
+- **Cielo**: `skyPeriod` (dominio, `domain/neko.ts`) dice se è mattina, pomeriggio, sera o notte; `<div class="shell" data-sky>` sceglie la sfumatura (`--sky-*`). Con il tema scuro è sempre notte.
+- **Neko**: `nekoMessage` (dominio) sceglie la frase in base all'ora e ai prossimi impegni; l'interfaccia la traduce (`neko.*` in `messages.ts`) e mostra il disegno sveglio o assonnato (`src/presentation/assets/neko/`).
+- **Vista Giorno** (`DayTimeline.tsx`): striscia della settimana con i pallini (`busyDays` e `occurrencesOnDay`), poi gli impegni come linea del tempo; la vista Settimana usa ancora la griglia oraria (`TimeGridView`).
+- **Colori degli eventi** (`presentation/app/eventPalette.ts`): otto tinte, ognuna con `--ev-<nome>-tint|stripe|ink` per chiaro e scuro. Nel database si salva il colore della striscia; `hueOf` riconduce qualsiasi colore (anche delle versioni precedenti) alla tinta più vicina e `eventStyle` imposta le variabili CSS `--event-tint`, `--event-color` e `--event-ink` sull'elemento.
+- **Icone degli eventi**: `suggestIcon` (dominio, `domain/eventIcon.ts`) sceglie l'icona dal titolo e dal tipo; `presentation/app/emoji.ts` trova il file (Fluent Emoji, 3D o piatto) in `src/presentation/assets/emoji/`. Le icone restano file separati, non incorporati nel JavaScript.
+
+## Movimento
+
+- Stesso linguaggio di NekoTune ([ADR-0009](adr/0009-stile-famiglia-neko.md), [guida](style-neko.md)): durate e curve sono token del tema (`--motion-fast` 200 ms, `--motion-normal` 350 ms, `--motion-slow` 500 ms, `--ease-bounce`, `--ease-out-quint`, `--ease-standard` in `tokens.css`); uno Style Pack potrà cambiarli.
+- Solo CSS, niente librerie. Ogni animazione risponde a un gesto o all'entrata di una vista, non blocca i clic e **non gira all'infinito**: a riposo il consumo resta zero.
+- La vista corrente rinasce con una nuova chiave React a ogni spostamento (`transition.tick` in `useCalendarApp`) ed entra con `fade-in-up`; righe della giornata e copertine entrano una dopo l'altra (`card-fade-up`), le finestre con `pop-in`.
+- Con "Riduci animazioni" di Windows (`prefers-reduced-motion`) non parte nulla (`base.css`).

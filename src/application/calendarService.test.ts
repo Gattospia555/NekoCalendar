@@ -32,6 +32,43 @@ describe("primo avvio", () => {
     expect(again.snapshot.calendars).toHaveLength(3);
     expect(again.snapshot.settings.deviceId).toBe(snapshot.settings.deviceId);
   });
+
+  it("due avvii insieme non creano calendari doppi", async () => {
+    const store = new MemoryStore();
+    await Promise.all([start(store), start(store)]);
+    const { calendars } = await store.load();
+    expect(calendars.filter((c) => !c.deleted)).toHaveLength(3);
+  });
+
+  it("unisce i doppioni lasciati dalle versioni precedenti, spostando gli eventi", async () => {
+    const store = new MemoryStore();
+    const old = (id: string, name: string, sortOrder: number) => ({
+      id,
+      name,
+      color: "#6fa35a",
+      visible: true,
+      sortOrder,
+      updatedHlc: "0",
+      deleted: false,
+    });
+    await store.saveCalendar(old("a", "Personale", 0));
+    await store.saveCalendar(old("b", "Personale", 3));
+    await store.saveCalendar(old("c", "Palestra", 4));
+    await store.saveCalendar(old("d", "Palestra", 5)); // nome scelto dall'utente: non si tocca
+    // Un evento nel secondo "Personale": lo si prepara con un altro archivio e lo si copia qui.
+    const other = await start();
+    const event = await other.service.saveDraft({
+      ...draftForNew("2026-11-13", other.snapshot.calendars[0].id, "event", "20:00"),
+      title: "Cena",
+    });
+    await store.saveEvent({ ...event, calendarId: "b" });
+
+    const { snapshot } = await start(store);
+    const alive = snapshot.calendars.filter((c) => !c.deleted).map((c) => c.id);
+    // Si tiene "b" (ha un evento), "a" vuoto diventa cancellato.
+    expect(alive).toEqual(["b", "c", "d"]);
+    expect(snapshot.events.map((e) => e.calendarId)).toEqual(["b"]);
+  });
 });
 
 describe("eventi", () => {

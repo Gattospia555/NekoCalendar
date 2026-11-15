@@ -16,11 +16,19 @@ import {
 } from "@/domain/types";
 import type { CalendarStore, Snapshot } from "./store";
 
-/** Calendari creati al primo avvio, con i colori del tema Base Neko. */
-export const DEFAULT_CALENDARS: { key: "personal" | "work" | "birthdays"; color: string }[] = [
-  { key: "personal", color: "#c58463" },
-  { key: "work", color: "#4f7fb8" },
-  { key: "birthdays", color: "#d06a8c" },
+/**
+ * Calendari creati al primo avvio, con i colori del tema Base Neko.
+ * Hanno un id fisso (UUID v7 con tempo zero): se l'avvio parte due volte, o su due
+ * dispositivi, si scrive sempre la stessa riga invece di crearne una nuova.
+ */
+export const DEFAULT_CALENDARS: {
+  key: "personal" | "work" | "birthdays";
+  color: string;
+  id: string;
+}[] = [
+  { key: "personal", color: "#6fa35a", id: "00000000-0000-7000-8000-000000000001" },
+  { key: "work", color: "#5b93c7", id: "00000000-0000-7000-8000-000000000002" },
+  { key: "birthdays", color: "#d96c8a", id: "00000000-0000-7000-8000-000000000003" },
 ];
 
 const DEVICE_KEY = "deviceId";
@@ -91,9 +99,9 @@ export class CalendarService {
     }
     const service = new CalendarService(store, new HlcClock(deviceId, resolved.now), resolved);
     if (!snapshot.calendars.some((c) => !c.deleted)) {
-      for (const [index, { key, color }] of DEFAULT_CALENDARS.entries()) {
+      for (const [index, { key, color, id }] of DEFAULT_CALENDARS.entries()) {
         await store.saveCalendar({
-          id: service.newId(),
+          id,
           name: calendarNames[key],
           color,
           visible: true,
@@ -103,8 +111,49 @@ export class CalendarService {
         });
       }
     }
+    await service.mergeDuplicateDefaults(Object.values(calendarNames));
     snapshot = await store.load();
     return { service, snapshot };
+  }
+
+  /**
+   * Ripara i calendari predefiniti doppi lasciati dalle versioni precedenti (l'avvio poteva
+   * partire due volte e crearli due volte). Per ogni gruppo con lo stesso nome predefinito e
+   * lo stesso colore tiene quello con più eventi, vi sposta gli eventi degli altri e cancella
+   * (in modo "morbido") i doppioni. I calendari con nomi scelti dall'utente non si toccano.
+   */
+  private async mergeDuplicateDefaults(defaultNames: string[]): Promise<void> {
+    const { calendars, events } = await this.store.load();
+    const names = new Set(defaultNames.map((name) => name.trim().toLowerCase()));
+    const groups = new Map<string, Calendar[]>();
+    for (const calendar of calendars) {
+      const name = calendar.name.trim().toLowerCase();
+      if (calendar.deleted || !names.has(name)) continue;
+      const key = `${name}|${calendar.color.toLowerCase()}`;
+      groups.set(key, [...(groups.get(key) ?? []), calendar]);
+    }
+    const count = (id: string) => events.filter((e) => !e.deleted && e.calendarId === id).length;
+    for (const group of groups.values()) {
+      if (group.length < 2) continue;
+      const [keep, ...duplicates] = [...group].sort(
+        (a, b) =>
+          count(b.id) - count(a.id) || a.sortOrder - b.sortOrder || a.id.localeCompare(b.id),
+      );
+      for (const duplicate of duplicates) {
+        for (const event of events.filter((e) => e.calendarId === duplicate.id)) {
+          await this.store.saveEvent({
+            ...event,
+            calendarId: keep.id,
+            updatedHlc: this.clock.next(),
+          });
+        }
+        await this.store.saveCalendar({
+          ...duplicate,
+          deleted: true,
+          updatedHlc: this.clock.next(),
+        });
+      }
+    }
   }
 
   private newId(): string {

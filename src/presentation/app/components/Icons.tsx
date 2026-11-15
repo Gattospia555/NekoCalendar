@@ -10,6 +10,16 @@ const PATHS = {
   list: "M9 7h11M9 12h11M9 17h11M5 7h.01M5 12h.01M5 17h.01",
   gear: "M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4",
   left: "M15 6l-6 6 6 6",
+  down: "M6 9l6 6 6-6",
+  sun: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4",
+  moon: "M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z",
+  monitor: "M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM9 21h6M12 17v4",
+  globe:
+    "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z",
+  user: "M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c1-4 4-6 8-6s7 2 8 6",
+  keyboard:
+    "M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM7 10h.01M11 10h.01M15 10h.01M7 14h10",
+  shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
   right: "M9 6l6 6-6 6",
   plus: "M12 5v14M5 12h14",
   close: "M6 6l12 12M18 6 6 18",
@@ -48,41 +58,6 @@ export function Icon({
       {...rest}
     >
       <path d={PATHS[name]} />
-    </svg>
-  );
-}
-
-/** Logo del gatto (stesso disegno del mockup e dell'icona dell'app). */
-export function CatLogo({ size = 28, color = "currentColor" }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-      <path
-        d="M6 14 L6 4 L13 9 Q16 8 19 9 L26 4 L26 14 Q28 18 26 22 Q22 28 16 28 Q10 28 6 22 Q4 18 6 14 Z"
-        fill={color}
-      />
-      <circle cx="12" cy="17" r="1.8" fill="#ffffff" />
-      <circle cx="20" cy="17" r="1.8" fill="#ffffff" />
-      <path d="M15 21 L17 21 L16 22.4 Z" fill="#ffc6d6" />
-    </svg>
-  );
-}
-
-/** Zampetta decorativa, come nel mockup. */
-export function Paw({ size = 20 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-      className="paw"
-    >
-      <ellipse cx="12" cy="16" rx="5" ry="4.2" />
-      <ellipse cx="5.5" cy="10.5" rx="2" ry="2.6" />
-      <ellipse cx="9.5" cy="6.5" rx="2" ry="2.7" />
-      <ellipse cx="14.5" cy="6.5" rx="2" ry="2.7" />
-      <ellipse cx="18.5" cy="10.5" rx="2" ry="2.6" />
     </svg>
   );
 }

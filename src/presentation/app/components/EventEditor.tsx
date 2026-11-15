@@ -16,9 +16,13 @@ import {
   weekdayNames,
 } from "@/presentation/i18n/i18n";
 import { useI18n } from "@/presentation/i18n/I18nContext";
-import { EVENT_COLORS } from "../occurrenceUtils";
+import { EVENT_HUES, eventStripe, HUE_STRIPES } from "../eventPalette";
 import type { Scope } from "../useCalendarApp";
 import { Dialog } from "./Dialog";
+import { emojiUrl } from "../emoji";
+import { DatePicker } from "./controls/DatePicker";
+import { Select } from "./controls/Select";
+import { TimePicker } from "./controls/TimePicker";
 import { Icon } from "./Icons";
 
 export type EditorTarget =
@@ -28,6 +32,14 @@ export type EditorTarget =
 
 const REMINDER_OPTIONS = [0, 5, 10, 15, 30, 60, 120, 1440, 2880, 10080];
 const REPEATS: RepeatChoice[] = ["none", "daily", "weekly", "monthly", "yearly"];
+
+/** Icona di ogni tipo nel menu "Tipo". */
+const KIND_EMOJI = {
+  event: "calendar",
+  task: "check",
+  birthday: "cake",
+  anniversary: "hearts",
+} as const;
 
 interface EventEditorProps {
   target: EditorTarget;
@@ -234,32 +246,36 @@ export function EventEditor({
         {!one && (
           <div className="form-row">
             <Field label={t("event.kind")} id={id("kind")}>
-              <select
+              <Select
                 id={id("kind")}
-                className="input"
                 value={draft.kind}
-                onChange={(event) => changeKind(event.target.value as EventDraft["kind"])}
-              >
-                {(["event", "task", "birthday", "anniversary"] as const).map((kind) => (
-                  <option key={kind} value={kind}>
-                    {t(`kind.${kind}`)}
-                  </option>
-                ))}
-              </select>
+                onChange={(kind) => changeKind(kind)}
+                options={(["event", "task", "birthday", "anniversary"] as const).map((kind) => ({
+                  value: kind,
+                  label: t(`kind.${kind}`),
+                  icon: (
+                    <img className="option-emoji" src={emojiUrl(KIND_EMOJI[kind], "flat")} alt="" />
+                  ),
+                }))}
+              />
             </Field>
             <Field label={t("event.calendar")} error={errorText("calendarId")} id={id("calendar")}>
-              <select
+              <Select
                 id={id("calendar")}
-                className="input"
                 value={draft.calendarId}
-                onChange={(event) => set("calendarId", event.target.value)}
-              >
-                {calendars.map((calendar) => (
-                  <option key={calendar.id} value={calendar.id}>
-                    {calendar.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(calendarId) => set("calendarId", calendarId)}
+                options={calendars.map((calendar) => ({
+                  value: calendar.id,
+                  label: calendar.name,
+                  icon: (
+                    <span
+                      className="option-dot"
+                      style={{ background: eventStripe(calendar.color) }}
+                      aria-hidden="true"
+                    />
+                  ),
+                }))}
+              />
             </Field>
           </div>
         )}
@@ -282,15 +298,13 @@ export function EventEditor({
             id={id("start")}
           >
             <div className="date-time">
-              <input
+              <DatePicker
                 id={id("start")}
-                type="date"
-                className="input"
                 value={draft.startDate}
-                aria-invalid={Boolean(errors.start)}
-                aria-describedby={described("start")}
-                onChange={(event) => {
-                  const startDate = event.target.value;
+                ariaLabel={isTask ? t("event.due") : t("event.start")}
+                invalid={Boolean(errors.start)}
+                describedBy={described("start")}
+                onChange={(startDate) => {
                   // Sposta anche la fine, così la durata resta la stessa.
                   const endDate =
                     draft.endDate < startDate || draft.endDate === draft.startDate
@@ -300,12 +314,10 @@ export function EventEditor({
                 }}
               />
               {!draft.allDay && (
-                <input
-                  type="time"
-                  className="input"
-                  aria-label={`${isTask ? t("event.due") : t("event.start")} · ${t("event.time")}`}
+                <TimePicker
+                  ariaLabel={`${isTask ? t("event.due") : t("event.start")} · ${t("event.time")}`}
                   value={draft.startTime}
-                  onChange={(event) => set("startTime", event.target.value)}
+                  onChange={(startTime) => set("startTime", startTime)}
                 />
               )}
             </div>
@@ -313,22 +325,19 @@ export function EventEditor({
           {!isTask && (
             <Field label={t("event.end")} error={errorText("end")} id={id("end")}>
               <div className="date-time">
-                <input
+                <DatePicker
                   id={id("end")}
-                  type="date"
-                  className="input"
                   value={draft.endDate}
-                  aria-invalid={Boolean(errors.end)}
-                  aria-describedby={described("end")}
-                  onChange={(event) => set("endDate", event.target.value)}
+                  ariaLabel={t("event.end")}
+                  invalid={Boolean(errors.end)}
+                  describedBy={described("end")}
+                  onChange={(endDate) => set("endDate", endDate)}
                 />
                 {!draft.allDay && (
-                  <input
-                    type="time"
-                    className="input"
-                    aria-label={`${t("event.end")} · ${t("event.time")}`}
+                  <TimePicker
+                    ariaLabel={`${t("event.end")} · ${t("event.time")}`}
                     value={draft.endTime}
-                    onChange={(event) => set("endTime", event.target.value)}
+                    onChange={(endTime) => set("endTime", endTime)}
                   />
                 )}
               </div>
@@ -338,13 +347,17 @@ export function EventEditor({
 
         {!one && (
           <Field label={t("event.repeat")} error={errorText("repeat")} id={id("repeat")}>
-            <select
+            <Select
               id={id("repeat")}
-              className="input"
               value={draft.repeat}
-              aria-describedby={described("repeat")}
-              onChange={(event) => {
-                const repeat = event.target.value as RepeatChoice;
+              describedBy={described("repeat")}
+              options={[
+                ...REPEATS.map((repeat) => ({ value: repeat, label: t(`repeat.${repeat}`) })),
+                ...(draft.customRule
+                  ? [{ value: "custom" as RepeatChoice, label: t("repeat.custom") }]
+                  : []),
+              ]}
+              onChange={(repeat) => {
                 // "Ogni settimana" senza giorni scelti: si parte dal giorno dell'evento.
                 const byDay =
                   repeat === "weekly" && draft.byDay.length === 0
@@ -352,14 +365,7 @@ export function EventEditor({
                     : draft.byDay;
                 setDraft({ ...draft, repeat, byDay });
               }}
-            >
-              {REPEATS.map((repeat) => (
-                <option key={repeat} value={repeat}>
-                  {t(`repeat.${repeat}`)}
-                </option>
-              ))}
-              {draft.customRule && <option value="custom">{t("repeat.custom")}</option>}
-            </select>
+            />
             {draft.repeat === "custom" && draft.customRule && (
               <p className="muted">{t("repeat.customRule", { rule: draft.customRule })}</p>
             )}
@@ -442,14 +448,10 @@ export function EventEditor({
                       onChange={() => set("repeatEnd", "until")}
                     />
                     {t("repeat.endUntil")}
-                    <input
-                      type="date"
-                      className="input"
+                    <DatePicker
                       value={draft.until}
-                      aria-label={t("repeat.endUntil")}
-                      onChange={(event) =>
-                        setDraft({ ...draft, repeatEnd: "until", until: event.target.value })
-                      }
+                      ariaLabel={t("repeat.endUntil")}
+                      onChange={(until) => setDraft({ ...draft, repeatEnd: "until", until })}
                     />
                   </label>
                 </fieldset>
@@ -496,26 +498,27 @@ export function EventEditor({
                   </button>
                 </span>
               ))}
-              <select
-                className="input input-auto"
-                aria-label={t("event.addReminder")}
+              <Select
+                className="select-auto"
                 value=""
-                onChange={(event) => {
-                  const minutes = Number(event.target.value);
+                ariaLabel={t("event.addReminder")}
+                placeholder={t("event.addReminder")}
+                placeholderIcon={<Icon name="plus" size={16} className="select-lead" />}
+                options={REMINDER_OPTIONS.filter((m) => !draft.reminders.includes(m)).map(
+                  (minutes) => ({
+                    value: String(minutes),
+                    label: formatReminder(language, minutes),
+                  }),
+                )}
+                onChange={(value) => {
+                  const minutes = Number(value);
                   if (!draft.reminders.includes(minutes))
                     set(
                       "reminders",
                       [...draft.reminders, minutes].sort((a, b) => a - b),
                     );
                 }}
-              >
-                <option value="">{t("event.addReminder")}…</option>
-                {REMINDER_OPTIONS.filter((m) => !draft.reminders.includes(m)).map((minutes) => (
-                  <option key={minutes} value={minutes}>
-                    {formatReminder(language, minutes)}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
             <p className="muted small">{t("reminder.note")}</p>
           </fieldset>
@@ -547,23 +550,24 @@ export function EventEditor({
                 />
                 <span
                   style={{
-                    background:
-                      calendars.find((c) => c.id === draft.calendarId)?.color ?? "#999999",
+                    background: eventStripe(
+                      calendars.find((c) => c.id === draft.calendarId)?.color ?? "",
+                    ),
                   }}
                   aria-hidden="true"
                 />
                 <span className="sr-only">{t("event.colorDefault")}</span>
               </label>
-              {EVENT_COLORS.map((color) => (
-                <label key={color} className="swatch">
+              {EVENT_HUES.map((hue) => (
+                <label key={hue} className="swatch" title={t(`color.${hue}`)}>
                   <input
                     type="radio"
                     name={id("color")}
-                    checked={draft.color === color}
-                    onChange={() => set("color", color)}
+                    checked={draft.color === HUE_STRIPES[hue]}
+                    onChange={() => set("color", HUE_STRIPES[hue])}
                   />
-                  <span style={{ background: color }} aria-hidden="true" />
-                  <span className="sr-only">{color}</span>
+                  <span style={{ background: `var(--ev-${hue}-stripe)` }} aria-hidden="true" />
+                  <span className="sr-only">{t(`color.${hue}`)}</span>
                 </label>
               ))}
             </div>

@@ -4,7 +4,7 @@ import type { Snapshot } from "@/application/store";
 import { shiftAnchor, viewRange } from "@/domain/calendarGrid";
 import { addDays, dateOf, instantToLocal, systemTimeZone } from "@/domain/datetime";
 import type { EventDraft } from "@/domain/eventDraft";
-import { buildOccurrences, occurrencesOnDay, upcoming } from "@/domain/occurrences";
+import { buildOccurrences, upcoming } from "@/domain/occurrences";
 import type {
   Calendar,
   CalendarEvent,
@@ -44,6 +44,19 @@ function useNow(timeZone: string): string {
 
 export type Scope = "one" | "all";
 
+/**
+ * Come si è arrivati alla vista corrente: decide la direzione dell'animazione
+ * (avanti da destra, indietro da sinistra, cambio vista in dissolvenza).
+ * `tick` cambia a ogni spostamento, anche quando si preme "Oggi" restando su oggi.
+ */
+export interface Transition {
+  kind: "none" | "next" | "previous" | "view" | "today";
+  tick: number;
+}
+
+/** Quanto resta evidenziato l'evento appena salvato (deve superare l'animazione). */
+const FRESH_MS = 1600;
+
 export function useCalendarApp(service: CalendarService, initial: Snapshot) {
   const [snapshot, setSnapshot] = useState(initial);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +66,15 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
   const today = dateOf(now);
   const [view, setView] = useState<CalendarView>(settings.defaultView);
   const [anchor, setAnchor] = useState<DateKey>(today);
+  const [transition, setTransition] = useState<Transition>({ kind: "none", tick: 0 });
+  const [freshEventId, setFreshEventId] = useState<string | null>(null);
+
+  // L'evidenziazione dell'evento appena salvato si spegne da sola.
+  useEffect(() => {
+    if (!freshEventId) return;
+    const timer = window.setTimeout(() => setFreshEventId(null), FRESH_MS);
+    return () => window.clearTimeout(timer);
+  }, [freshEventId]);
 
   const calendars = useMemo(() => snapshot.calendars.filter((c) => !c.deleted), [snapshot]);
   const eventsById = useMemo(() => new Map(snapshot.events.map((e) => [e.id, e])), [snapshot]);
@@ -75,8 +97,8 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
   const range = useMemo(() => viewRange(view, anchor), [view, anchor]);
   const occurrences = useMemo(() => query(range.from, range.to), [query, range]);
   const nextDays = useMemo(() => query(today, addDays(today, 30)), [query, today]);
-  const upcomingList = useMemo(() => upcoming(nextDays, now, 6), [nextDays, now]);
-  const todayList = useMemo(() => occurrencesOnDay(nextDays, today), [nextDays, today]);
+  /** Prossimi impegni per Neko e "In arrivo": abbastanza da arrivare a domani anche nei giorni pieni. */
+  const upcomingLong = useMemo(() => upcoming(nextDays, now, 40), [nextDays, now]);
 
   /** Task aperti (prima i più urgenti) e gli ultimi completati. */
   const tasks = useMemo(() => {
@@ -107,9 +129,15 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
   const actions = useMemo(
     () => ({
       saveEvent: (draft: EventDraft, existing?: CalendarEvent) =>
-        run(() => service.saveDraft(draft, existing)),
+        run(async () => {
+          const saved = await service.saveDraft(draft, existing);
+          setFreshEventId(saved.id);
+        }),
       saveOccurrence: (event: CalendarEvent, occurrenceStart: string, draft: EventDraft) =>
-        run(() => service.editOccurrence(event, occurrenceStart, draft, snapshot.exceptions)),
+        run(async () => {
+          await service.editOccurrence(event, occurrenceStart, draft, snapshot.exceptions);
+          setFreshEventId(event.id);
+        }),
       deleteEvent: (event: CalendarEvent) => run(() => service.deleteEvent(event)),
       deleteOccurrence: (event: CalendarEvent, occurrenceStart: string) =>
         run(() => service.deleteOccurrence(event, occurrenceStart, snapshot.exceptions)),
@@ -124,20 +152,34 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
     [run, service, snapshot.exceptions, calendars.length],
   );
 
-  const navigation = useMemo(
-    () => ({
-      setView,
+  const navigation = useMemo(() => {
+    const move = (kind: Transition["kind"]) => setTransition((t) => ({ kind, tick: t.tick + 1 }));
+    return {
+      setView: (next: CalendarView) => {
+        if (next === view) return;
+        move("view");
+        setView(next);
+      },
       setAnchor,
-      goToday: () => setAnchor(today),
-      previous: () => setAnchor((a) => shiftAnchor(view, a, -1)),
-      next: () => setAnchor((a) => shiftAnchor(view, a, 1)),
+      goToday: () => {
+        move("today");
+        setAnchor(today);
+      },
+      previous: () => {
+        move("previous");
+        setAnchor((a) => shiftAnchor(view, a, -1));
+      },
+      next: () => {
+        move("next");
+        setAnchor((a) => shiftAnchor(view, a, 1));
+      },
       openDay: (day: DateKey) => {
+        move("view");
         setAnchor(day);
         setView("day");
       },
-    }),
-    [today, view],
-  );
+    };
+  }, [today, view]);
 
   const eventOf = useCallback(
     (occurrence: Occurrence) => eventsById.get(occurrence.eventId),
@@ -153,9 +195,11 @@ export function useCalendarApp(service: CalendarService, initial: Snapshot) {
     today,
     view,
     anchor,
+    transition,
+    freshEventId,
     occurrences,
-    upcomingList,
-    todayList,
+    query,
+    upcomingLong,
     tasks,
     error,
     clearError: () => setError(null),
