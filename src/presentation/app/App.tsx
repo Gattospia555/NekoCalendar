@@ -44,6 +44,21 @@ async function bootstrap(language: Language): Promise<State> {
   }
 }
 
+/**
+ * Un solo avvio per tentativo: in sviluppo React esegue gli effetti due volte
+ * (StrictMode) e due avvii in parallelo potevano creare i calendari predefiniti due volte.
+ */
+const boots = new Map<string, Promise<State>>();
+function bootOnce(language: Language, attempt: number): Promise<State> {
+  const key = `${language}:${attempt}`;
+  let boot = boots.get(key);
+  if (!boot) {
+    boot = bootstrap(language);
+    boots.set(key, boot);
+  }
+  return boot;
+}
+
 /** Avvio: mostra "Apro il calendario…", poi il calendario oppure l'errore con "Riprova". */
 export function App() {
   const [state, setState] = useState<State>({ status: "loading" });
@@ -66,7 +81,7 @@ export function App() {
 
   useEffect(() => {
     let cancelled = false;
-    void bootstrap(language).then((next) => {
+    void bootOnce(language, attempt).then((next) => {
       if (!cancelled) setState(next);
     });
     return () => {
