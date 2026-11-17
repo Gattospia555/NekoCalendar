@@ -25,7 +25,7 @@ tauri-plugin-sql = { version = "2.6", features = ["sqlite"] }
 
 [dev-dependencies]
 # Solo per i test delle migrazioni: stessa versione di sqlx usata dal plugin.
-sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio"] }
+sqlx = { version = "0.9", default-features = false, features = ["sqlite", "runtime-tokio"] }
 tokio = { version = "1", features = ["macros", "rt"] }
 
 # Ottimizzazioni per un eseguibile piccolo e veloce: https://tauri.app/concept/size/
